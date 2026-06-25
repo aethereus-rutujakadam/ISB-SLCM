@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Outgoing_Exchange_Checklist</fullName>
-    <active>true</active>
-    <description>Templates for Outgoing Exchange Case checklist items</description>
-    <label>Outgoing Exchange Checklist</label>
-</RecordType>

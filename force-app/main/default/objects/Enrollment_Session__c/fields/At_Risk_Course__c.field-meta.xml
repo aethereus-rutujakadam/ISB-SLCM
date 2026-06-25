@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>At_Risk_Course__c</fullName>
-    <formula>Attendance__c &lt; 2.5</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>At Risk (Course)</label>
-    <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
-</CustomField>
