@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Visa_Purpose__c</fullName>
+    <description>Purpose associated with the visa</description>
+    <inlineHelpText>Select the main purpose of travel.</inlineHelpText>
+    <label>Visa Purpose</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Business</fullName>
+                <default>false</default>
+                <label>Business</label>
+            </value>
+            <value>
+                <fullName>Employment</fullName>
+                <default>false</default>
+                <label>Employment</label>
+            </value>
+            <value>
+                <fullName>Family Visit</fullName>
+                <default>false</default>
+                <label>Family Visit</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Study</fullName>
+                <default>false</default>
+                <label>Study</label>
+            </value>
+            <value>
+                <fullName>Tourism</fullName>
+                <default>true</default>
+                <label>Tourism</label>
+            </value>
+            <value>
+                <fullName>Transit</fullName>
+                <default>false</default>
+                <label>Transit</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

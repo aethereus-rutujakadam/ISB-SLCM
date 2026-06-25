@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_INC_Transcript_Dispatch_Details</fullName>
+    <active>true</active>
+    <description>Incoming Exchange Transcript Dispatched can be checked only when all transcript section input fields are populated.</description>
+    <errorConditionFormula>RecordType.DeveloperName = &apos;Incoming_Exchange_Exit_Clearance&apos; &amp;&amp; ISCHANGED(Transcript_Dispatched__c) &amp;&amp; Transcript_Dispatched__c &amp;&amp; (
+ISBLANK(Transcript_Notes__c) ||
+ISBLANK(Tracking_Number__c) ||
+ISPICKVAL(Delivery_Mode__c, &apos;&apos;) ||
+ISBLANK(Dispatch_Address__c) ||
+ISPICKVAL(Dispatch_Mode__c, &apos;&apos;)
+)</errorConditionFormula>
+    <errorDisplayField>Transcript_Dispatched__c</errorDisplayField>
+    <errorMessage>Before checking Transcript Dispatched, complete all Transcript section fields: Transcript Notes, Tracking Number, Delivery Mode, Dispatch Address, and Dispatch Mode.</errorMessage>
+</ValidationRule>

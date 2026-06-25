@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- Apex Classes (new + modified) -->
+    <types>
+        <members>PGIDGeneratorService</members>
+        <members>RegistroPushBatch</members>
+        <members>RegistroPushBatchScheduler</members>
+        <members>RegistroCourseInboundController</members>
+        <members>IncomingExchangeCaseHandler</members>
+        <!-- Modified existing classes -->
+        <members>InternationalExchangeController</members>
+        <members>ProgramEnrollmentHandler</members>
+        <members>InternationalExchangeUserCreation</members>
+        <members>InternationalExchangeUserCreationTest</members>
+        <members>CaseTriggerHandler</members>
+        <members>CaseTriggerHandlerTest</members>
+        <name>ApexClass</name>
+    </types>
+
+    <!-- Custom Permissions -->
+    <types>
+        <members>Incoming_Exchange_ASA_User</members>
+        <members>Incoming_Exchange_Finance_User</members>
+        <name>CustomPermission</name>
+    </types>
+
+    <!-- Apex Trigger (modified existing) -->
+    <types>
+        <members>ProgramEnrollmentTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+
+    <!-- Lightning Web Component (modified existing) -->
+    <types>
+        <members>internationalExchangeUploader</members>
+        <name>LightningComponentBundle</name>
+    </types>
+
+    <!-- Custom Fields — Contact -->
+    <types>
+        <members>Contact.Govt_Registration_Status__c</members>
+        <members>Contact.Govt_Registration_Date__c</members>
+        <members>Contact.Residence_Permit_Status__c</members>
+        <members>Contact.Residence_Permit_Expiry__c</members>
+        <members>Contact.Home_Institution_Contact_Name__c</members>
+        <members>Contact.Home_Institution_Contact_Email__c</members>     
+        <members>ProgramEnrollment.Registro_Sync_Status__c</members>
+        <members>ProgramEnrollment.Registro_Last_Synced__c</members>
+        <members>ProgramEnrollment.Letter_Grade__c</members>    
+        <members>Case.Exchange_School_Home__c</members>
+        <members>Case.Campus__c</members>
+        <members>Case.Current_Degree__c</members>
+        <members>Case.Home_Institution_Contact_Name__c</members>
+        <members>Case.Home_Institution_Contact_Email__c</members>
+        <members>Case.Check_In_Date__c</members>
+        <members>Case.Check_Out_Date__c</members>
+        <members>Case.Expected_Exit_Date__c</members>
+        <members>Case.Arrival_Date__c</members>
+        <members>Case.Actual_Exit_Date__c</members>
+        <members>Case.Accommodation_Type__c</members>
+        <members>Case.Charge_Drivers__c</members>
+        <members>Case.ASA_Remarks__c</members>
+        <members>Case.ASA_SA_Cleared__c</members>
+        <members>Case.ASA_SA_Cleared_Date__c</members>
+        <members>Case.ASA_SA_Cleared_By__c</members>
+        <members>Case.Finance_Cleared__c</members>
+        <members>Case.Finance_Cleared_Date__c</members>
+        <members>Case.Operations_Cleared__c</members>
+        <members>Case.Operations_Cleared_Date__c</members>
+        <members>Case.Operations_Cleared_By__c</members>
+        <members>Case.IT_Cleared__c</members>
+        <members>Case.IT_Cleared_Date__c</members>
+        <members>Case.IT_Cleared_By__c</members>
+        <members>Case.LRC_Cleared__c</members>
+        <members>Case.LRC_Cleared_Date__c</members>
+        <members>Case.LRC_Cleared_By__c</members>
+        <members>Case.Invoice_Number__c</members>
+        <members>Case.Invoice_Date__c</members>
+        <members>Case.Total_Amount__c</members>
+        <members>Case.Payment_Status__c</members>
+        <members>Case.Payment_Date__c</members>
+        <members>Case.Finance_Notes__c</members>
+        <members>Case.Transcript_Dispatched__c</members>
+        <members>Case.Dispatch_Date__c</members>
+        <members>Case.Dispatched_By__c</members>
+        <members>Case.Dispatch_Mode__c</members>
+        <members>Case.Transcript_Notes__c</members>
+        <members>Case.Exception_Flag__c</members>
+        <members>Case.Exception_Remarks__c</members>
+        <members>Case.Closed_Date__c</members>
+        <members>Case.Program_Enrollment__c</members>
+        
+        <members>ISB_Fee__c.Case__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <!-- Record Type -->
+    
+    <types>
+        <members>Case.Incoming_Exchange_Exit_Clearance</members>
+        <name>RecordType</name>
+    </types>
+
+    <!-- Validation Rules -->
+    
+    <types>
+        <members>ProgramEnrollment.V_INC_04_PGID_Immutable</members>
+        <members>Contact.V_INC_08_Home_Institution_Required</members>
+        <members>Case.V_INC_05_Finance_Stage_Gate</members>
+        <members>Case.V_INC_06_Transcript_Gate</members>
+        <members>Case.V_INC_07_No_Reopen_From_Closed</members>
+        <members>Case.V_INC_Dept_Clearance_Stage_Gate</members>
+        <name>ValidationRule</name>
+    </types>
+
+    <!-- Permission Sets -->
+    <types>
+        <members>Incoming_Exchange_ASA</members>
+        <members>Incoming_Exchange_Finance</members>
+        <members>Incoming_Exchange_RO</members>
+        <members>Incoming_Exchange_ProgramOffice</members>
+        <name>PermissionSet</name>
+    </types>
+
+    <!-- Flows -->
+    
+    <types>
+        <members>Incoming_User_Provisioning_Flow</members>
+        <members>Incoming_Case_AutoCreate_Flow</members>
+        <members>Govt_Registration_Alert_Flow</members>
+        <members>ASA_SA_Clearance_AutoStamp_Flow</members>
+        <members>Operations_IT_LRC_Clearance_AutoStamp_Flow</members>
+        <members>Transcript_Dispatch_Stamp_Flow</members>
+        <members>Incoming_Case_Closure_Flow</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Case-Incoming Exchange Exit Clearance Layout</members>
+        <name>Layout</name>
+    </types>
+    
+
+    <version>59.0</version>
+</Package>
+
+//Flexi page contact internationalExchangeUploader

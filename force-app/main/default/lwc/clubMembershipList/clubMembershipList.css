@@ -1,0 +1,43 @@
+/* Force card body to have no padding */
+lightning-card {
+    --slds-c-card-body-padding: 0;
+}
+
+/* Full width table with small side padding */
+.full-width-table {
+    width: 100%;
+    padding: 0 0.75rem 0.75rem 0.75rem;
+}
+
+/* Override datatable internal styling */
+lightning-datatable {
+    width: 100% !important;
+}
+
+/* Ensure table cells don't have fixed widths */
+.slds-table tbody tr td,
+.slds-table thead tr th {
+    min-width: 100px;
+}
+
+/* Modal styling */
+.slds-modal__container {
+    min-width: 50%;
+    max-width: 90%;
+}
+
+/* Status color classes */
+.slds-text-color_success {
+    color: #2e844a;
+    font-weight: 600;
+}
+
+.slds-text-color_warning {
+    color: #fe9339;
+    font-weight: 600;
+}
+
+.slds-text-color_error {
+    color: #ea001e;
+    font-weight: 600;
+}

@@ -1,0 +1,240 @@
+﻿<template>
+    <div class="hcc-form-wrapper">
+        <template if:true={isLoading}>
+            <div class="loading-overlay">
+                <lightning-spinner alternative-text="Saving..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <lightning-card title="New Record: CASHD Committee" icon-name="custom:custom15">
+            <div class="slds-p-around_medium form-body">
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Case Information</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input label="Student PG ID" data-field="studentPgid" value={form.studentPgid} onchange={handleFieldChange} onblur={handlePgidBlur} required field-level-help="Enter the Student PG ID. Program Enrollment, Name, Email and Mobile will be auto-populated."></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Program Enrollment" value={form.programEnrollmentName} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Programme" value={form.programName} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Academic Year" value={form.academicYear} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Program Code" value={form.programCode} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Current Reporting Location" value={form.currentReportingLocationName} disabled></lightning-input>
+                                <div class="slds-m-top_small course-search-wrap">
+                                    <label class="slds-form-element__label" for="course-search-input">Course</label>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class={courseComboboxClass} role="combobox" aria-expanded={isCourseDropdownOpen} aria-haspopup="listbox">
+                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                    <lightning-icon icon-name="utility:search" size="x-small" class="slds-input__icon slds-input__icon_right"></lightning-icon>
+                                                    <input
+                                                        id="course-search-input"
+                                                        class="slds-input slds-combobox__input"
+                                                        type="text"
+                                                        placeholder="Search course from Program + Academic Year"
+                                                        value={courseSearchTerm}
+                                                        onfocus={handleCourseSearchFocus}
+                                                        oninput={handleCourseSearchInput}
+                                                        onblur={handleCourseSearchBlur}
+                                                        disabled={isCourseDisabled}
+                                                        autocomplete="off"
+                                                    />
+                                                </div>
+                                                <template if:true={isCourseDropdownOpen}>
+                                                    <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                            <template if:true={hasFilteredCourseOptions}>
+                                                                <template for:each={filteredCourseOptions} for:item="option">
+                                                                    <li key={option.value} role="presentation" class="slds-listbox__item">
+                                                                        <div
+                                                                            class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                                            role="option"
+                                                                            data-value={option.value}
+                                                                            onmousedown={handleCourseOptionMouseDown}
+                                                                        >
+                                                                            <span class="slds-media__body">
+                                                                                <span class="slds-truncate" title={option.label}>{option.label}</span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </li>
+                                                                </template>
+                                                            </template>
+                                                            <template if:false={hasFilteredCourseOptions}>
+                                                                <li role="presentation" class="slds-listbox__item">
+                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                                                        <span class="slds-media__body">
+                                                                            <span class="slds-truncate">No matching courses found</span>
+                                                                        </span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input label="Student Name" value={form.studentName} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Student Email" value={form.studentEmail} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Mobile Number" value={form.studentMobile} disabled></lightning-input>
+                                <lightning-input class="slds-m-top_small" label="Subject" data-field="subject" value={form.subject} onchange={handleFieldChange} required></lightning-input>
+                                                                <lightning-combobox class="slds-m-top_small" label="Case Status" data-field="caseStatus" value={form.caseStatus} options={caseStatusOptions} onchange={handleFieldChange}></lightning-combobox>
+                                <lightning-input class="slds-m-top_small" type="datetime" label="Date of Complaint Receipt" data-field="dateOfComplaintReceipt" value={form.dateOfComplaintReceipt} onchange={handleFieldChange}></lightning-input>
+
+                                <lightning-input class="slds-m-top_small" type="url" label="Case Attachments URL" data-field="caseAttachmentsUrl" value={form.caseAttachmentsUrl} onchange={handleFieldChange}></lightning-input>
+
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Parties Involved</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <div class="slds-m-bottom_small">
+                            <lightning-button label="Add Party" onclick={addParty}></lightning-button>
+                        </div>
+                        <div class="party-grid slds-grid slds-wrap slds-gutters_small">
+                            <template for:each={partyRows} for:item="party">
+                                <div key={party.key} class="party-grid-item slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                    <div class="party-row slds-p-around_small">
+                                        <div class="party-row-title">{party.title}</div>
+                                        <lightning-layout multiple-rows>
+                                            <lightning-layout-item size="12" medium-device-size="4" class="slds-p-around_x-small">
+                                                <lightning-combobox label="Role" data-key={party.key} data-field="role" options={partyRoleOptions} value={party.role} onchange={handlePartyChange}></lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="12" medium-device-size="4" class="slds-p-around_x-small">
+                                                <lightning-combobox label={party.typeLabel} data-key={party.key} data-field="type" options={partyTypeOptions} value={party.type} onchange={handlePartyChange}></lightning-combobox>
+                                            </lightning-layout-item>
+                                            <template lwc:if={party.isStudentType}>
+                                                <lightning-layout-item size="12" medium-device-size="4" class="slds-p-around_x-small">
+                                                    <lightning-input label={party.studentIdLabel} data-key={party.key} data-field="studentId" value={party.studentId} onchange={handlePartyChange} onblur={handlePartyStudentBlur} required field-level-help="Enter Student PG ID. If Type is Student, the Name will be auto-populated."></lightning-input>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <template lwc:if={party.isNonStudentType}>
+                                                <lightning-layout-item size="12" medium-device-size="4" class="slds-p-around_x-small">
+                                                    <lightning-input type="email" label={party.emailLabel} data-key={party.key} data-field="email" value={party.email} onchange={handlePartyChange} onblur={handlePartyEmailBlur} required field-level-help="Enter email. If Type is Staff, the Name will be auto-populated from Faculty contacts."></lightning-input>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-around_x-small">
+                                                <lightning-input label={party.nameLabel} value={party.resolvedName} disabled></lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-around_x-small">
+                                                <lightning-input type="datetime" label={party.ndaLabel} data-key={party.key} data-field="ndaSignedDate" value={party.ndaSignedDate} onchange={handlePartyChange}></lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="12" class="slds-p-around_x-small">
+                                                <lightning-button label="Remove" data-key={party.key} onclick={removeParty} disabled={party.disableRemove}></lightning-button>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Committee Members</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="email" label="Committee Member 1 Email" data-field="committeeMember1Name" value={form.committeeMember1Name} onchange={handleFieldChange} field-level-help="Please enter valid email Id"></lightning-input>
+                                <lightning-input class="slds-m-top_small" type="email" label="Committee Member 2 Email" data-field="committeeMember2Name" value={form.committeeMember2Name} onchange={handleFieldChange} field-level-help="Please enter valid email Id"></lightning-input>
+                                <lightning-input class="slds-m-top_small" type="email" label="Committee Member 3 Email" data-field="committeeMember3Name" value={form.committeeMember3Name} onchange={handleFieldChange} field-level-help="Please enter valid email Id"></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="email" label="Committee Member 4 Email" data-field="committeeMember4Name" value={form.committeeMember4Name} onchange={handleFieldChange} field-level-help="Please enter valid email Id"></lightning-input>
+                                <lightning-input class="slds-m-top_small" type="email" label="Committee Member 5 Email" data-field="committeeMember5Name" value={form.committeeMember5Name} onchange={handleFieldChange} field-level-help="Please enter valid email Id"></lightning-input>
+                                <lightning-textarea class="slds-m-top_small" label="Other Commitee Members Emails" data-field="otherCommitteeMembersName" value={form.otherCommitteeMembersName} onchange={handleFieldChange} field-level-help="Enter email addresses, separated by commas."></lightning-textarea>
+                                <lightning-input class="slds-m-top_small" type="email" label="External Consultant Email" data-field="externalConsultantEmail" value={form.externalConsultantEmail} onchange={handleFieldChange}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Meeting Details</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="email" label="Lead convenor" data-field="leadConvenor" value={form.leadConvenor} onchange={handleFieldChange} field-level-help="Please enter valid email Id"></lightning-input>
+                                <lightning-textarea class="slds-m-top_small" label="Members attended" data-field="membersAttended" value={form.membersAttended} onchange={handleFieldChange} field-level-help="Enter email addresses, separated by commas."></lightning-textarea>
+                                <lightning-textarea class="slds-m-top_small" label="MOM" data-field="mom" value={form.mom} onchange={handleFieldChange}></lightning-textarea>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="url" label="Meeting Recording URL" data-field="meetingRecordingUrl" value={form.meetingRecordingUrl} onchange={handleFieldChange}></lightning-input>
+                                <lightning-input class="slds-m-top_small" type="number" label="Number of meetings held" data-field="numberOfMeetingsHeld" value={form.numberOfMeetingsHeld} onchange={handleFieldChange}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Case Notes</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-textarea label="Action" data-field="action" value={form.action} onchange={handleFieldChange}></lightning-textarea>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Decision and Outcome</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="date" label="Final Hearing Date" data-field="finalHearingDate" value={form.finalHearingDate} onchange={handleFieldChange}></lightning-input>
+                                <lightning-combobox class="slds-m-top_small" label="Final Outcome" data-field="finalOutcome" value={form.finalOutcome} options={finalOutcomeOptions} onchange={handleFieldChange}></lightning-combobox>
+                                <lightning-input class="slds-m-top_small" label="Action Taken Description" data-field="actionTakenDescription" value={form.actionTakenDescription} onchange={handleFieldChange}></lightning-input>
+                                <lightning-textarea class="slds-m-top_small" label="Final Penalty" data-field="finalPenalty" value={form.finalPenalty} onchange={handleFieldChange}></lightning-textarea>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="date" label="Action Taken Shared with Student Date" data-field="actionTakenSharedDate" value={form.actionTakenSharedDate} onchange={handleFieldChange}></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="hcc-section">
+                    <div class="hcc-section-header">
+                        <h2 class="hcc-section-title">Appeal to Dean</h2>
+                    </div>
+                    <div class="hcc-section-content">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-input type="date" label="Dean Appeal Date" data-field="deanAppealDate" value={form.deanAppealDate} onchange={handleFieldChange}></lightning-input>
+                                <lightning-combobox class="slds-m-top_small" label="Dean Appeal Grounds" data-field="deanAppealGrounds" value={form.deanAppealGrounds} options={deanAppealGroundsOptions} onchange={handleFieldChange}></lightning-combobox>
+                                <lightning-input class="slds-m-top_small" type="date" label="Submission date to Dean's office" data-field="submissionDateToDeanOffice" value={form.submissionDateToDeanOffice} onchange={handleFieldChange}></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" medium-device-size="6" class="slds-p-horizontal_small slds-p-bottom_small">
+                                <lightning-combobox label="Dean Decision" data-field="deanDecision" value={form.deanDecision} options={deanDecisionOptions} onchange={handleFieldChange}></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <lightning-button variant="brand" label="Save" onclick={handleSave} disabled={saving}></lightning-button>
+                </div>
+            </div>
+        </lightning-card>
+    </div>
+</template>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zoho_On_Hold_Comments_Required</fullName>
+    <active>true</active>
+    <description>Requires comments when a Zoho Tasks checklist item status is changed to On Hold.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Status__c),
+    ISPICKVAL(Status__c, &quot;On Hold&quot;),
+    OR(
+        ISPICKVAL(Checklist_Item_Type__c, &quot;Zoho Tasks&quot;),
+        TEXT(Course_Checklist__r.Checklist_Type__c) = &quot;Zoho Tasks&quot;
+    ),
+    LEN(TRIM(Comments__c)) = 0
+)</errorConditionFormula>
+    <errorDisplayField>Comments__c</errorDisplayField>
+    <errorMessage>Comments are required when setting Zoho Tasks checklist items to On Hold.</errorMessage>
+</ValidationRule>

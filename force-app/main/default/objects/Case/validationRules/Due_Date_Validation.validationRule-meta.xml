@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Due_Date_Validation</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    $RecordType.DeveloperName = &quot;LOA&quot;,
+    ISPICKVAL(Status, &quot;Approved11&quot;),
+    ISBLANK(Revised_Due_Date__c)
+)</errorConditionFormula>
+    <errorMessage>Rejoining Request End Date is Mandatory.</errorMessage>
+</ValidationRule>

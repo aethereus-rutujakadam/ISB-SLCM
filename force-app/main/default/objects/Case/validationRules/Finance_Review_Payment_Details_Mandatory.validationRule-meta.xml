@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Review_Payment_Details_Mandatory</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &quot;Decision Pending to Finance HOD&quot;),
+  RecordType.Name = &quot;Rejoin&quot;,
+  ISBLANK(Amount__c),
+  NOT(Fee_Applicable__c),
+ISBLANK(Revised_Due_Date__c),
+ISBLANK(Payee__c),
+NOT(FinancialStatement__c),
+ISBLANK(TEXT(currency__c)) 
+)</errorConditionFormula>
+    <errorMessage>Please fill all the payment details</errorMessage>
+</ValidationRule>

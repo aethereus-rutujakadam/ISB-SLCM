@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ProgramEnrollement</fullName>
+    <fields>Name</fields>
+    <fields>PGID__c</fields>
+    <fields>ProgramId</fields>
+    <fields>ContactId</fields>
+    <fields>CGPA__c</fields>
+    <fields>Status</fields>
+    <fields>Sub_Status__c</fields>
+    <label>ProgramEnrollement</label>
+</CompactLayout>

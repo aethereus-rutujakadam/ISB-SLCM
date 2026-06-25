@@ -1,0 +1,245 @@
+<template>
+    <div class="slds-p-around_medium">
+        <!-- Scenario Selection -->
+        <div class="slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-bottom_medium">
+                <lightning-combobox
+                    name="scenario"
+                    label="Feedback Scenario"
+                    value={selectedScenario}
+                    placeholder="Select Scenario"
+                    options={scenarioOptions}
+                    onchange={handleScenarioChange}
+                    required>
+                </lightning-combobox>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-bottom_medium">
+                <lightning-combobox
+                    name="template"
+                    label="Feedback Template"
+                    value={selectedTemplate}
+                    placeholder="Select Template"
+                    options={templateOptions}
+                    onchange={handleTemplateChange}
+                    disabled={isTemplateDisabled}
+                    required>
+                </lightning-combobox>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-bottom_medium">
+                <lightning-input
+                    type="date"
+                    name="dueDate"
+                    label="Due Date"
+                    value={dueDate}
+                    min={minDueDate}
+                    onchange={handleDueDateChange}
+                    required>
+                </lightning-input>
+            </div>
+        </div>
+
+        <!-- Course-based Filters -->
+        <template if:true={showCourseFilters}>
+            <lightning-card title="Course Selection" icon-name="utility:filterList">
+                <div class="slds-p-horizontal_medium">
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-p-bottom_medium">
+                            <lightning-combobox
+                                name="program"
+                                label="Program"
+                                value={selectedProgram}
+                                placeholder="Select Program"
+                                options={programOptions}
+                                onchange={handleProgramChange}>
+                            </lightning-combobox>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-p-bottom_medium">
+                            <lightning-combobox
+                                name="location"
+                                label="Location"
+                                value={selectedLocation}
+                                placeholder="Select Location"
+                                options={locationOptions}
+                                onchange={handleLocationChange}>
+                            </lightning-combobox>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-p-bottom_medium">
+                            <lightning-combobox
+                                name="cohort"
+                                label="Cohort (Academic Term)"
+                                value={selectedCohort}
+                                placeholder="Select Cohort"
+                                options={cohortOptions}
+                                onchange={handleCohortChange}
+                                disabled={isCohortDisabled}>
+                            </lightning-combobox>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-p-bottom_medium">
+                            <lightning-combobox
+                                name="term"
+                                label="Term (Academic Session)"
+                                value={selectedTerm}
+                                placeholder="Select Term"
+                                options={termOptions}
+                                onchange={handleTermChange}
+                                disabled={isTermDisabled}>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+
+                    <!-- Course Offerings Table -->
+                    <template if:true={hasCourseOfferings}>
+                        <div class="slds-m-top_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Select Course Offerings ({courseOfferings.length} found)
+                            </h3>
+                            <lightning-datatable
+                                key-field="courseOfferingId"
+                                data={courseOfferings}
+                                columns={courseOfferingColumns}
+                                onrowselection={handleCourseSelection}
+                                max-row-selection="100"
+                                show-row-number-column>
+                            </lightning-datatable>
+                        </div>
+                    </template>
+
+                    <!-- Preview Button -->
+                    <template if:true={hasSelectedCourses}>
+                        <div class="slds-m-top_medium">
+                            <lightning-button
+                                label="Preview Recipients"
+                                variant="neutral"
+                                onclick={handlePreviewClick}
+                                icon-name="utility:preview">
+                            </lightning-button>
+                            <span class="slds-m-left_medium">
+                                {selectedCourseOfferings.length} course(s) selected
+                            </span>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- Non-course AA Selection -->
+        <template if:true={showAASelection}>
+            <lightning-card title="Academic Associate Selection" icon-name="standard:user">
+                <div class="slds-p-horizontal_medium">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-bottom_medium">
+                        <lightning-combobox
+                            name="program"
+                            label="Filter by Program (Optional)"
+                            value={selectedProgram}
+                            placeholder="All Programs"
+                            options={programOptions}
+                            onchange={handleProgramChange}>
+                        </lightning-combobox>
+                    </div>
+
+                    <template if:true={academicAssociates.length}>
+                        <div class="slds-m-top_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Select Academic Associates ({academicAssociates.length} found)
+                            </h3>
+                            <lightning-datatable
+                                key-field="aaProfileId"
+                                data={academicAssociates}
+                                columns={aaColumns}
+                                onrowselection={handleAASelection}
+                                max-row-selection="100"
+                                show-row-number-column>
+                            </lightning-datatable>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- Recipient Preview -->
+        <template if:true={showPreview}>
+            <lightning-card title="Recipient Preview" icon-name="utility:user" class="slds-m-top_medium">
+                <div class="slds-p-horizontal_medium">
+                    <template if:true={hasRecipients}>
+                        <div class="slds-box slds-theme_info slds-m-bottom_medium">
+                            <p><strong>{recipientCount}</strong> recipients will receive emails</p>
+                            <p><strong>{feedbackCount}</strong> feedback records will be created</p>
+                        </div>
+                        <lightning-datatable
+                            key-field="recipientId"
+                            data={recipients}
+                            columns={recipientColumns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </template>
+                    <template if:false={hasRecipients}>
+                        <div class="slds-illustration slds-illustration_small">
+                            <p class="slds-text-color_weak">No recipients found for selected criteria</p>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- Trigger Button -->
+        <div class="slds-m-top_large slds-text-align_center">
+            <lightning-button
+                label="Trigger Feedback"
+                variant="brand"
+                onclick={handleTriggerClick}
+                disabled={cannotTrigger}
+                icon-name="utility:send">
+            </lightning-button>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <template if:true={showConfirmModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-modal__title">Confirm Feedback Trigger</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <p>You are about to trigger feedback with the following details:</p>
+                        <ul class="slds-list_dotted slds-m-top_small">
+                            <li><strong>Scenario:</strong> {selectedScenario}</li>
+                            <li><strong>Due Date:</strong> {dueDate}</li>
+                            <template if:true={isCourseBasedScenario}>
+                                <li><strong>Courses Selected:</strong> {selectedCourseOfferings.length}</li>
+                            </template>
+                            <template if:false={isCourseBasedScenario}>
+                                <li><strong>AAs Selected:</strong> {selectedAcademicAssociates.length}</li>
+                            </template>
+                        </ul>
+                        <p class="slds-m-top_medium slds-text-color_error">
+                            This action will create feedback records and send emails. Continue?
+                        </p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button
+                            label="Cancel"
+                            onclick={handleCancelTrigger}>
+                        </lightning-button>
+                        <lightning-button
+                            label="Confirm & Send"
+                            variant="brand"
+                            onclick={handleConfirmTrigger}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+    </div>
+</template>

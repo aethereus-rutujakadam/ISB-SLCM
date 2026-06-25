@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>OutgoingExchangeCaseHandler</members>
+        <members>OutgoingExchangeCaseHandlerTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CaseTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>Course_Checklist__c.Outgoing_Exchange_Checklist</members>
+        <members>Course_Checklist_Item__c.Outgoing_Exchange_Checklist</members>
+        <members>Course_Checklist_Item_Template__c.Outgoing_Exchange_Checklist</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>Case.V_INC_Finance_On_Hold_Comments_Required</members>
+        <members>Case.V_OUT_Finance_On_Hold_Comments_Required</members>
+        <name>ValidationRule</name>
+    </types>
+    <version>62.0</version>
+</Package>

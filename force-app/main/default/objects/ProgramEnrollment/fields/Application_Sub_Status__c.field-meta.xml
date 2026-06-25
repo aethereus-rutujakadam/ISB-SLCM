@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Application_Sub_Status__c</fullName>
+    <label>Org A Application Sub Status</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>OrgAApplication_Status__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Started</fullName>
+                <default>false</default>
+                <label>Started</label>
+            </value>
+            <value>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+                <label>Submitted</label>
+            </value>
+            <value>
+                <fullName>Incomplete</fullName>
+                <default>false</default>
+                <label>Incomplete</label>
+            </value>
+            <value>
+                <fullName>Deferred Offer</fullName>
+                <default>false</default>
+                <label>Deferred Offer</label>
+            </value>
+            <value>
+                <fullName>Deferral Requested</fullName>
+                <default>false</default>
+                <label>Deferral Requested</label>
+            </value>
+            <value>
+                <fullName>Deferral Approved</fullName>
+                <default>false</default>
+                <label>Deferral Approved</label>
+            </value>
+            <value>
+                <fullName>Verification in Progress</fullName>
+                <default>false</default>
+                <label>Verification in Progress</label>
+            </value>
+            <value>
+                <fullName>Ready for Review</fullName>
+                <default>false</default>
+                <label>Ready for Review</label>
+            </value>
+            <value>
+                <fullName>Waitlisted for Interview</fullName>
+                <default>false</default>
+                <label>Waitlisted for Interview</label>
+            </value>
+            <value>
+                <fullName>Pre-Interview Rejected</fullName>
+                <default>false</default>
+                <label>Pre-Interview Rejected</label>
+            </value>
+            <value>
+                <fullName>Shortlisted for Interview</fullName>
+                <default>false</default>
+                <label>Shortlisted for Interview</label>
+            </value>
+            <value>
+                <fullName>Don&apos;t send to core engine</fullName>
+                <default>false</default>
+                <label>Don&apos;t send to core engine</label>
+            </value>
+            <value>
+                <fullName>Interview Completed</fullName>
+                <default>false</default>
+                <label>Interview Completed</label>
+            </value>
+            <value>
+                <fullName>Post-Interview Rejected</fullName>
+                <default>false</default>
+                <label>Post-Interview Rejected</label>
+            </value>
+            <value>
+                <fullName>Waitlisted for Offer</fullName>
+                <default>false</default>
+                <label>Waitlisted for Offer</label>
+            </value>
+            <value>
+                <fullName>Shortlisted for Offer</fullName>
+                <default>false</default>
+                <label>Shortlisted for Offer</label>
+            </value>
+            <value>
+                <fullName>Offered</fullName>
+                <default>false</default>
+                <label>Offered</label>
+            </value>
+            <value>
+                <fullName>Offer Accepted</fullName>
+                <default>false</default>
+                <label>Offer Accepted</label>
+            </value>
+            <value>
+                <fullName>Deferred Offer Accepted</fullName>
+                <default>false</default>
+                <label>Deferred Offer Accepted</label>
+            </value>
+            <value>
+                <fullName>First Installment Lapsed</fullName>
+                <default>false</default>
+                <label>First Installment Lapsed</label>
+            </value>
+            <value>
+                <fullName>Enrolling</fullName>
+                <default>false</default>
+                <label>Enrolling</label>
+            </value>
+            <value>
+                <fullName>Enrolled</fullName>
+                <default>false</default>
+                <label>Enrolled</label>
+            </value>
+            <value>
+                <fullName>Withdrawn</fullName>
+                <default>false</default>
+                <label>Withdrawn</label>
+            </value>
+            <value>
+                <fullName>Pending Confirmation</fullName>
+                <default>false</default>
+                <label>Pending Confirmation</label>
+            </value>
+            <value>
+                <fullName>Verified</fullName>
+                <default>false</default>
+                <label>Verified</label>
+            </value>
+            <value>
+                <fullName>Reviewed</fullName>
+                <default>false</default>
+                <label>Reviewed</label>
+            </value>
+            <value>
+                <fullName>Incomplete for Test</fullName>
+                <default>false</default>
+                <label>Incomplete for Test</label>
+            </value>
+            <value>
+                <fullName>Deferral Accepted</fullName>
+                <default>false</default>
+                <label>Deferral Accepted</label>
+            </value>
+            <value>
+                <fullName>Offer Lapsed</fullName>
+                <default>false</default>
+                <label>Offer Lapsed</label>
+            </value>
+            <value>
+                <fullName>Deferral Lapsed</fullName>
+                <default>false</default>
+                <label>Deferral Lapsed</label>
+            </value>
+            <value>
+                <fullName>Commitment Fees Lapsed</fullName>
+                <default>false</default>
+                <label>Commitment Fees Lapsed</label>
+            </value>
+            <value>
+                <fullName>Application Closed</fullName>
+                <default>false</default>
+                <label>Application Closed</label>
+            </value>
+            <value>
+                <fullName>Deferral Rejected</fullName>
+                <default>false</default>
+                <label>Deferral Rejected</label>
+            </value>
+            <value>
+                <fullName>Re-interview</fullName>
+                <default>false</default>
+                <label>Re-interview</label>
+            </value>
+            <value>
+                <fullName>Re-Interview Completed</fullName>
+                <default>false</default>
+                <label>Re-Interview Completed</label>
+            </value>
+            <value>
+                <fullName>Adcom Rejected</fullName>
+                <default>false</default>
+                <label>Adcom Rejected</label>
+            </value>
+            <value>
+                <fullName>No Show for Re-Interview</fullName>
+                <default>false</default>
+                <label>No Show for Re-Interview</label>
+            </value>
+            <value>
+                <fullName>Enrolling-Verified</fullName>
+                <default>false</default>
+                <label>Enrolling-Verified</label>
+            </value>
+            <value>
+                <fullName>Enrolling-Incomplete</fullName>
+                <default>false</default>
+                <label>Enrolling-Incomplete</label>
+            </value>
+            <value>
+                <fullName>No show for interview</fullName>
+                <default>false</default>
+                <label>No Show for Interview</label>
+            </value>
+            <value>
+                <fullName>Incomplete for Test scores</fullName>
+                <default>false</default>
+                <label>Incomplete for Test scores</label>
+            </value>
+            <value>
+                <fullName>Requested for Reschedule</fullName>
+                <default>false</default>
+                <label>Requested for Reschedule</label>
+            </value>
+            <value>
+                <fullName>Ready for Invoice</fullName>
+                <default>false</default>
+                <label>Ready for Invoice</label>
+            </value>
+            <value>
+                <fullName>Ready for Enrolling</fullName>
+                <default>false</default>
+                <label>Ready for Enrolling</label>
+            </value>
+            <value>
+                <fullName>Accepted Offer</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Accepted Offer</label>
+            </value>
+            <value>
+                <fullName>Admit</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Admit</label>
+            </value>
+            <value>
+                <fullName>Declined Offer</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Declined Offer</label>
+            </value>
+            <value>
+                <fullName>Deferral Declined</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Deferral Declined</label>
+            </value>
+            <value>
+                <fullName>Deferred Offer Declined</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Deferred Offer Declined</label>
+            </value>
+            <value>
+                <fullName>Deny</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Deny</label>
+            </value>
+            <value>
+                <fullName>In Review</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>In Review</label>
+            </value>
+            <value>
+                <fullName>Offer Declined</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Offer Declined</label>
+            </value>
+            <value>
+                <fullName>Received</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Received</label>
+            </value>
+            <value>
+                <fullName>Relavant Sub Status</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Relavant Sub Status</label>
+            </value>
+            <value>
+                <fullName>Waitlist</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Waitlist</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Offered</controllingFieldValue>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Deferral Requested</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offered</controllingFieldValue>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Deferral Approved</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offered</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Offered</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offered</controllingFieldValue>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Deferral Rejected</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Deferred Offer</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Deferred Offer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Offer Accepted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Enrolling</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <valueName>Enrolling-Verified</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <valueName>Enrolling-Incomplete</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <valueName>Ready for Invoice</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Accepted</controllingFieldValue>
+            <valueName>Ready for Enrolling</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Deferral Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Deferral Accepted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Deferred Offer Accepted</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Deferred Offer Accepted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Enrolled</controllingFieldValue>
+            <valueName>Enrolled</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Application Closed</controllingFieldValue>
+            <controllingFieldValue>Started</controllingFieldValue>
+            <valueName>Started</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Applied</controllingFieldValue>
+            <valueName>Submitted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Application Closed</controllingFieldValue>
+            <controllingFieldValue>Incomplete</controllingFieldValue>
+            <valueName>Incomplete</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Verification in Progress</controllingFieldValue>
+            <valueName>Verification in Progress</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Shortlisting in Progress</controllingFieldValue>
+            <valueName>Ready for Review</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Shortlisting in Progress</controllingFieldValue>
+            <valueName>Waitlisted for Interview</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Shortlisted for Interview</controllingFieldValue>
+            <valueName>Shortlisted for Interview</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Shortlisted for Interview</controllingFieldValue>
+            <valueName>Don&apos;t send to core engine</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Interview Completed</controllingFieldValue>
+            <valueName>Interview Completed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Waitlisted</controllingFieldValue>
+            <valueName>Waitlisted for Offer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Interview Completed</controllingFieldValue>
+            <valueName>Shortlisted for Offer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Withdrawn</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Verification in Progress</controllingFieldValue>
+            <valueName>Verified</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <controllingFieldValue>Shortlisting in Progress</controllingFieldValue>
+            <valueName>Reviewed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application Closed</controllingFieldValue>
+            <controllingFieldValue>Started</controllingFieldValue>
+            <valueName>Pending Confirmation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application Closed</controllingFieldValue>
+            <valueName>Application Closed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application Closed</controllingFieldValue>
+            <controllingFieldValue>Incomplete</controllingFieldValue>
+            <valueName>Incomplete for Test scores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Lapsed</controllingFieldValue>
+            <valueName>First Installment Lapsed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Lapsed</controllingFieldValue>
+            <valueName>Offer Lapsed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Lapsed</controllingFieldValue>
+            <valueName>Deferral Lapsed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Offer Lapsed</controllingFieldValue>
+            <valueName>Commitment Fees Lapsed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shortlisting in Progress</controllingFieldValue>
+            <valueName>Incomplete for Test</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not Shortlisted for Interview</controllingFieldValue>
+            <valueName>Pre-Interview Rejected</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shortlisted for Interview</controllingFieldValue>
+            <valueName>No show for interview</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shortlisted for Interview</controllingFieldValue>
+            <valueName>Requested for Reschedule</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Interview Completed</controllingFieldValue>
+            <valueName>Re-interview</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Interview Completed</controllingFieldValue>
+            <valueName>Re-Interview Completed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Interview Completed</controllingFieldValue>
+            <valueName>No Show for Re-Interview</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not Offered</controllingFieldValue>
+            <valueName>Post-Interview Rejected</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not Offered</controllingFieldValue>
+            <valueName>Adcom Rejected</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

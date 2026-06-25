@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OfflinePaymentRejected_Comments_Required</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Payment Rejected&quot;),
+    ISBLANK(Comments__c),
+    RecordType.DeveloperName = &quot;Offline_Payment&quot;
+)</errorConditionFormula>
+    <errorMessage>If Offline Payment is rejected, please add the rejection reason in Comments.</errorMessage>
+</ValidationRule>

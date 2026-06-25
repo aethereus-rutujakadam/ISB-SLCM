@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Destination_Country__c</fullName>
+    <description>Primary destination country for this travel</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Type the country name (e.g., India, USA).</inlineHelpText>
+    <label>Destination Country</label>
+    <length>100</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

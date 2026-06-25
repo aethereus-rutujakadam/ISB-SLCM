@@ -1,0 +1,28 @@
+.slds-tabs_default__nav {
+    border-bottom: 1px solid #dddbda;
+}
+
+.slds-tabs_default__item {
+    cursor: pointer;
+}
+
+.slds-tabs_default__item.slds-is-active {
+    border-bottom: 2px solid #0176d3;
+}
+
+.slds-tabs_default__link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: #3e3e3c;
+}
+
+.slds-tabs_default__item.slds-is-active .slds-tabs_default__link {
+    color: #0176d3;
+    font-weight: 600;
+}
+
+.slds-tabs_default__content {
+    padding: 1rem;
+}

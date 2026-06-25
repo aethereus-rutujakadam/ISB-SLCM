@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <assignmentRule>
+        <fullName>Case</fullName>
+        <active>true</active>
+        <ruleEntry>
+            <assignedTo>rutuja.kadam@myridius.com.sshprod</assignedTo>
+            <assignedToType>User</assignedToType>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>Decision Pending HOD</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>ASA_Co_curricular_Manager</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Wellbeing</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>ASA_Queue</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.Subject</field>
+                <operation>contains</operation>
+                <value>Academic Probation - Low CGPA</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>Automation</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>FGC_Group</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Event &amp; Budget Proposal</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Budget_Ask__c</field>
+                <operation>greaterThan</operation>
+                <value>0</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>ASA_Queue</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <booleanFilter>((1 AND 2 )OR 3)</booleanFilter>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Event &amp; Budget Proposal</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Budget_Ask__c</field>
+                <operation>equals</operation>
+                <value>0</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Attendance Exception</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>RO_Level_1</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>General Support</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Sub_Types__c</field>
+                <operation>equals</operation>
+                <value>Name Change / Display</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>ASA_Co_curricular_Manager</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>contains</operation>
+                <value>General Support</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Sub_Types__c</field>
+                <operation>equals</operation>
+                <value>Special Interest Group Request</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>RO_Level_1</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>General Support</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>RO_Level_1</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <booleanFilter>(1 OR 6) AND (2 OR 3 OR 4 OR 5)</booleanFilter>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>Submitted</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Leave of Absence</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Withdrawal</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Rejoin</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Return and Replace</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>Payment Successful</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
+            <assignedTo>asa.cocurricular@myridius.com</assignedTo>
+            <assignedToType>User</assignedToType>
+            <booleanFilter>1 OR 2</booleanFilter>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Incoming Exchange</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Outgoing Exchange</value>
+            </criteriaItems>
+            <team>Incoming Team</team>
+        </ruleEntry>
+    </assignmentRule>
+</AssignmentRules>

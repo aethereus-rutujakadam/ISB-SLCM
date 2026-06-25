@@ -1,0 +1,320 @@
+<template>
+  <div class="wrap">
+
+    <!-- Header -->
+    <div class="hdr">
+      <h2 class="ttl">{headerTitle}</h2>
+
+      <div class="hdr-actions">
+        <lightning-badge label={countLabel}></lightning-badge>
+
+        <!--Added By Adesh on 31-Dec-2025 -->
+        <template if:false={showAssignAction}>
+            <lightning-button variant="brand" label="Update Details" onclick={openUpdateModal}></lightning-button>
+          <lightning-button variant="brand" label="Submit For AA Assignment" onclick={openSubmitAAModal}></lightning-button>
+        </template>
+        <!-- END Added By Adesh on 31-Dec-2025 -->
+
+        <template if:true={showAssignAction}>
+          <lightning-button variant="brand" label="Assign to AA" onclick={openAssignModal}></lightning-button>
+          <lightning-button variant="brand" label="Publish" onclick={openPublishConfirmationModal}></lightning-button>
+          <lightning-button icon-name="utility:filterList" label="Filters" onclick={toggleFilter}></lightning-button>
+        </template>
+
+        <lightning-button icon-name="utility:refresh" label="Refresh" onclick={handleRefresh}></lightning-button>
+      </div>
+    </div>
+
+    <!-- FILTER PANEL -->
+    <template if:true={showFilter}>
+      <div class="filter-panel">
+
+        <!-- ========== FILTER ROW 1 ========== -->
+        <div class="filter-grid">
+
+          <!-- <lightning-input type="search"
+            label="Search (Name/Description)"
+            value={filters.search}
+            data-field="search"
+            onchange={handleFilterChange}>
+          </lightning-input> -->
+
+          <lightning-combobox
+            label="Program"
+            value={filters.program}
+            options={programOptions}
+            data-field="program"
+            onchange={handleFilterChange}>
+          </lightning-combobox>
+
+          <lightning-combobox
+            label="Term"
+            value={filters.term}
+            options={termOptions}
+            data-field="term"
+            onchange={handleFilterChange}>
+          </lightning-combobox>
+<!-- 
+          <lightning-combobox
+           label="Exam Venue"
+          value={filters.examVenue}
+        options={examVenueOptions}
+        data-field="examVenue"
+        onchange={handleFilterChange}>
+        </lightning-combobox> -->
+
+          <lightning-combobox
+            label="Location"
+            value={filters.location}
+            options={locationOptions}
+            data-field="location"
+            onchange={handleFilterChange}>
+          </lightning-combobox>
+
+        </div>
+
+        <!-- ========== FILTER ROW 2 (NEW UI REQUIRED) ========== -->
+        <div class="filter-grid">
+          <lightning-input
+            type="date"
+            label="Exam Date"
+            value={filters.examDate}
+            data-field="examDate"
+            onchange={handleFilterChange}>
+          </lightning-input>
+
+          <lightning-input
+            type="text"
+            label="Exam Time (10:00 AM)"
+            value={filters.examTime}
+            data-field="examTime"
+            onchange={handleFilterChange}>
+          </lightning-input>
+
+          <lightning-input
+            type="text"
+            label="End Time (11:00 AM)"
+            value={filters.endTime}
+            data-field="endTime"
+            onchange={handleFilterChange}>
+          </lightning-input>
+
+          <lightning-button
+            variant="base"
+            label="Clear Filters"
+            onclick={clearFilters}>
+          </lightning-button>
+
+          <span class="filter-record-count">{filteredRows.length} record(s) found</span>
+        </div>
+
+      </div>
+    </template>
+
+    <!-- TABLE -->
+    <lightning-datatable
+      key-field="Id"
+      data={filteredRows}
+      columns={columns}
+      onrowselection={handleRowSelection}
+      onrowaction={handleRowAction}>
+    </lightning-datatable>
+
+  </div>
+
+  <!-- MODAL -->
+  <template if:true={showAssignModal}>
+    <section class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+
+        <header class="slds-modal__header">
+          <h2>Assign Academic Associates</h2>
+        </header>
+
+        <div class="slds-modal__content slds-p-around_medium">
+          <lightning-dual-listbox
+            name="AA"
+            label="Select Academic Associates"
+            source-label="Available"
+            selected-label="Selected"
+            options={aaOptions}
+            value={selectedAAIds}
+            onchange={handleAAChange}>
+          </lightning-dual-listbox>
+        </div>
+
+        <footer class="slds-modal__footer">
+          <lightning-button label="Cancel" onclick={closeAssignModal} class="slds-m-right_small"></lightning-button>
+          <!-- <lightning-button variant="destructive" label="Remove" onclick={removeSelected}></lightning-button> -->
+          <lightning-button variant="brand" label="Save" onclick={assignSelected}></lightning-button>
+        </footer>
+
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!--Added By Adesh on 31-Dec-2025-->
+    <template if:true={showUpdateModal}>
+    <section class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+
+        <header class="slds-modal__header">
+          <h2>Update Examination Data</h2>
+        </header>
+        <div class="slds-p-around_medium slds-modal__content">
+
+            <lightning-input type="date"
+                             label="Date of Exam"
+                             value={examDate}
+                             onchange={handleChange}
+                             data-field="examDate"
+                             >
+            </lightning-input>
+
+            <lightning-input type="time"
+                             label="Time Of Exam"
+                             value={startTime}
+                             onchange={handleChange}
+                             data-field="startTime"
+                             >
+            </lightning-input>
+
+            <lightning-input type="time"
+                             label="End Time"
+                             value={endTime}
+                             onchange={handleChange}
+                             data-field="endTime"
+                             >
+            </lightning-input>
+
+                        <lightning-combobox label="Venue"
+                                value={venueId}
+                                options={venueOptions}
+                                placeholder="Select Venue"
+                                onchange={handleVenueChange}
+                                >
+            </lightning-combobox>
+
+            <!--
+            <lightning-button label="Submit"
+                              variant="brand"
+                              onclick={handleSubmit}
+                              class="slds-m-top_medium">
+            </lightning-button>
+
+            -->
+
+        </div>
+
+        <footer class="slds-modal__footer">
+          <lightning-button label="Cancel" onclick={closeUpdateModal} class="slds-m-right_small"></lightning-button>
+          <lightning-button variant="brand" label="Update" onclick={updateExaminationData}></lightning-button>
+        </footer>
+
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!--End Added By Adesh on 31-Dec-2025 -->
+
+  <!-- CONFIRMATION MODAL: shown when selected AA(s) are not assigned to the course(s) -->
+  <template if:true={showConfirmModal}>
+    <section class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+
+        <header class="slds-modal__header slds-theme_warning">
+          <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <h2 class="slds-text-heading_small">Warning</h2>
+            </div>
+          </div>
+        </header>
+
+        <div class="slds-modal__content slds-p-around_medium slds-text-longform">
+          <p>
+            This Academic Associate is related to the course of the selected exam(s).
+            Do you want to proceed anyway?
+          </p>
+        </div>
+
+        <footer class="slds-modal__footer">
+          <lightning-button label="No" onclick={confirmNo} class="slds-m-right_small"></lightning-button>
+          <lightning-button variant="destructive" label="Yes, Proceed" onclick={confirmYes}></lightning-button>
+        </footer>
+
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+
+    <!-- CONFIRMATION MODAL: Submit for AA assignment -->
+  <template if:true={showSubmitAAModal}>
+    <section class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+
+        <header class="slds-modal__header slds-theme_warning">
+          <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <h2 class="slds-text-heading_small">Warning</h2>
+            </div>
+          </div>
+        </header>
+
+        <div class="slds-modal__content slds-p-around_medium slds-text-longform">
+          <p>
+            Would you like to proceed with submitting the selected records for AA assignment?
+          </p>
+        </div>
+
+        <footer class="slds-modal__footer">
+          <lightning-button label="No" onclick={submitAAConfirmNo} class="slds-m-right_small"></lightning-button>
+          <lightning-button variant="destructive" label="Yes, Proceed" onclick={submitAAConfirmYes}></lightning-button>
+        </footer>
+
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+
+      <!-- CONFIRMATION MODAL: Submit for AA assignment -->
+  <template if:true={showPublishConfirmModal}>
+    <section class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+
+        <header class="slds-modal__header slds-theme_warning">
+          <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <h2 class="slds-text-heading_small">Warning</h2>
+            </div>
+          </div>
+        </header>
+
+        <div class="slds-modal__content slds-p-around_medium slds-text-longform">
+          <p>
+            Would you like to proceed with submitting the selected records for AA assignment?
+          </p>
+        </div>
+
+        <footer class="slds-modal__footer">
+          <lightning-button label="No" onclick={publishConfirmNo} class="slds-m-right_small"></lightning-button>
+          <lightning-button variant="destructive" label="Yes, Proceed" onclick={publishConfirmYes}></lightning-button>
+        </footer>
+
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

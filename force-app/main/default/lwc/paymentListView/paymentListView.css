@@ -1,0 +1,24 @@
+.payment-table th {
+    background-color: #f3f3f3;
+    font-weight: 600;
+}
+
+.status-success {
+    background: #dff6dd;
+    color: #1f7a1f;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.status-failed {
+    background: #fdecea;
+    color: #a61b1b;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.empty-state-icon {
+    color: #91d18b;
+}

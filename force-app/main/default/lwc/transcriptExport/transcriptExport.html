@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Transcript Export">
+        <div class="slds-p-around_medium">
+
+            <lightning-combobox
+                name="viewType"
+                label="Select View Type"
+                value={viewType}
+                placeholder="Select Interim or Final"
+                options={viewOptions}
+                onchange={handleViewChange}>
+            </lightning-combobox>
+
+            <br/>
+
+            <lightning-button 
+                label="Export CSV" 
+                variant="brand" 
+                onclick={exportCSV}>
+            </lightning-button>
+
+        </div>
+    </lightning-card>
+</template>

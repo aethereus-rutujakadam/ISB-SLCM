@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>sfal__IsAdviseeRecord__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Indicates whether the Case record is a student record Case.</description>
+    <formula>IF(
+    ISBLANK($Setup.sfal__SAL_Settings__c.sfal__Advisee_Record_RecordType__c),
+    false,
+    IF(
+        CONTAINS(
+            $Setup.sfal__SAL_Settings__c.sfal__Advisee_Record_RecordType__c,
+            &quot;.&quot;
+        ),
+        $Setup.sfal__SAL_Settings__c.sfal__Advisee_Record_RecordType__c == RecordType.NamespacePrefix &amp; &quot;.&quot; &amp; RecordType.DeveloperName,
+        ISBLANK(RecordType.NamespacePrefix) &amp;&amp; $Setup.sfal__SAL_Settings__c.sfal__Advisee_Record_RecordType__c == RecordType.DeveloperName
+    )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Is Student Record</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

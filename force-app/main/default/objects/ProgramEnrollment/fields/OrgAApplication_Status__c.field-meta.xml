@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OrgAApplication_Status__c</fullName>
+    <description>The status of the application process.</description>
+    <inlineHelpText>The status of the application review process.</inlineHelpText>
+    <label>Org A Application Status</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Started</fullName>
+                <default>false</default>
+                <label>Application in Progress</label>
+            </value>
+            <value>
+                <fullName>Applied</fullName>
+                <default>false</default>
+                <label>Applied</label>
+            </value>
+            <value>
+                <fullName>Incomplete</fullName>
+                <default>false</default>
+                <label>Incomplete</label>
+            </value>
+            <value>
+                <fullName>Verification in Progress</fullName>
+                <default>false</default>
+                <label>Verification in Progress</label>
+            </value>
+            <value>
+                <fullName>Shortlisting in Progress</fullName>
+                <default>false</default>
+                <label>Shortlisting in Progress</label>
+            </value>
+            <value>
+                <fullName>Not Shortlisted for Interview</fullName>
+                <default>false</default>
+                <label>Not Shortlisted for Interview</label>
+            </value>
+            <value>
+                <fullName>Shortlisted for Interview</fullName>
+                <default>false</default>
+                <label>Shortlisted for Interview</label>
+            </value>
+            <value>
+                <fullName>Interview Completed</fullName>
+                <default>false</default>
+                <label>Interview Completed</label>
+            </value>
+            <value>
+                <fullName>Not Offered</fullName>
+                <default>false</default>
+                <label>Not Offered</label>
+            </value>
+            <value>
+                <fullName>Waitlisted</fullName>
+                <default>false</default>
+                <label>Waitlisted</label>
+            </value>
+            <value>
+                <fullName>Offered</fullName>
+                <default>false</default>
+                <label>Offered</label>
+            </value>
+            <value>
+                <fullName>Deferred Offer</fullName>
+                <default>false</default>
+                <label>Deferred Offer</label>
+            </value>
+            <value>
+                <fullName>Offer Accepted</fullName>
+                <default>false</default>
+                <label>Offer Accepted</label>
+            </value>
+            <value>
+                <fullName>Deferral Accepted</fullName>
+                <default>false</default>
+                <label>Deferral Accepted</label>
+            </value>
+            <value>
+                <fullName>Deferred Offer Accepted</fullName>
+                <default>false</default>
+                <label>Deferred Offer Accepted</label>
+            </value>
+            <value>
+                <fullName>Enrolled</fullName>
+                <default>false</default>
+                <label>Enrolled</label>
+            </value>
+            <value>
+                <fullName>Withdrawn</fullName>
+                <default>false</default>
+                <label>Withdrawn</label>
+            </value>
+            <value>
+                <fullName>Application Closed</fullName>
+                <default>false</default>
+                <label>Application Closed</label>
+            </value>
+            <value>
+                <fullName>Offer Lapsed</fullName>
+                <default>false</default>
+                <label>Offer Lapsed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

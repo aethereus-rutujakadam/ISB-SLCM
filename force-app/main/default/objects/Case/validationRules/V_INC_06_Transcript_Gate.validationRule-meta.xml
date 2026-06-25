@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_INC_06_Transcript_Gate</fullName>
+    <active>true</active>
+    <description>V-INC-06: Transcript must be dispatched (Transcript_Dispatched__c checked) before the case can be moved to Closed stage.</description>
+    <errorConditionFormula>ISCHANGED(Status) &amp;&amp; ISPICKVAL(Status, &apos;Closed&apos;) &amp;&amp; NOT(Transcript_Dispatched__c)</errorConditionFormula>
+    <errorDisplayField>Transcript_Dispatched__c</errorDisplayField>
+    <errorMessage>Transcript must be dispatched before the case can be closed. Please check the Transcript Dispatched checkbox in the Transcript Details section.</errorMessage>
+</ValidationRule>

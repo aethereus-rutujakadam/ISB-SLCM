@@ -1,0 +1,27 @@
+<template>
+    <lightning-card title={cardTitle} icon-name="standard:education">
+        <div slot="actions">
+            <lightning-button-icon icon-name="utility:refresh" variant="border-filled" onclick={handleRefresh} alternative-text="Refresh"></lightning-button-icon>
+        </div>
+        <div>
+            <template if:true={grades}>
+                <lightning-datatable
+                    key-field="id"
+                    data={grades}
+                    columns={columns}
+                    hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-p-around_medium">
+                    {error}
+                </div>
+            </template>
+            <template if:false={hasGrades}>
+                <div class="slds-text-align_center slds-m-vertical_small slds-p-around_medium">
+                    No course grades found for this student.
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

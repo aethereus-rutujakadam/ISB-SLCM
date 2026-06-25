@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Attendance_Exception_Reason__c</fullName>
+    <label>Attendance Exception Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Medical Exigency</fullName>
+                <default>false</default>
+                <label>Medical Exigency</label>
+            </value>
+            <value>
+                <fullName>Medical Emergency in Immediate Family</fullName>
+                <default>false</default>
+                <label>Medical Emergency in Immediate Family</label>
+            </value>
+            <value>
+                <fullName>Loss/Bereavement</fullName>
+                <default>false</default>
+                <label>Loss/Bereavement</label>
+            </value>
+            <value>
+                <fullName>Hardship/Trauma</fullName>
+                <default>false</default>
+                <label>Hardship/Trauma</label>
+            </value>
+            <value>
+                <fullName>Approved Case Competitions</fullName>
+                <default>false</default>
+                <label>Approved Case Competitions</label>
+            </value>
+            <value>
+                <fullName>Professional Certification Exams</fullName>
+                <default>false</default>
+                <label>Professional Certification Exams</label>
+            </value>
+            <value>
+                <fullName>National/International Sports Tournaments</fullName>
+                <default>false</default>
+                <label>National/International Sports Tournaments</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Case</members>
+        <name>AssignmentRules</name>
+    </types>
+    <types>
+        <members>V_INC_Finance_Cleared_Details</members>
+        <members>V_INC_Transcript_Dispatch_Details</members>
+        <name>ValidationRule</name>
+    </types>
+    <types>
+        <members>internationalExchangeUploader</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>ExchangeCaseAssignmentRuleHandler</members>
+        <name>ApexClass</name>
+    </types>
+    <version>62.0</version>
+</Package>

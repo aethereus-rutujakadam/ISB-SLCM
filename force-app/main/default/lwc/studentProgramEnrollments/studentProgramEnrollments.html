@@ -1,0 +1,354 @@
+<template>
+    <lightning-card title="My Program Enrollments" icon-name="standard:education">
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-text-align_center slds-p-around_medium">
+                <lightning-spinner alternative-text="Loading enrollments..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={error}>
+            <div class="slds-text-align_center slds-p-around_medium">
+                <p class="slds-text-color_error">{error}</p>
+            </div>
+        </template>
+
+        <!-- No Enrollments -->
+        <template if:false={hasAnyEnrollments}>
+            <template if:false={isLoading}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    <p class="slds-text-color_weak">No program enrollments found.</p>
+                </div>
+            </template>
+        </template>
+
+        <!-- Current Enrollments -->
+        <template if:true={hasCurrentEnrollments}>
+            <div class="slds-p-around_small">
+                <h3 class="slds-text-heading_small slds-p-bottom_small">Current Enrollments</h3>
+                <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}>
+                    <template for:each={currentEnrollments} for:item="enrollment">
+                        <lightning-accordion-section 
+                            key={enrollment.id}
+                            name={enrollment.sectionName}
+                            label={enrollment.programName}>
+                            
+                                <!-- Enrollment Details -->
+                                <div class="enrollment-details">
+                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                       <template if:true={enrollment.hasName}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Name:</span>
+                                                   <span class="detail-value">{enrollment.name}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasProgramName}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Program:</span>
+                                                    <span class="detail-value">{enrollment.programName}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasAcademicYear}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Academic Year:</span>
+                                                   <span class="detail-value">{enrollment.academicYear}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasCgpa}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">CGPA:</span>
+                                                   <span class="detail-value">{enrollment.cgpa}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasCoreCgpa}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Core CGPA:</span>
+                                                   <span class="detail-value">{enrollment.coreCgpa}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasElectiveCgpa}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Elective CGPA:</span>
+                                                   <span class="detail-value">{enrollment.electiveCgpa}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasStatus}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <div class="detail-item">
+                                                    <span class="detail-label">Status:</span>
+                                                    <lightning-badge label={enrollment.status} class="status-badge"></lightning-badge>
+                                                </div>
+                                            </div>
+                                       </template>
+                                       <template if:true={enrollment.hasPreTermStatus}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Pre Term:</span>
+                                                   <span class="detail-value">{enrollment.preTermStatus}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                   </div>
+                                </div>
+
+                                <!-- Enrollment Sessions -->
+                                <div class="slds-p-top_medium">
+                                    <h4 class="slds-text-heading_small slds-p-bottom_x-small">Enrollment Sessions (Terms)</h4>
+                                    
+                                    <template if:true={enrollment.isLoadingSessions}>
+                                        <div class="slds-text-align_center slds-p-around_small">
+                                            <lightning-spinner alternative-text="Loading sessions..." size="small"></lightning-spinner>
+                                        </div>
+                                    </template>
+
+                                    <template if:false={enrollment.isLoadingSessions}>
+                                        <template if:true={enrollment.sessions}>
+                                            <template if:true={enrollment.sessions.length}>
+                                                <div class="sessions-list">
+                                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout" aria-label="Enrollment Sessions">
+                                                        <thead>
+                                                            <tr class="slds-line-height_reset">
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Session Name">Session Name</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Status">Status</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Attended Sessions">Attended Sessions</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Attendance">Attendance</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="GPA">GPA</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Total Attempted Credits">Total Attempted Credits</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Total Earned Credits">Total Earned Credits</div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <template for:each={enrollment.sessions} for:item="session">
+                                                                <tr key={session.id} class="slds-hint-parent">
+                                                                    <td data-label="Session Name" scope="row">
+                                                                        <div class="slds-truncate" title={session.sessionName}>{session.sessionName}</div>
+                                                                    </td>
+                                                                    <td data-label="Status">
+                                                                        <lightning-badge label={session.status}></lightning-badge>
+                                                                    </td>
+                                                                    <td data-label="Attended Sessions">
+                                                                        <div class="slds-truncate" title={session.attendedSessions}>{session.attendedSessions}</div>
+                                                                    </td>
+                                                                    <td data-label="Attendance">
+                                                                        <div class="slds-truncate" title={session.attendance}>{session.attendance}</div>
+                                                                    </td>
+                                                                    <td data-label="GPA">
+                                                                        <div class="slds-truncate" title={session.gpa}>{session.gpa}</div>
+                                                                    </td>
+                                                                    <td data-label="Total Attempted Credits">
+                                                                        <div class="slds-truncate" title={session.totalAttemptedCredits}>{session.totalAttemptedCredits}</div>
+                                                                    </td>
+                                                                    <td data-label="Total Earned Credits">
+                                                                        <div class="slds-truncate" title={session.totalEarnedCredits}>{session.totalEarnedCredits}</div>
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </template>
+                                            <template if:false={enrollment.sessions.length}>
+                                                <p class="slds-text-color_weak slds-p-around_small">No sessions found for this enrollment.</p>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </div> 
+                            
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </div>
+        </template>
+
+        <!-- Previous Enrollments -->
+        <template if:true={hasPreviousEnrollments}>
+            <div class="slds-p-around_small">
+                <h3 class="slds-text-heading_small slds-p-bottom_small slds-p-top_medium">Previous Enrollments</h3>
+                <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}>
+                    <template for:each={previousEnrollments} for:item="enrollment">
+                        <lightning-accordion-section 
+                            key={enrollment.id}
+                            name={enrollment.sectionName}
+                            label={enrollment.programName}>
+                            
+                                <!-- Enrollment Details -->
+                                <div class="enrollment-details">
+                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                       <template if:true={enrollment.hasName}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Name:</span>
+                                                   <span class="detail-value">{enrollment.name}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasProgramName}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Program:</span>
+                                                    <span class="detail-value">{enrollment.programName}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasAcademicYear}>
+                                           <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Academic Year:</span>
+                                                   <span class="detail-value">{enrollment.academicYear}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                       <template if:true={enrollment.hasCgpa}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <div class="detail-item">
+                                                    <span class="detail-label">CGPA:</span>
+                                                    <span class="detail-value">{enrollment.cgpa}</span>
+                                                </div>
+                                            </div>
+                                       </template>
+                                       <template if:true={enrollment.hasCoreCgpa}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <div class="detail-item">
+                                                    <span class="detail-label">Core CGPA:</span>
+                                                    <span class="detail-value">{enrollment.coreCgpa}</span>
+                                                </div>
+                                            </div>
+                                       </template>
+                                       <template if:true={enrollment.hasElectiveCgpa}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <div class="detail-item">
+                                                    <span class="detail-label">Elective CGPA:</span>
+                                                    <span class="detail-value">{enrollment.electiveCgpa}</span>
+                                                </div>
+                                            </div>
+                                       </template>
+                                       <template if:true={enrollment.hasStatus}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <div class="detail-item">
+                                                    <span class="detail-label">Status:</span>
+                                                    <lightning-badge label={enrollment.status} class="status-badge"></lightning-badge>
+                                                </div>
+                                            </div>
+                                       </template>
+                                       <template if:true={enrollment.hasPreTermStatus}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                               <div class="detail-item">
+                                                   <span class="detail-label">Pre Term:</span>
+                                                   <span class="detail-value">{enrollment.preTermStatus}</span>
+                                               </div>
+                                           </div>
+                                       </template>
+                                   </div>
+                                </div>
+
+                                <!-- Enrollment Sessions -->
+                                <div class="slds-p-top_medium">
+                                    <h4 class="slds-text-heading_small slds-p-bottom_x-small">Enrollment Sessions (Terms)</h4>
+                                    
+                                    <template if:true={enrollment.isLoadingSessions}>
+                                        <div class="slds-text-align_center slds-p-around_small">
+                                            <lightning-spinner alternative-text="Loading sessions..." size="small"></lightning-spinner>
+                                        </div>
+                                    </template>
+
+                                    <template if:false={enrollment.isLoadingSessions}>
+                                        <template if:true={enrollment.sessions}>
+                                            <template if:true={enrollment.sessions.length}>
+                                                <div class="sessions-list">
+                                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout" aria-label="Enrollment Sessions">
+                                                        <thead>
+                                                            <tr class="slds-line-height_reset">
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Session Name">Session Name</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Status">Status</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Attended Sessions">Attended Sessions</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Attendance">Attendance</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="GPA">GPA</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Total Attempted Credits">Total Attempted Credits</div>
+                                                                </th>
+                                                                <th class="" scope="col">
+                                                                    <div class="slds-truncate" title="Total Earned Credits">Total Earned Credits</div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <template for:each={enrollment.sessions} for:item="session">
+                                                                <tr key={session.id} class="slds-hint-parent">
+                                                                    <td data-label="Session Name" scope="row">
+                                                                        <div class="slds-truncate" title={session.sessionName}>{session.sessionName}</div>
+                                                                    </td>
+                                                                    <td data-label="Status">
+                                                                        <lightning-badge label={session.status}></lightning-badge>
+                                                                    </td>
+                                                                    <td data-label="Attended Sessions">
+                                                                        <div class="slds-truncate" title={session.attendedSessions}>{session.attendedSessions}</div>
+                                                                    </td>
+                                                                    <td data-label="Attendance">
+                                                                        <div class="slds-truncate" title={session.attendance}>{session.attendance}</div>
+                                                                    </td>
+                                                                    <td data-label="GPA">
+                                                                        <div class="slds-truncate" title={session.gpa}>{session.gpa}</div>
+                                                                    </td>
+                                                                    <td data-label="Total Attempted Credits">
+                                                                        <div class="slds-truncate" title={session.totalAttemptedCredits}>{session.totalAttemptedCredits}</div>
+                                                                    </td>
+                                                                    <td data-label="Total Earned Credits">
+                                                                        <div class="slds-truncate" title={session.totalEarnedCredits}>{session.totalEarnedCredits}</div>
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </template>
+                                            <template if:false={enrollment.sessions.length}>
+                                                <p class="slds-text-color_weak slds-p-around_small">No sessions found for this enrollment.</p>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </div>
+                            
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </div>
+        </template>
+    </lightning-card>
+</template>

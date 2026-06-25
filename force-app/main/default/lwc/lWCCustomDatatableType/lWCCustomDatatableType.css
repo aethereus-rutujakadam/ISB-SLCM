@@ -1,0 +1,8 @@
+.slds-popover {
+    min-width: 15rem;
+    max-width: 20rem;
+}
+
+lightning-combobox {
+    width: 100%;
+}

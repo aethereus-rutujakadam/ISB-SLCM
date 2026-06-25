@@ -1,0 +1,13 @@
+<template>
+    <!-- Raise Case Request Button -->
+    <div if:true={showRaiseCase}>
+        <div class="slds-col slds-p-horizontal_xxx-small">
+            <lightning-button
+                label="Raise Case Request"
+                variant="brand"
+                onclick={navigateToRaiseCase}
+                disabled={disableRaiseCaseButton}>
+            </lightning-button>
+        </div>
+    </div>
+</template>

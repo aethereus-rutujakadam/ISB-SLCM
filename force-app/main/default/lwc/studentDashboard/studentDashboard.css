@@ -1,0 +1,806 @@
+/* ========================================
+   Student Dashboard - Compact Design System
+   ======================================== */
+
+/* CSS Variables - Design System */
+:host {
+    /* Colors */
+    --legacy-blue: rgb(25, 40, 144);
+    --innovation-blue: rgb(36, 95, 255);
+    --future-green: rgb(128, 237, 217);
+    --slate-gray: rgb(71, 85, 105);
+    --mettle-gray: rgb(100, 116, 139);
+    --silver-gray: rgb(148, 163, 184);
+    --light-gray: rgb(226, 232, 240);
+    --ivory: rgb(255, 253, 247);
+    --white: rgb(255, 255, 255);
+    --error-red: rgb(239, 68, 68);
+    --warning-yellow: rgb(251, 191, 36);
+    --success-green: rgb(34, 197, 94);
+    
+    /* Opacity variants */
+    --innovation-light: rgba(36, 95, 255, 0.1);
+    --innovation-medium: rgba(36, 95, 255, 0.8);
+    --legacy-light: rgba(25, 40, 144, 0.1);
+    --future-light: rgba(128, 237, 217, 0.1);
+    --future-medium: rgba(128, 237, 217, 0.6);
+    
+    /* Spacing - Reduced for compact design */
+    --spacing-xs: 0.375rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.25rem;
+    
+    /* Typography */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-heading: 'Reckless', Georgia, serif;
+    
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   Container & Layout
+   ======================================== */
+
+.dashboard-container {
+    font-family: var(--font-primary);
+    background: var(--ivory);
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+}
+
+/* ========================================
+   Welcome Header - Compact
+   ======================================== */
+
+.welcome-header {
+    background: linear-gradient(135deg, var(--legacy-blue) 0%, var(--innovation-blue) 100%);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.welcome-title {
+    font-family: var(--font-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--white);
+    margin: 0 0 var(--spacing-xs) 0;
+    letter-spacing: -0.02em;
+}
+
+.welcome-subtitle {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+/* ========================================
+   Dashboard Grid - Compact
+   ======================================== */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-md);
+}
+
+/* ========================================
+   Dashboard Cards - Compact with Visual Elements
+   ======================================== */
+
+.dashboard-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--light-gray);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--innovation-blue), var(--legacy-blue));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.dashboard-card:hover::before {
+    transform: scaleX(1);
+}
+
+.card-navigation {
+    position: absolute;
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    background: var(--innovation-light);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.nav-icon {
+    --slds-c-icon-color-foreground-default: var(--innovation-blue);
+}
+
+.dashboard-card:hover .card-navigation {
+    background: var(--innovation-blue);
+    transform: translateX(3px);
+    box-shadow: var(--shadow-md);
+}
+
+.dashboard-card:hover .nav-icon {
+    --slds-c-icon-color-foreground-default: var(--white);
+}
+
+/* Card Color Variants */
+.card-purple {
+    border-top: 3px solid var(--legacy-blue);
+}
+
+.card-navy {
+    border-top: 3px solid var(--innovation-blue);
+}
+
+.card-teal {
+    border-top: 3px solid var(--future-green);
+}
+
+.card-gradient-teal {
+    border-top: 3px solid var(--future-green);
+    background: linear-gradient(135deg, var(--white) 0%, var(--future-light) 100%);
+}
+
+/* ========================================
+   Card Header - Compact
+   ======================================== */
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.card-icon {
+    --slds-c-icon-color-foreground-default: var(--innovation-blue);
+}
+
+.card-title {
+    font-family: var(--font-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--legacy-blue);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ========================================
+   Card Content - Compact
+   ======================================== */
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.card-text {
+    font-size: 0.8125rem;
+    color: var(--slate-gray);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card-text strong {
+    color: var(--mettle-gray);
+    font-weight: 500;
+}
+
+.card-text-small {
+    font-size: 0.75rem;
+    color: var(--silver-gray);
+    margin: 0;
+}
+
+/* ========================================
+   Visual Data Representation - Pie Charts
+   ======================================== */
+
+/* Attendance Circle - Pie Chart Style */
+.attendance-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--future-green) 0deg,
+        var(--future-green) calc(var(--percentage, 85) * 3.6deg),
+        var(--light-gray) calc(var(--percentage, 85) * 3.6deg)
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: var(--spacing-sm) auto;
+    box-shadow: var(--shadow-md);
+}
+
+.attendance-circle::before {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: var(--white);
+    border-radius: 50%;
+}
+
+.attendance-percentage {
+    position: relative;
+    z-index: 1;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--legacy-blue);
+    margin: 0;
+}
+
+/* Count Circle - Mini Pie Chart */
+.count-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--innovation-blue), var(--legacy-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--spacing-sm) auto;
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.count-circle::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--innovation-blue), var(--legacy-blue));
+    animation: pulse 2s ease-in-out infinite;
+    opacity: 0;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
+}
+
+.count-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
+}
+
+/* ========================================
+   Status Badge - Compact
+   ======================================== */
+
+.status-badge {
+    --slds-c-badge-color-background: var(--future-light);
+    --slds-c-badge-text-color: var(--slate-gray);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+/* ========================================
+   Modal Styling - Compact
+   ======================================== */
+
+.slds-modal__container {
+    max-width: 700px;
+}
+
+.attendance-modal-container {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.modal-header-custom {
+    background: linear-gradient(135deg, var(--legacy-blue) 0%, var(--innovation-blue) 100%);
+    padding: var(--spacing-lg);
+    border-bottom: none;
+}
+
+.slds-modal__title {
+    font-family: var(--font-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.modal-subtitle {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: var(--spacing-xs);
+}
+
+.modal-content-custom {
+    padding: var(--spacing-lg);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Custom Scrollbar */
+.modal-content-custom::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content-custom::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 3px;
+}
+
+.modal-content-custom::-webkit-scrollbar-thumb {
+    background: var(--innovation-blue);
+    border-radius: 3px;
+}
+
+.modal-footer-custom {
+    background: var(--ivory);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid var(--light-gray);
+}
+
+/* ========================================
+   Summary Banner - Compact Visual Cards
+   ======================================== */
+
+.summary-banner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.summary-item {
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.summary-item-highlight {
+    background: linear-gradient(135deg, var(--innovation-light), var(--future-light));
+    border: 2px solid var(--innovation-blue);
+}
+
+.summary-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--mettle-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.summary-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--legacy-blue);
+}
+
+/* ========================================
+   Term Groups - Compact
+   ======================================== */
+
+.term-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--legacy-light);
+    border-left: 3px solid var(--legacy-blue);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.term-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--legacy-blue);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.term-count {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--mettle-gray);
+    background: var(--white);
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+/* ========================================
+   Course List - Visual Progress Bars
+   ======================================== */
+
+.course-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.course-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.course-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--innovation-blue), var(--future-green));
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.course-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(3px);
+}
+
+.course-item:hover::before {
+    transform: scaleY(1);
+}
+
+.course-info {
+    flex: 1;
+}
+
+.course-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--slate-gray);
+    margin-bottom: var(--spacing-xs);
+}
+
+.course-details {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.75rem;
+    color: var(--mettle-gray);
+}
+
+.attendance-ratio {
+    font-weight: 500;
+    color: var(--innovation-blue);
+}
+
+.detail-separator {
+    color: var(--silver-gray);
+}
+
+.last-updated {
+    color: var(--silver-gray);
+}
+
+/* ========================================
+   Course Status - Mini Circular Progress
+   ======================================== */
+
+.course-status {
+    position: relative;
+    width: 50px;
+    height: 50px;
+}
+
+.status-excellent,
+.status-good,
+.status-warning,
+.status-critical {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+.status-excellent {
+    background: conic-gradient(
+        var(--success-green) 0deg,
+        var(--success-green) calc(var(--percentage, 95) * 3.6deg),
+        var(--light-gray) calc(var(--percentage, 95) * 3.6deg)
+    );
+}
+
+.status-good {
+    background: conic-gradient(
+        var(--future-green) 0deg,
+        var(--future-green) calc(var(--percentage, 80) * 3.6deg),
+        var(--light-gray) calc(var(--percentage, 80) * 3.6deg)
+    );
+}
+
+.status-warning {
+    background: conic-gradient(
+        var(--warning-yellow) 0deg,
+        var(--warning-yellow) calc(var(--percentage, 70) * 3.6deg),
+        var(--light-gray) calc(var(--percentage, 70) * 3.6deg)
+    );
+}
+
+.status-critical {
+    background: conic-gradient(
+        var(--error-red) 0deg,
+        var(--error-red) calc(var(--percentage, 60) * 3.6deg),
+        var(--light-gray) calc(var(--percentage, 60) * 3.6deg)
+    );
+}
+
+.status-excellent::before,
+.status-good::before,
+.status-warning::before,
+.status-critical::before {
+    content: '';
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    background: var(--white);
+    border-radius: 50%;
+}
+
+.status-percentage {
+    position: relative;
+    z-index: 1;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--slate-gray);
+}
+
+/* ========================================
+   Empty State
+   ======================================== */
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.empty-icon {
+    --slds-c-icon-color-foreground-default: var(--silver-gray);
+    margin-bottom: var(--spacing-sm);
+}
+
+.empty-text {
+    font-size: 0.875rem;
+    color: var(--mettle-gray);
+}
+
+/* ========================================
+   Buttons - Design System Styled
+   ======================================== */
+
+.slds-button_brand {
+    background: linear-gradient(135deg, var(--innovation-blue), var(--legacy-blue));
+    border: none;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.slds-button_brand:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.slds-button_neutral {
+    background: var(--white);
+    border: 2px solid var(--innovation-blue);
+    color: var(--innovation-blue);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.slds-button_neutral:hover {
+    background: var(--innovation-light);
+}
+
+/* ========================================
+   Loading State
+   ======================================== */
+
+.slds-spinner {
+    --slds-c-spinner-color-foreground-default: var(--innovation-blue);
+    --slds-c-spinner-color-brand: var(--innovation-blue);
+}
+
+/* ========================================
+   Error State
+   ======================================== */
+
+.slds-text-heading_medium {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--error-red);
+}
+
+.slds-text-body_regular {
+    font-size: 0.875rem;
+    color: var(--slate-gray);
+}
+
+/* ========================================
+   Responsive Design - Compact Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: var(--spacing-sm);
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .welcome-header {
+        padding: var(--spacing-md);
+    }
+    
+    .welcome-title {
+        font-size: 1rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .summary-banner {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .attendance-circle {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .attendance-circle::before {
+        width: 52px;
+        height: 52px;
+    }
+    
+    .attendance-percentage {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-title {
+        font-size: 0.75rem;
+    }
+    
+    .card-text {
+        font-size: 0.75rem;
+    }
+    
+    .count-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .count-number {
+        font-size: 1.25rem;
+    }
+}
+
+/* ========================================
+   Accessibility & Focus States
+   ======================================== */
+
+.dashboard-card:focus,
+.slds-button:focus {
+    outline: 2px solid var(--innovation-blue);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+    .dashboard-container {
+        background: white;
+    }
+    
+    .dashboard-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid var(--slate-gray);
+    }
+    
+    .slds-modal,
+    .slds-backdrop {
+        display: none;
+    }
+}

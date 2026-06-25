@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ISB_Fee_Payment_Installments__c</fullName>
+    <label>ISB Fee Payment Installments</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>One Installment</fullName>
+                <default>false</default>
+                <label>One Installment</label>
+            </value>
+            <value>
+                <fullName>Two Installments</fullName>
+                <default>false</default>
+                <label>Two Installments</label>
+            </value>
+            <value>
+                <fullName>One Go</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>One Go</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

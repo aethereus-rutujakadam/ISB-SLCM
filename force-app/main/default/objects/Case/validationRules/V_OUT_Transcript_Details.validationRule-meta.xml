@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_OUT_Transcript_Details</fullName>
+    <active>true</active>
+    <description>Outgoing Exchange Partner Transcript Received can be checked only when all transcript section input fields are populated. Mirrors V_INC_Transcript_Dispatch_Details for outgoing cases.</description>
+    <errorConditionFormula>RecordType.DeveloperName = &apos;Outgoing_Exchange&apos; &amp;&amp; ISCHANGED(Partner_Transcript_Received__c) &amp;&amp; Partner_Transcript_Received__c &amp;&amp; (
+ISBLANK(Transcript_Notes__c) ||
+ISBLANK(Tracking_Number__c) ||
+ISPICKVAL(Delivery_Mode__c, &apos;&apos;) ||
+ISBLANK(Dispatch_Address__c) ||
+ISPICKVAL(Dispatch_Mode__c, &apos;&apos;)
+)</errorConditionFormula>
+    <errorDisplayField>Partner_Transcript_Received__c</errorDisplayField>
+    <errorMessage>Before checking Partner Transcript Received, complete all Transcript section fields: Transcript Notes, Tracking Number, Delivery Mode, Dispatch Address, and Dispatch Mode.</errorMessage>
+</ValidationRule>

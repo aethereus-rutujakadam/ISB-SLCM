@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Closure_Notification</name>
+        <label>Send Closure Notification to ASA</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <stringValue>asa-exchange@isb.edu</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Incoming Exchange Exit Clearance Case Closed — {!$Record.CaseNumber}</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <stringValue>The Exit Clearance Case {!$Record.CaseNumber} for student {!$Record.Contact.FirstName} {!$Record.Contact.LastName} has been closed by the Registrar Office. The case record is now locked. Please contact the RO for any follow-up queries.</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+    </actionCalls>
+    <apiVersion>59.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>ISB-6097 / ISB-6148 — Record-triggered flow on Case. When Stage is changed to Closed on Incoming Exchange Exit Clearance cases, auto-stamps Closed_Date__c and sends closure notification to ASA Student Affairs.</description>
+    <label>Incoming Case Closure Flow</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Stamp_Closed_Date</name>
+        <label>Stamp Closed Date</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <connector>
+            <targetReference>Send_Closure_Notification</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Closed_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
+    <start>
+        <locationX>176</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Stamp_Closed_Date</targetReference>
+        </connector>
+        <filterFormula>ISPICKVAL({!$Record.Status}, &apos;Closed&apos;) &amp;&amp; ISCHANGED({!$Record.Status}) &amp;&amp; {!$Record.RecordType.DeveloperName} = &apos;Incoming_Exchange_Exit_Clearance&apos;</filterFormula>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

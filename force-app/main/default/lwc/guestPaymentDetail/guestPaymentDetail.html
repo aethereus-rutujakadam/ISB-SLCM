@@ -1,0 +1,278 @@
+<template>
+    <!-- Loading State -->
+    <template if:true={isLoading}>
+        <div class="payment-page-wrapper">
+            <div class="payment-loading-state">
+                <lightning-spinner alternative-text="Loading payment details..." size="large"></lightning-spinner>
+                <p class="loading-text">Fetching your payment details...</p>
+            </div>
+        </div>
+    </template>
+
+    <!-- Error State -->
+    <template if:true={error}>
+        <div class="payment-page-wrapper">
+            <div class="error-container">
+                <div class="error-icon">
+                    <lightning-icon icon-name="utility:error" alternative-text="Error"></lightning-icon>
+                </div>
+                <h2 class="error-title">Oops! Unable to Load Payment</h2>
+                <p class="error-description">{error}</p>
+                <lightning-button
+                    variant="brand"
+                    label="Go Back to Payments"
+                    icon-name="utility:back"
+                    onclick={handleBackClick}
+                    icon-position="left"
+                    class="error-button">
+                </lightning-button>
+            </div>
+        </div>
+    </template>
+
+
+    <!-- Success State - Payment Details -->
+    <template if:false={isLoading}>
+        <template if:false={error}>
+            <div class="payment-page-wrapper">
+                <!-- Header with Back Button -->
+                <div class="payment-header">
+                    <div class="header-left">
+                        <lightning-button
+                            variant="neutral"
+                            icon-name="utility:back"
+                            onclick={handleBackClick}
+                            class="back-button-header">
+                        </lightning-button>
+                        <h1 class="page-title">Payment Details</h1>
+                    </div>
+                    <span class={paymentStatusClass}>{paymentStatus}</span>
+                </div>
+
+                <!-- Main Payment Card -->
+                <div class="payment-card primary-card">
+                    <!-- Amount Section -->
+                    <div class="amount-section">
+                        <div class="amount-icon">
+                            <lightning-icon icon-name="standard:currency" alternative-text="Amount"></lightning-icon>
+                        </div>
+                        <div class="amount-content">
+                            <p class="amount-label">Amount</p>
+                            <p class="amount-value">{formattedAmount}</p>
+                        </div>
+                    </div>
+
+                    <!-- Status Banner -->
+                    <div class={statusBannerClass}>
+                        <lightning-icon icon-name={statusIconName} alternative-text="Status"></lightning-icon>
+                        <span class="status-text">{paymentStatusMessage}</span>
+                    </div>
+                </div>
+
+                <!-- Quick Info Cards -->
+                <div class="quick-info-grid">
+                    <div class="info-card">
+                        <p class="info-label">Payment Type</p>
+                        <p class="info-value">{payment.Payment_Type__c}</p>
+                    </div>
+                    <div class="info-card">
+                        <p class="info-label">Payment Mode</p>
+                        <p class="info-value">{paymentModeDisplay}</p>
+                    </div>
+                    <div class="info-card">
+                        <p class="info-label">Payment Date</p>
+                        <p class="info-value">{formattedCreatedDate}</p>
+                    </div>
+                </div>
+
+                <!-- Online Payment Details Section -->
+                <template if:true={razorpayDetails}>
+                    <div class="section-card online-payment-card">
+                        <div class="section-header online-header">
+                            <lightning-icon icon-name="standard:payment" alternative-text="Online Payment"></lightning-icon>
+                            <h2>Online Payment Details</h2>
+                        </div>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <label class="detail-label">Payment Method</label>
+                                <div class="detail-value">
+                                    {paymentMethodDisplay}
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <label class="detail-label">Razorpay Payment ID</label>
+                                <div class="detail-value tech-value">
+                                    {razorpayDetails.paymentId}
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <label class="detail-label">Order ID</label>
+                                <div class="detail-value tech-value">
+                                    {razorpayDetails.orderId}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Offline Payment Details Section -->
+                <template if:true={offlinePaymentDetails}>
+                    <div class="section-card offline-payment-card">
+                        <div class="section-header offline-header">
+                            <lightning-icon icon-name="standard:account" alternative-text="Offline Payment"></lightning-icon>
+                            <h2>Offline Payment Details ({offlinePaymentDetails.type})</h2>
+                        </div>
+
+                        <div class="details-grid">
+                            <!-- Transaction Date (shown for all modes) -->
+                            <div class="detail-item">
+                                <label class="detail-label">Transaction Date</label>
+                                <div class="detail-value">
+                                    {offlinePaymentDetails.transactionDate}
+                                </div>
+                            </div>
+
+                            <!-- Cheque/DD Mode: Bank Name + Cheque DD Number -->
+                            <template if:true={isChequeOrBankLoan}>
+                                <div class="detail-item">
+                                    <label class="detail-label">Bank Name</label>
+                                    <div class="detail-value">
+                                        {offlinePaymentDetails.bankName}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <label class="detail-label">Cheque/DD Number</label>
+                                    <div class="detail-value tech-value">
+                                        {offlinePaymentDetails.chequeNumber}
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Bank Loan Mode: Also show RTGS/NEFT -->
+                            <template if:true={isWireTransfer}>
+                                <div class="detail-item">
+                                    <label class="detail-label">Bank Name</label>
+                                    <div class="detail-value">
+                                        {offlinePaymentDetails.bankName}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <label class="detail-label">RTGS/NEFT Number</label>
+                                    <div class="detail-value tech-value">
+                                        {offlinePaymentDetails.rtgsNeftNumber}
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Corporate Sponsor Mode: Company Name + Cheque No + Bank + RTGS/NEFT -->
+                            <template if:true={isCorporateSponsor}>
+                                <div class="detail-item full-width">
+                                    <label class="detail-label">Company Name</label>
+                                    <div class="detail-value">
+                                        {offlinePaymentDetails.companyName}
+                                    </div>
+                                </div>
+
+                                <!--<div class="detail-item">
+                                    <label class="detail-label">Bank Name</label>
+                                    <div class="detail-value">
+                                        {offlinePaymentDetails.bankName}
+                                    </div>
+                                </div>-->
+
+                                <div class="detail-item">
+                                    <label class="detail-label">Cheque Number</label>
+                                    <div class="detail-value tech-value">
+                                        {offlinePaymentDetails.chequeNumber}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <label class="detail-label">RTGS/NEFT Number</label>
+                                    <div class="detail-value tech-value">
+                                        {offlinePaymentDetails.rtgsNeftNumber}
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Bank Loan & Wire Transfer: Show RTGS/NEFT -->
+                            <template if:true={hasRtgsNeft}>
+                                <template if:false={isCorporateSponsor}>
+                                    <div class="detail-item">
+                                        <label class="detail-label">RTGS/NEFT Number</label>
+                                        <div class="detail-value tech-value">
+                                            {offlinePaymentDetails.rtgsNeftNumber}
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Comments/Notes Section -->
+                <template if:true={hasComments}>
+                    <div class="section-card notes-card">
+                        <div class="section-header notes-header">
+                            <lightning-icon icon-name="utility:comments" alternative-text="Notes"></lightning-icon>
+                            <h2>Notes & Comments</h2>
+                        </div>
+                        <p class="notes-content">{comments}</p>
+                    </div>
+                </template>
+
+                <!-- Error Details Section -->
+                <template if:true={hasErrorMessage}>
+                    <div class="section-card error-details-card">
+                        <div class="section-header error-header">
+                            <lightning-icon icon-name="utility:error" alternative-text="Error"></lightning-icon>
+                            <h2>Payment Error Details</h2>
+                        </div>
+
+                        <div class="error-content">
+                            <div class="error-item">
+                                <label class="detail-label">Error Code</label>
+                                <div class="error-code">{errorCode}</div>
+                            </div>
+                            <div class="error-item">
+                                <label class="detail-label">Error Message</label>
+                                <div class="detail-value">{errorDetails}</div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Additional Info Section -->
+                <div class="section-card info-card-section">
+                    <div class="section-header info-header">
+                        <lightning-icon icon-name="utility:info" alternative-text="Information"></lightning-icon>
+                        <h2>Additional Information</h2>
+                    </div>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label class="detail-label">Record ID</label>
+                            <div class="detail-value tech-value small">
+                                {payment.Id}
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <label class="detail-label">Created Date</label>
+                            <div class="detail-value">
+                                {formattedCreatedDate}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </template>
+    </template>
+</template>

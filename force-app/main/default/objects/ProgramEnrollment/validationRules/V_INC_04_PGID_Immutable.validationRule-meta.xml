@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_INC_04_PGID_Immutable</fullName>
+    <active>true</active>
+    <description>V-INC-04: PGID cannot be changed once it has been assigned on a Program Enrollment record. Prevents accidental or intentional modification of the student identifier.</description>
+    <errorConditionFormula>NOT(ISNEW()) &amp;&amp; ISCHANGED(PGID__c) &amp;&amp; NOT(ISBLANK(PRIORVALUE(PGID__c))) &amp;&amp; $Profile.Name &lt;&gt; &apos;System Administrator&apos;</errorConditionFormula>
+    <errorMessage>Student ID (PGID) is locked and cannot be modified once assigned. Contact your system administrator if a correction is required.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,279 @@
+<template>
+    <div class="lwc-dashboard">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- HEADER                                                          -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="dashboard-header">
+            <div class="header-left">
+                <lightning-icon icon-name="standard:education" size="medium" variant="inverse"></lightning-icon>
+                <div class="header-text">
+                    <h1 class="header-title">LMS Course-Section-Students Sync Dashboard</h1>
+                    <p class="header-subtitle">Phase 1: Course Enrolment &rarr; Phase 2: Section / Group Assignment</p>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card stat-total">
+                    <div class="stat-number">{stats.totalParticipants}</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card stat-pending">
+                    <div class="stat-number">{stats.pendingParticipants}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card stat-success">
+                    <div class="stat-number">{stats.successParticipants}</div>
+                    <div class="stat-label">Synced</div>
+                </div>
+                <div class="stat-card stat-failed">
+                    <div class="stat-number">{stats.failedParticipants}</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- NAVIGATION TABS                                                 -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="nav-section">
+            <button class={pendingTabCls} onclick={handleNavToSync}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                Pending Sync
+                <span class="nav-badge badge-pending">{stats.pendingParticipants}</span>
+            </button>
+            <button class={successTabCls} onclick={handleNavToSuccess}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                Success History
+                <span class="nav-badge badge-success">{stats.successParticipants}</span>
+            </button>
+            <button class={failedTabCls} onclick={handleNavToFailed}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"/></svg>
+                Failed Records
+                <span class="nav-badge badge-failed">{stats.failedParticipants}</span>
+            </button>
+            <button class="nav-tab refresh-tab" onclick={handleRefresh}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                Refresh
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- FILTERS                                                         -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="filter-section">
+            <div class="slds-grid slds-wrap slds-gutters slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+                    <lightning-input type="search" label="Search Offerings" placeholder="Quick find..." value={searchKey} onchange={handleSearch}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Academic Year" options={yearOptions} value={year} onchange={handleYear} placeholder="All Years"></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Program" options={programOptions} value={program} onchange={handleProg} placeholder="All Programs"></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Academic Term" options={termOptions} value={term} onchange={handleTerm} placeholder="All Terms"></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Academic Session" options={sessionOptions} value={session} onchange={handleSess} placeholder="All Sessions"></lightning-combobox>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ACTION BAR  (hidden on Success History view)                   -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <template if:false={isSuccessView}>
+            <div class="action-bar">
+                <lightning-button
+                    variant="brand"
+                    label="Sync Selected Courses"
+                    icon-name="utility:send"
+                    onclick={handleBulkPush}
+                    disabled={isBulkPushDisabled}>
+                </lightning-button>
+                <template if:true={isBulkPushDisabled}>
+                    <span class="action-hint">&#9432; Select one or more course offerings below, then click Sync</span>
+                </template>
+                <template if:false={isBulkPushDisabled}>
+                    <span class="action-hint selected-hint">&#10003; {selectedOfferings.length} course(s) selected for two-phase sync</span>
+                </template>
+                <div class="phase-legend">
+                    <span class="phase-badge phase1">Phase 1: Course Enrolment</span>
+                    <span class="phase-arrow">&#8594;</span>
+                    <span class="phase-badge phase2">Phase 2: Section Assignment</span>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- VIEW HEADING                                                    -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="table-heading-bar">
+            <div class="table-heading-left">
+                <span class="table-view-label">{tableHeading}</span>
+                <template if:true={hasRows}>
+                    <span class="table-count">{rangeText}</span>
+                </template>
+            </div>
+            <div class="table-heading-right">
+                <template if:true={hasRows}>
+                    <lightning-button-group>
+                        <lightning-button-icon icon-name="utility:chevronleft" variant="border-filled" onclick={handlePrev} disabled={isPrevDisabled} alternative-text="Previous"></lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:chevronright" variant="border-filled" onclick={handleNext} disabled={isNextDisabled} alternative-text="Next"></lightning-button-icon>
+                    </lightning-button-group>
+                </template>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- MAIN TABLE                                                      -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="table-section">
+            <template if:true={isLoading}>
+                <div class="spinner-overlay">
+                    <lightning-spinner alternative-text="Loading..." size="medium" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={hasRows}>
+                <lightning-datatable
+                    key-field="id"
+                    data={rows}
+                    columns={currentColumns}
+                    selected-rows={selectedRowKeys}
+                    onrowselection={handleSelection}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column={isSuccessView}>
+                </lightning-datatable>
+            </template>
+
+            <template if:false={hasRows}>
+                <div class="empty-state">
+                    <div class="empty-icon-wrap">
+                        <lightning-icon icon-name="utility:inbox" size="large"></lightning-icon>
+                    </div>
+                    <p class="empty-title">{emptyTitle}</p>
+                    <p class="empty-sub">{emptySubtitle}</p>
+                </div>
+            </template>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- PARTICIPANT DETAIL MODAL                                        -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <template if:true={showModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container">
+
+                    <!-- Modal Header -->
+                    <header class={modalHeaderClass}>
+                        <lightning-button-icon
+                            icon-name="utility:close"
+                            variant="bare-inverse"
+                            class="slds-modal__close"
+                            onclick={closeModal}
+                            alternative-text="Close">
+                        </lightning-button-icon>
+                        <div class="modal-header-body">
+                            <lightning-icon icon-name="standard:contact" size="small" variant="inverse" class="slds-m-right_small"></lightning-icon>
+                            <div>
+                                <h2 class="slds-text-heading_medium slds-text-color_inverse">{modalTitle}</h2>
+                                <p class="modal-subtitle">{modalSubtitle}</p>
+                            </div>
+                        </div>
+                        <!-- Modal Stats Strip -->
+                        <div class="modal-stats-strip">
+                            <span class="modal-stat">
+                                <span class="modal-stat-num">{modalTotalCount}</span>
+                                <span class="modal-stat-lbl">Total</span>
+                            </span>
+                            <template if:false={isSuccessView}>
+                                <span class="modal-stat modal-stat-pending">
+                                    <span class="modal-stat-num">{modalPendingCount}</span>
+                                    <span class="modal-stat-lbl">Pending</span>
+                                </span>
+                                <span class="modal-stat modal-stat-failed">
+                                    <span class="modal-stat-num">{modalFailedCount}</span>
+                                    <span class="modal-stat-lbl">Failed</span>
+                                </span>
+                            </template>
+                            <template if:true={isSuccessView}>
+                                <span class="modal-stat modal-stat-success">
+                                    <span class="modal-stat-num">{modalSuccessCount}</span>
+                                    <span class="modal-stat-lbl">Synced</span>
+                                </span>
+                            </template>
+                        </div>
+                    </header>
+
+                    <!-- Modal Content -->
+                    <div class="slds-modal__content slds-is-relative modal-body">
+                        <template if:true={isModalLoading}>
+                            <lightning-spinner alternative-text="Loading participants..." variant="brand"></lightning-spinner>
+                        </template>
+
+                        <template if:true={hasParticipants}>
+                            <div class="slds-scrollable_y" style="max-height: 440px;">
+                                <lightning-datatable
+                                    data-id="partTable"
+                                    key-field="id"
+                                    data={participants}
+                                    columns={participantColumns}
+                                    onrowselection={handleParticipantSelection}
+                                    hide-checkbox-column={isSuccessView}>
+                                </lightning-datatable>
+                            </div>
+                        </template>
+
+                        <template if:false={hasParticipants}>
+                            <template if:false={isModalLoading}>
+                                <div class="empty-state slds-p-around_large">
+                                    <lightning-icon icon-name="utility:inbox" size="medium"></lightning-icon>
+                                    <p class="empty-title">No students found in this view.</p>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <footer class="slds-modal__footer slds-grid slds-grid_align-spread">
+                        <div class="footer-left">
+                            <template if:false={isSuccessView}>
+                                <lightning-button
+                                    label="Sync All Pending"
+                                    onclick={handleSyncAllCOPs}
+                                    variant="neutral"
+                                    icon-name="utility:change_record_type"
+                                    class="slds-m-right_x-small">
+                                </lightning-button>
+                            </template>
+                            <template if:true={isFailedView}>
+                                <lightning-button
+                                    label="Retry All Failed"
+                                    onclick={handleRetryAllFailed}
+                                    variant="destructive-text"
+                                    icon-name="utility:refresh">
+                                </lightning-button>
+                            </template>
+                        </div>
+                        <div class="footer-right">
+                            <lightning-button label="Close" onclick={closeModal} variant="neutral" class="slds-m-right_x-small"></lightning-button>
+                            <template if:false={isSuccessView}>
+                                <lightning-button
+                                    label="Sync Selected Students"
+                                    variant="brand"
+                                    icon-name="utility:upload"
+                                    onclick={handleSyncParticipants}
+                                    disabled={isSyncButtonDisabled}>
+                                </lightning-button>
+                            </template>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </div>
+</template>

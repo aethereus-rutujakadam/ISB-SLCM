@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_OUT_06_Exit_Dates_Required</fullName>
+    <active>true</active>
+    <description>V-OUT-06: Requires both Planned Exit Date and Confirmed Exit Date to be populated before the case can progress past ASA In Progress stage.</description>
+    <errorConditionFormula>AND(
+    RecordType.DeveloperName = &apos;Outgoing_Exchange&apos;,
+    NOT(ISPICKVAL(Status, &apos;ASA In Progress&apos;)),
+    OR(ISBLANK(Planned_Exit_Date__c), ISBLANK(Confirmed_Exit_Date__c))
+)</errorConditionFormula>
+    <errorDisplayField>Planned_Exit_Date__c</errorDisplayField>
+    <errorMessage>Both Planned Exit Date and Confirmed Exit Date are required before the case can progress.</errorMessage>
+</ValidationRule>

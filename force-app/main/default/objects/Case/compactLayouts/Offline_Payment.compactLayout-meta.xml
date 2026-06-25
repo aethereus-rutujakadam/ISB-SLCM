@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Offline_Payment</fullName>
+    <fields>Status</fields>
+    <fields>ISB_Installment__c</fields>
+    <fields>ISB_Payment__c</fields>
+    <label>Offline Payment</label>
+</CompactLayout>

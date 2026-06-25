@@ -1,0 +1,60 @@
+:host {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+}
+
+.slds-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.slds-page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.slds-page-header h1 {
+    color: white;
+    margin: 0;
+}
+
+.slds-page-header p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ==========================================================================
+   Mobile Responsiveness
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+    :host {
+        width: 100%; /* On mobile, force 100% to avoid overflow issues */
+        min-width: 0;
+    }
+    
+    .slds-page-header {
+        padding: 1rem;
+        border-radius: 0;
+    }
+
+    .slds-text-heading_large {
+        font-size: 1.25rem; /* Reduce heading size */
+    }
+    
+    .slds-p-around_medium {
+        padding: 0.75rem; /* Reduce padding around container */
+    }
+    
+    .slds-card {
+        box-shadow: none; /* Remove shadow on mobile for flatter look */
+        border: none;
+    }
+
+    /* Stack grid items if any */
+    .slds-col {
+        width: 100%;
+        display: block;
+    }
+}

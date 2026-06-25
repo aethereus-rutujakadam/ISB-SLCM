@@ -1,0 +1,16 @@
+<template>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">
+            <abbr class="slds-required" title="required">*</abbr>
+            Email Body
+        </label>
+        <div class="slds-form-element__control">
+            <lightning-input-rich-text
+                value={_value}
+                onchange={handleChange}
+                placeholder="Edit email body..."
+                formats='["font", "size", "bold", "italic", "underline", "strike", "list", "indent", "align", "link", "image", "clean", "table", "header", "color", "background"]'>
+            </lightning-input-rich-text>
+        </div>
+    </div>
+</template>

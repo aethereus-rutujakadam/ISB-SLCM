@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Withdrawal_Status__c</fullName>
+    <label>Withdrawal Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Legal Issues</fullName>
+                <default>false</default>
+                <label>Legal Issues</label>
+            </value>
+            <value>
+                <fullName>Assesment failure</fullName>
+                <default>false</default>
+                <label>Assesment failure</label>
+            </value>
+            <value>
+                <fullName>Non compliance</fullName>
+                <default>false</default>
+                <label>Non compliance</label>
+            </value>
+            <value>
+                <fullName>Academic Difficulty</fullName>
+                <default>false</default>
+                <label>Academic Difficulty</label>
+            </value>
+            <value>
+                <fullName>Medical Reasons</fullName>
+                <default>false</default>
+                <label>Medical Reasons</label>
+            </value>
+            <value>
+                <fullName>Financial Reasons</fullName>
+                <default>false</default>
+                <label>Financial Reasons</label>
+            </value>
+            <value>
+                <fullName>Policy Voilation</fullName>
+                <default>false</default>
+                <label>Policy Voilation</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

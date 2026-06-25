@@ -1,0 +1,1269 @@
+﻿<template>
+    <div class="portal-root">
+
+        <!-- COMPACT SLDS PAGE HEADER -->
+        <div class="slds-page-header portal-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="standard:education" size="medium"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h1 class="slds-page-header__title">Student Advising Portal</h1>
+                            <p class="slds-text-body_small slds-text-color_weak">Manage your advising appointments, tasks, and workshops.</p>
+                        </div>
+                    </div>
+                </div>
+                <template if:true={directoryData.primaryAdvisor}>
+                    <div class="slds-page-header__col-actions">
+                        <div class="slds-page-header__controls">
+                            <div class="slds-page-header__control">
+                                <p class="slds-text-body_small slds-text-color_weak">Primary Advisor:&nbsp;<strong>{directoryData.primaryAdvisor.Name}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- MAIN TAB NAVIGATION -->
+        <div class="slds-tabs_default portal-tabs">
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <li class="slds-tabs_default__item portal-tab-item" role="presentation">
+                    <button class={supportTabClass} data-tab="support" onclick={handleTabSwitch} role="tab">
+                        <lightning-icon icon-name="standard:team_member" size="x-small"></lightning-icon>
+                        <span>Support Team</span>
+                    </button>
+                </li>
+                <li class="slds-tabs_default__item portal-tab-item" role="presentation">
+                    <button class={appointmentsTabClass} data-tab="appointments" onclick={handleTabSwitch} role="tab">
+                        <lightning-icon icon-name="standard:event" size="x-small"></lightning-icon>
+                        <span>My Appointments</span>
+                    </button>
+                </li>
+                <li class="slds-tabs_default__item portal-tab-item" role="presentation">
+                    <button class={tasksTabClass} data-tab="tasks" onclick={handleTabSwitch} role="tab">
+                        <lightning-icon icon-name="standard:task" size="x-small"></lightning-icon>
+                        <span>My Advising Tasks</span>
+                    </button>
+                </li>
+                <li class="slds-tabs_default__item portal-tab-item" role="presentation">
+                    <button class={workshopsTabClass} data-tab="workshops" onclick={handleTabSwitch} role="tab">
+                        <lightning-icon icon-name="standard:education" size="x-small"></lightning-icon>
+                        <span>Workshops</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ===== SUPPORT TEAM TAB ===== -->
+        <template if:true={isSupportTab}>
+
+            <template if:true={isLoading}>
+                <div class="loader-wrapper">
+                    <div class="loader-ring"></div>
+                    <p class="loader-text">Loading your support team…</p>
+                </div>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="alert alert-error">
+                    <lightning-icon icon-name="utility:error" size="x-small"></lightning-icon>
+                    <span>{errorMessage}</span>
+                </div>
+            </template>
+
+            <template if:false={isLoading}>
+                <template if:true={directoryData.primaryAdvisor}>
+                    <div class="slds-m-top_medium">
+                        <lightning-card title="Your Primary Advisor">
+                            <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <span class="slds-avatar slds-avatar_medium">
+                                            <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
+                                        </span>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <p class="slds-text-heading_small slds-m-bottom_xx-small">
+                                            <button class="slds-button slds-button_reset advisor-name-btn"
+                                                data-id={directoryData.primaryAdvisor.Id}
+                                                onclick={handleViewProfile}>
+                                                {directoryData.primaryAdvisor.Name}
+                                            </button>
+                                        </p>
+                                        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">Primary Academic Advisor</p>
+                                        <div class="slds-grid slds-gutters_xx-small slds-wrap slds-m-top_xx-small">
+                                            <template if:true={directoryData.primaryAdvisor.Primary_Campus__r}>
+                                                <div class="slds-col slds-size_auto">
+                                                    <span class="slds-badge">{directoryData.primaryAdvisor.Primary_Campus__r.Name}</span>
+                                                </div>
+                                            </template>
+                                            <template if:true={directoryData.primaryAdvisor.Email}>
+                                                <div class="slds-col slds-size_auto slds-m-left_x-small">
+                                                    <span class="slds-text-body_small slds-text-color_weak">{directoryData.primaryAdvisor.Email}</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <template if:true={directoryData.primaryAdvisor.Support_Description__c}>
+                                            <p class="slds-text-body_small slds-m-top_xx-small">{directoryData.primaryAdvisor.Support_Description__c}</p>
+                                        </template>
+                                    </div>
+                                    <div class="slds-media__figure slds-media__figure_reverse">
+                                        <button class="slds-button slds-button_brand" onclick={handleOpenBookingModal}>
+                                            Request Appointment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning-card>
+                    </div>
+                </template>
+                <template if:false={directoryData.primaryAdvisor}>
+                    <div class="slds-m-top_medium">
+                        <div class="slds-box slds-text-align_center slds-p-around_large">
+                            <lightning-icon icon-name="standard:user" size="medium"></lightning-icon>
+                            <p class="slds-text-body_regular slds-m-top_small slds-text-color_weak">No primary advisor assigned.</p>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+        </template>
+        <!-- END SUPPORT TEAM TAB -->
+
+        <!-- ===== MY APPOINTMENTS TAB ===== -->
+        <template if:true={isAppointmentsTab}>
+
+            <template if:true={isAppointmentsLoading}>
+                <div class="loader-wrapper">
+                    <div class="loader-ring"></div>
+                    <p class="loader-text">Loading your appointments…</p>
+                </div>
+            </template>
+
+            <template if:false={isAppointmentsLoading}>
+
+                <template if:true={isAppointmentsError}>
+                    <div class="alert alert-error">
+                        <lightning-icon icon-name="utility:error" size="small" variant="error"
+                            class="slds-m-right_x-small"></lightning-icon>
+                        <span>{appointmentsErrorMessage}</span>
+                    </div>
+                </template>
+
+                <template if:false={isAppointmentsError}>
+                    <div class="slds-m-top_medium">
+                        <div class="filter-bar">
+                            <button class={allFilterClass}       data-filter="All"       onclick={handleFilterChange}>All</button>
+                            <button class={pendingFilterClass}   data-filter="Pending"   onclick={handleFilterChange}>Pending</button>
+                            <button class={approvedFilterClass}  data-filter="Approved"  onclick={handleFilterChange}>Approved</button>
+                            <button class={rejectedFilterClass}  data-filter="Rejected"  onclick={handleFilterChange}>Rejected</button>
+                            <button class={completedFilterClass} data-filter="Completed" onclick={handleFilterChange}>Completed</button>
+                        </div>
+
+                        <div class="appt-layout">
+                            <div class="appt-list-panel">
+                                <template if:true={hasFilteredAppointments}>
+                                    <template for:each={filteredAppointments} for:item="appt">
+                                        <div key={appt.id} class={appt.rowClass} data-id={appt.id} onclick={handleAppointmentSelect}>
+                                            <div class="appt-row-top">
+                                                <div class="appt-row-date">
+                                                    <template if:true={appt.startDateTime}>
+                                                        <lightning-formatted-date-time value={appt.startDateTime} year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
+                                                    </template>
+                                                </div>
+                                                <span class={appt.statusClass}>{appt.status}</span>
+                                            </div>
+                                            <div class="appt-row-bottom">
+                                                <span class="appt-row-advisor">{appt.advisorName}</span>
+                                                <span class="appt-row-type">{appt.requestType}</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={hasFilteredAppointments}>
+                                    <div class="appt-empty-state">
+                                        <lightning-icon icon-name="standard:event" size="medium"></lightning-icon>
+                                        <p>No appointments match the selected filter.</p>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="appt-detail-panel">
+                                <template if:true={selectedAppointment}>
+                                    <div class="detail-panel-header">
+                                        <span class={selectedAppointment.statusClass}>{selectedAppointment.status}</span>
+                                        <h3 class="detail-panel-title">{selectedAppointment.name}</h3>
+                                    </div>
+                                    <div class="detail-grid">
+                                        <div class="detail-field">
+                                            <span class="detail-field-label">Advisor</span>
+                                            <span class="detail-field-value">{selectedAppointment.advisorName}</span>
+                                        </div>
+                                        <div class="detail-field">
+                                            <span class="detail-field-label">Date &amp; Time</span>
+                                            <span class="detail-field-value">
+                                                <template if:true={selectedAppointment.startDateTime}>
+                                                    <lightning-formatted-date-time value={selectedAppointment.startDateTime} year="numeric" month="long" day="2-digit" hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
+                                                </template>
+                                            </span>
+                                        </div>
+                                        <div class="detail-field">
+                                            <span class="detail-field-label">Duration</span>
+                                            <span class="detail-field-value">{selectedAppointment.durationMinutes} minutes</span>
+                                        </div>
+                                        <div class="detail-field">
+                                            <span class="detail-field-label">Request Type</span>
+                                            <span class="detail-field-value">{selectedAppointment.requestType}</span>
+                                        </div>
+                                        <template if:true={selectedAppointment.mode}>
+                                            <div class="detail-field">
+                                                <span class="detail-field-label">Meeting Mode</span>
+                                                <span class="detail-field-value">{selectedAppointment.mode}</span>
+                                            </div>
+                                        </template>
+                                        <div class="detail-field detail-field--full">
+                                            <span class="detail-field-label">Reason</span>
+                                            <span class="detail-field-value">{selectedAppointment.reason}</span>
+                                        </div>
+                                        <template if:true={selectedAppointment.isRejected}>
+                                            <div class="detail-field detail-field--full detail-field--rejection">
+                                                <span class="detail-field-label">Rejection Reason</span>
+                                                <span class="detail-field-value">
+                                                    <template if:true={selectedAppointment.rejectionReason}>{selectedAppointment.rejectionReason}</template>
+                                                    <template if:false={selectedAppointment.rejectionReason}><em>No reason provided</em></template>
+                                                </span>
+                                            </div>
+                                        </template>
+                                        <template if:true={selectedAppointment.isCancelled}>
+                                            <div class="detail-field detail-field--full detail-field--cancelled">
+                                                <span class="detail-field-label">Meeting Cancelled</span>
+                                                <span class="detail-field-value">
+                                                    <template if:true={selectedAppointment.notesAndRemarks}>{selectedAppointment.notesAndRemarks}</template>
+                                                    <template if:false={selectedAppointment.notesAndRemarks}><em>This meeting was cancelled by the advisor.</em></template>
+                                                </span>
+                                            </div>
+                                        </template>
+                                        <template if:true={selectedAppointment.isApproved}>
+                                            <div class="detail-field detail-field--full">
+                                                <span class="detail-field-label">Calendar Event</span>
+                                                <span class="detail-field-value detail-field-value--success">Event created and synced to Outlook</span>
+                                            </div>
+                                        </template>
+                                        <div class="detail-field">
+                                            <span class="detail-field-label">Submitted On</span>
+                                            <span class="detail-field-value">
+                                                <template if:true={selectedAppointment.createdDate}>
+                                                    <lightning-formatted-date-time value={selectedAppointment.createdDate} year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                                                </template>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <template if:true={selectedAppointment.canBookAgain}>
+                                        <div class="detail-panel-action">
+                                            <button class="slds-button slds-button_brand" onclick={handleBookAgain}>Book Again</button>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={selectedAppointment}>
+                                    <div class="detail-panel-placeholder">
+                                        <lightning-icon icon-name="utility:event" size="large"></lightning-icon>
+                                        <p>Select an appointment to view its details.</p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template><!-- end if:false={isAppointmentsError} -->
+
+            </template>
+        </template>
+        <!-- END MY APPOINTMENTS TAB -->
+
+        <!-- ===== MY ADVISING TASKS TAB ===== -->
+        <template if:true={isTasksTab}>
+
+            <template if:true={isChecklistLoading}>
+                <div class="loader-wrapper">
+                    <div class="loader-ring"></div>
+                    <p class="loader-text">Loading your advising tasks…</p>
+                </div>
+            </template>
+
+            <template if:false={isChecklistLoading}>
+
+                <template if:true={hasChecklistError}>
+                    <div class="alert alert-error">
+                        <lightning-icon icon-name="utility:error" size="x-small"></lightning-icon>
+                        <span>{checklistErrorMessage}</span>
+                    </div>
+                </template>
+
+                <template if:false={hasChecklistError}>
+
+                    <template if:true={hasChecklists}>
+                        <div class="slds-m-top_medium checklists-container">
+                            <template for:each={checklistData} for:item="checklist">
+                                <div key={checklist.checklistId} class="checklist-card slds-m-bottom_small">
+
+                                    <button class="checklist-header" data-id={checklist.checklistId} onclick={handleToggleChecklist}>
+                                        <div class="checklist-header-left">
+                                            <div class="chevron-icon">
+                                                <lightning-icon icon-name={checklist.chevronIcon} size="x-small"></lightning-icon>
+                                            </div>
+                                            <div class="checklist-title-block">
+                                                <h3 class="checklist-name">{checklist.checklistName}</h3>
+                                                <p class="checklist-type-sub">{checklist.checklistType}</p>
+                                                <div class="checklist-meta">
+                                                    <span class={checklist.statusClass}>{checklist.status}</span>
+                                                    <span class="meta-divider">•</span>
+                                                    <span class="completion-text">{checklist.completionPercentage}% Complete</span>
+                                                    <template if:true={checklist.totalItems}>
+                                                        <span class="meta-divider">•</span>
+                                                        <span class="completion-text">{checklist.completedItems} of {checklist.totalItems} tasks done</span>
+                                                    </template>
+                                                    <template if:true={checklist.overdueCount}>
+                                                        <span class="meta-divider">•</span>
+                                                        <span class="overdue-count-badge">{checklist.overdueCount} overdue</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="checklist-header-right">
+                                            <div class="checklist-progress-wrap">
+                                                <div class="checklist-progress-label">{checklist.completionPercentage}%</div>
+                                                <div class="slds-progress-bar" role="progressbar">
+                                                    <span class={checklist.progressBarClass} style={checklist.progressBarStyle}></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    <template if:true={checklist.isExpanded}>
+                                        <div class="checklist-body">
+                                            <template if:true={checklist.items.length}>
+                                                <div class="tasks-table-container">
+                                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered tasks-table">
+                                                        <thead>
+                                                            <tr class="slds-line-height_reset">
+                                                                <th scope="col"><div class="slds-truncate">Subject</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Description</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Due Date</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Priority</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Status</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Comments</div></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <template for:each={checklist.items} for:item="item">
+                                                                <tr key={item.itemId} class={item.rowClass} data-id={item.itemId} onclick={handleRowClick}>
+                                                                    <td>
+                                                                        <div class="cell-content cell-subject">
+                                                                            {item.subject}
+                                                                            <template if:true={item.isOverdue}>
+                                                                                <span class="overdue-flag">OVERDUE</span>
+                                                                            </template>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td><div class="cell-content cell-description" title={item.description}>{item.description}</div></td>
+                                                                    <td>
+                                                                        <div class="cell-content">
+                                                                            <template if:true={item.dueDate}>
+                                                                                <lightning-formatted-date-time value={item.dueDate} year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                                                                            </template>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <template if:true={item.priority}>
+                                                                            <span class={item.priorityClass}>{item.priority}</span>
+                                                                        </template>
+                                                                    </td>
+                                                                    <td><span class={item.statusClass}>{item.status}</span></td>
+                                                                    <td><div class="cell-content cell-comments" title={item.comments}>{item.comments}</div></td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template if:false={hasChecklists}>
+                        <div class="empty-state slds-m-top_medium">
+                            <div class="empty-state-icon">
+                                <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                            </div>
+                            <h3 class="empty-state-title">No Advising Tasks Found</h3>
+                            <p class="empty-state-message">You don't have any advising tasks assigned at this time.</p>
+                        </div>
+                    </template>
+
+                </template>
+
+            </template>
+
+        </template>
+        <!-- END MY ADVISING TASKS TAB -->
+
+        <!-- ===== BOOKING MODAL ===== -->
+        <template if:true={isBookingModalOpen}>
+            <div class="slds-backdrop slds-backdrop_open" onclick={handleCloseBookingModal}></div>
+            <div role="dialog" aria-modal="true" class="slds-modal slds-fade-in-open booking-modal--wide">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            onclick={handleCloseBookingModal} title="Close">
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <p class="slds-text-title_caps slds-m-bottom_x-small">Appointment Request</p>
+                        <h2 class="slds-text-heading_medium">Book with Your Advisor</h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium">
+
+                        <div class="booking-advisor-chip slds-m-bottom_medium">
+                            <div class="ba-icon"><lightning-icon icon-name="standard:user" size="x-small"></lightning-icon></div>
+                            <span class="ba-name">{advisorDisplayName}</span>
+                            <span class="ba-label">Primary Advisor</span>
+                        </div>
+
+                        <!-- Section 1: Meeting details (always visible) -->
+                        <div class="booking-section-label">Meeting Details</div>
+                        <div class="slds-grid slds-gutters_small slds-wrap slds-m-bottom_medium">
+
+                            <div class="slds-col slds-size_1-of-2 slds-small-size_1-of-1">
+                                <lightning-input type="text" label="Meeting Title" required
+                                    value={formTitle} onchange={handleFormChange}
+                                    data-field="title" maxlength="80"
+                                    placeholder="e.g. CGPA Review – Semester 2">
+                                </lightning-input>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-2 slds-small-size_1-of-1">
+                                <lightning-combobox label="Request Type" required
+                                    placeholder="-- Select type --"
+                                    options={typeOptions} value={formType}
+                                    onchange={handleFormChange} data-field="type">
+                                </lightning-combobox>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-2 slds-small-size_1-of-1 slds-m-top_x-small">
+                                <lightning-combobox label="Meeting Mode"
+                                    placeholder="-- Select mode --"
+                                    options={modeOptions} value={formMode}
+                                    onchange={handleFormChange} data-field="mode">
+                                </lightning-combobox>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-1 slds-m-top_x-small">
+                                <lightning-textarea label="Reason for Appointment" required
+                                    value={formReason} onchange={handleFormChange}
+                                    data-field="reason" max-length="500"
+                                    placeholder="Briefly describe the purpose of this meeting…">
+                                </lightning-textarea>
+                            </div>
+
+                        </div>
+
+                        <!-- Section 2: Date and time slot -->
+                        <div class="booking-section-label">Select Date &amp; Time</div>
+                        <div class="slds-grid slds-gutters_small slds-wrap">
+
+                            <div class="slds-col slds-size_1-of-2 slds-small-size_1-of-1">
+                                <lightning-input type="date" label="Preferred Date" required
+                                    value={selectedDate} min={minDate} max={maxDate}
+                                    onchange={handleDateChange} data-field="date">
+                                </lightning-input>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-2 slds-small-size_1-of-1">
+                                <template if:false={selectedDate}>
+                                    <div class="booking-slot-placeholder">Select a date to see available slots.</div>
+                                </template>
+                                <template if:true={selectedDate}>
+                                    <template if:true={isSlotsLoading}>
+                                        <div class="slot-loading slds-m-top_large">
+                                            <div class="loader-ring loader-ring--sm"></div>
+                                            <span>Checking availability…</span>
+                                        </div>
+                                    </template>
+                                    <template if:false={isSlotsLoading}>
+                                        <template if:true={noSlotsAvailable}>
+                                            <div class="alert alert-warning slds-m-top_small">
+                                                <lightning-icon icon-name="utility:info" size="x-small"></lightning-icon>
+                                                <span>No available slots on this date. Please choose another day.</span>
+                                            </div>
+                                        </template>
+                                        <template if:false={noSlotsAvailable}>
+                                            <lightning-combobox
+                                                label="Available Time Slot" required
+                                                placeholder="-- Select a time slot --"
+                                                options={slotOptions}
+                                                value={selectedSlotISO}
+                                                onchange={handleSlotPicklistChange}>
+                                            </lightning-combobox>
+                                        </template>
+                                    </template>
+                                </template>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleCloseBookingModal} disabled={isSubmitting}>Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={handleSubmitRequest} disabled={isSubmitDisabled}>
+                            <template if:true={isSubmitting}>Submitting…</template>
+                            <template if:false={isSubmitting}>Submit Request</template>
+                        </button>
+                    </footer>
+                </div>
+            </div>
+        </template>
+
+        <!-- ===== PROFILE MODAL ===== -->
+        <template if:true={isProfileModalOpen}>
+            <div class="slds-backdrop slds-backdrop_open" onclick={handleCloseProfileModal}></div>
+            <div role="dialog" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            onclick={handleCloseProfileModal} title="Close">
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <p class="slds-text-title_caps slds-m-bottom_x-small">Staff Profile</p>
+                        <h2 class="slds-text-heading_medium">{profileContactName}</h2>
+                        <span class="slds-badge slds-m-top_xx-small">{profileContactRole}</span>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="profile-view-container">
+                            <div class="profile-header-large">
+                                <span class="slds-avatar slds-avatar_large">
+                                    <lightning-icon icon-name="standard:user" size="large"></lightning-icon>
+                                </span>
+                            </div>
+                            <div class="profile-details-list slds-m-top_medium">
+                                <template if:true={profileContactData.Primary_Campus__r}>
+                                    <div class="profile-detail-item">
+                                        <lightning-icon icon-name="utility:location" size="x-small" class="detail-icon-slds"></lightning-icon>
+                                        <div class="detail-text">
+                                            <span class="detail-label">Location</span>
+                                            <span class="detail-val">{profileContactData.Primary_Campus__r.Name}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={profileContactData.Support_Description__c}>
+                                    <div class="profile-detail-item">
+                                        <lightning-icon icon-name="utility:target" size="x-small" class="detail-icon-slds"></lightning-icon>
+                                        <div class="detail-text">
+                                            <span class="detail-label">Focus Area</span>
+                                            <span class="detail-val">{profileContactData.Support_Description__c}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={profileContactData.Courses_Supported__c}>
+                                    <div class="profile-detail-item">
+                                        <lightning-icon icon-name="utility:knowledge_base" size="x-small" class="detail-icon-slds"></lightning-icon>
+                                        <div class="detail-text">
+                                            <span class="detail-label">Courses Supported</span>
+                                            <span class="detail-val">{profileContactData.Courses_Supported__c}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={profileContactData.Expertise__c}>
+                                    <div class="profile-detail-item">
+                                        <lightning-icon icon-name="utility:apex_plugin" size="x-small" class="detail-icon-slds"></lightning-icon>
+                                        <div class="detail-text">
+                                            <span class="detail-label">Expertise</span>
+                                            <span class="detail-val">{profileContactData.Expertise__c}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleCloseProfileModal}>Close</button>
+                    </footer>
+                </div>
+            </div>
+        </template>
+
+        <!-- ===== TASK DETAIL MODAL ===== -->
+        <template if:true={isTaskModalOpen}>
+            <div class="slds-backdrop slds-backdrop_open" onclick={handleCloseTaskModal}></div>
+            <div role="dialog" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            onclick={handleCloseTaskModal} title="Close">
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <p class="slds-text-title_caps slds-m-bottom_x-small">Task Details</p>
+                        <h2 class="slds-text-heading_medium">{selectedTask.subject}</h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium">
+
+                        <!-- Meta row: status, priority, due date, role -->
+                        <div class="task-meta-row slds-m-bottom_medium">
+                            <div class="task-meta-item">
+                                <span class="task-meta-label">Status</span>
+                                <span class={selectedTask.statusClass}>{selectedTask.status}</span>
+                            </div>
+                            <div class="task-meta-item">
+                                <span class="task-meta-label">Priority</span>
+                                <template if:true={selectedTask.priority}>
+                                    <span class={selectedTask.priorityClass}>{selectedTask.priority}</span>
+                                </template>
+                                <template if:false={selectedTask.priority}>
+                                    <span class="task-meta-val">—</span>
+                                </template>
+                            </div>
+                            <div class="task-meta-item">
+                                <span class="task-meta-label">Due Date</span>
+                                <span class="task-meta-val">
+                                    <template if:true={selectedTask.dueDate}>
+                                        <lightning-formatted-date-time value={selectedTask.dueDate} year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                                    </template>
+                                    <template if:false={selectedTask.dueDate}>—</template>
+                                </span>
+                            </div>
+                            <div class="task-meta-item">
+                                <span class="task-meta-label">Action By</span>
+                                <template if:true={selectedTask.role}>
+                                    <span class="task-meta-val">{selectedTask.role}</span>
+                                </template>
+                                <template if:false={selectedTask.role}>
+                                    <span class="task-meta-val">—</span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="task-detail-section">
+                            <p class="task-detail-section-label">Description</p>
+                            <template if:true={selectedTask.description}>
+                                <p class="task-detail-section-value">{selectedTask.description}</p>
+                            </template>
+                            <template if:false={selectedTask.description}>
+                                <p class="task-detail-section-value">No description provided.</p>
+                            </template>
+                        </div>
+
+                        <!-- Existing comments (read-only display) -->
+                        <div class="task-detail-section">
+                            <p class="task-detail-section-label">Task Comments</p>
+                            <template if:true={selectedTask.comments}>
+                                <p class="task-detail-section-value">{selectedTask.comments}</p>
+                            </template>
+                            <template if:false={selectedTask.comments}>
+                                <p class="task-detail-section-value">No comments added yet.</p>
+                            </template>
+                        </div>
+
+                        <template if:false={isSelectedTaskCompleted}>
+                            <div class="task-edit-section">
+                                <lightning-textarea
+                                    label="Add / Update Comment"
+                                    value={editingComments}
+                                    onchange={handleCommentsChange}
+                                    max-length="500"
+                                    placeholder="Add a note or update your comment…">
+                                </lightning-textarea>
+                                <div class="task-edit-actions">
+                                    <button class="slds-button slds-button_neutral" onclick={handleSaveComments} disabled={isSavingItem}>
+                                        <template if:true={isSavingItem}>Saving…</template>
+                                        <template if:false={isSavingItem}>Save Comment</template>
+                                    </button>
+                                    <button class="slds-button slds-button_brand" onclick={handleMarkAsComplete} disabled={isSavingItem}>
+                                        <template if:true={isSavingItem}>Updating…</template>
+                                        <template if:false={isSavingItem}>Mark as Complete</template>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleCloseTaskModal}>Close</button>
+                    </footer>
+                </div>
+            </div>
+        </template>
+
+        <!-- ===== WORKSHOPS TAB ===== -->
+        <template if:true={isWorkshopsTab}>
+
+            <div class="ws-portal-layout">
+
+                <!-- COL 1: Left Menu -->
+                <aside class="ws-menu-sidebar">
+                    <nav class="ws-menu-nav">
+                        <button class={browseMenuClass} data-subtab="available" onclick={handleWorkshopsMenuSwitch}>
+                            <lightning-icon icon-name="utility:apps" size="x-small"></lightning-icon>
+                            <span>Browse workshops</span>
+                        </button>
+                        <button class={myRegMenuClass} data-subtab="mine" onclick={handleWorkshopsMenuSwitch}>
+                            <lightning-icon icon-name="utility:event" size="x-small"></lightning-icon>
+                            <span>My registrations</span>
+                        </button>
+                        <button class="ws-menu-item" disabled>
+                            <lightning-icon icon-name="utility:clock" size="x-small"></lightning-icon>
+                            <span>Past sessions</span>
+                        </button>
+                    </nav>
+                </aside>
+
+                <!-- BROWSE WORKSHOPS panel -->
+                <template if:true={isAvailableSubTab}>
+                    <div class="ws-browse-area-full">
+
+                        <div class="ws-browse-header">
+                            <h2 class="ws-browse-title">Browse workshops</h2>
+                        </div>
+
+                        <div class="ws-term-filter">
+                            <span class="ws-term-label">Term:</span>
+                            <div class="ws-term-pills">
+                                <template for:each={workshopTermOptionsWithClass} for:item="term">
+                                    <button key={term.value}
+                                            class={term.pillClass}
+                                            data-termid={term.value}
+                                            onclick={handleWorkshopTermChange}>
+                                        {term.label}
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <p class="ws-count-label">{workshopCountLabel}</p>
+
+                        <template if:true={isWorkshopsLoading}>
+                            <div class="loader-wrapper" style="padding: 3rem 0;">
+                                <div class="loader-ring"></div>
+                                <p class="loader-text">Loading workshops…</p>
+                            </div>
+                        </template>
+
+                        <template if:true={workshopsError}>
+                            <div class="alert alert-error">
+                                <lightning-icon icon-name="utility:error" size="x-small"></lightning-icon>
+                                <span>{workshopsError}</span>
+                            </div>
+                        </template>
+
+                        <template if:false={isWorkshopsLoading}>
+                            <template if:true={hasAvailableWorkshops}>
+                                <div class="ws-grid">
+                                    <template for:each={availableWorkshops} for:item="ws">
+                                        <article key={ws.workshopId}
+                                                 class={ws.cardClass}
+                                                 data-workshopid={ws.workshopId}
+                                                 onclick={handleSelectWorkshop}>
+                                            <div class="ws-card-header">
+                                                <h3 class="ws-card-title">{ws.name}</h3>
+                                                <span class={ws.statusBadgeClass}>{ws.statusBadgeLabel}</span>
+                                            </div>
+                                            <p class="ws-card-series">{ws.series}</p>
+                                            <p class="ws-card-desc">{ws.description}</p>
+                                            <div class="ws-card-footer">
+                                                <span class="ws-card-meta">{ws.sessionCount} sessions</span>
+                                                <button class="slds-button slds-button_brand btn-sm" onclick={handleSelectWorkshop}>
+                                                    View Details
+                                                </button>
+                                            </div>
+                                        </article>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={hasAvailableWorkshops}>
+                                <template if:false={workshopsError}>
+                                    <div class="ws-detail-empty" style="min-height:200px; text-align:center; padding:3rem;">
+                                        <p class="ws-empty-note">No workshops available for the selected term.</p>
+                                    </div>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+                </template>
+                <!-- END BROWSE -->
+
+                <!-- MY REGISTRATIONS panel -->
+                <template if:true={isMineSubTab}>
+                    <div class="ws-mine-area-full">
+                        <div class="ws-browse-header">
+                            <h2 class="ws-browse-title">My registrations</h2>
+                            <p class="ws-browse-subtitle">View details about your workshop registrations.</p>
+                        </div>
+
+                        <template if:true={isMyRegLoading}>
+                            <div class="loader-wrapper">
+                                <div class="loader-ring"></div>
+                                <p class="loader-text">Loading your registrations…</p>
+                            </div>
+                        </template>
+
+                        <template if:false={isMyRegLoading}>
+                            <template if:true={hasMyRegistrations}>
+                                <div class="dir-table-wrapper">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th scope="col"><div class="slds-truncate">Workshop</div></th>
+                                                <th scope="col"><div class="slds-truncate">Batch Option</div></th>
+                                                <th scope="col"><div class="slds-truncate">Registration Date</div></th>
+                                                <th scope="col"><div class="slds-truncate">Status</div></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={myRegistrations} for:item="reg">
+                                                <tr key={reg.Id}>
+                                                    <td>{reg.Workshop__r.Name}</td>
+                                                    <td>{reg.Batch_Label__c}</td>
+                                                    <td>
+                                                        <template if:true={reg.Registration_Date__c}>
+                                                            <lightning-formatted-date-time
+                                                                value={reg.Registration_Date__c}
+                                                                year="numeric"
+                                                                month="short"
+                                                                day="2-digit">
+                                                            </lightning-formatted-date-time>
+                                                        </template>
+                                                    </td>
+                                                    <td>{reg.Status__c}</td>
+                                                    <td>
+                                                        <button class="slds-button slds-button_neutral btn-sm"
+                                                                data-regid={reg.Id}
+                                                                onclick={handleViewRegistrationDetails}>
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template if:false={hasMyRegistrations}>
+                                <div class="ws-detail-empty" style="min-height:200px; text-align:center; padding:3rem;">
+                                    <p class="ws-empty-note">You have no workshop registrations yet.</p>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </template>
+                <!-- END MY REGISTRATIONS -->
+
+            </div><!-- end ws-portal-layout -->
+
+            <!-- ═══ WORKSHOP DETAILS MODAL ═══ -->
+            <template if:true={isWorkshopDetailsModalOpen}>
+                <div class="slds-backdrop slds-backdrop_open" onclick={handleCloseWorkshopDetailsModal}></div>
+                <div role="dialog" aria-modal="true" class="slds-modal slds-fade-in-open modal-panel--large">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                onclick={handleCloseWorkshopDetailsModal} aria-label="Close">
+                                <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading_medium">{selectedWorkshopForModal.name}</h2>
+                            <p class="ws-modal-subtitle">{selectedWorkshopForModal.description}</p>
+                        </header>
+
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <!-- ALREADY REGISTERED VIEW -->
+                            <template if:true={selectedWorkshopForModal.isRegistered}>
+                                <div class="ws-registered-notice">
+                                    <lightning-icon icon-name="utility:success" size="small"></lightning-icon>
+                                    <div>
+                                        <h4 class="ws-registered-notice-title">You are registered for this workshop</h4>
+                                        <p class="ws-registered-notice-text">Batch: {registeredBatchLabel} | Status: {selectedWorkshopForModal.registrationStatus}</p>
+                                    </div>
+                                </div>
+
+                                <h3 class="ws-modal-section-title">Workshop Details:</h3>
+                                <div class="ws-detail-info-grid">
+                                    <div class="ws-detail-info-item">
+                                        <span class="ws-detail-info-label">Sessions</span>
+                                        <span class="ws-detail-info-value">{selectedWorkshopForModal.sessionCount} sessions</span>
+                                    </div>
+                                    <div class="ws-detail-info-item">
+                                        <span class="ws-detail-info-label">Campus</span>
+                                        <span class="ws-detail-info-value">{selectedWorkshopForModal.campusName}</span>
+                                    </div>
+                                    <div class="ws-detail-info-item">
+                                        <span class="ws-detail-info-label">Series</span>
+                                        <span class="ws-detail-info-value">{selectedWorkshopForModal.series}</span>
+                                    </div>
+                                </div>
+
+                                <h3 class="ws-modal-section-title">Your Batch Details:</h3>
+
+                                <template if:true={selectedWorkshopForModal.hasBatchOptions}>
+                                    <template for:each={selectedWorkshopForModal.batchOptions} for:item="option">
+                                        <template if:true={option.isRegisteredBatch}>
+                                            <div key={option.label} class="ws-batch-detail-card">
+                                                <div class="ws-batch-detail-header">
+                                                    <h4 class="ws-batch-detail-title">{option.label}</h4>
+                                                </div>
+                                                <div class="ws-batch-detail-rows">
+                                                    <div class="ws-batch-detail-row">
+                                                        <span class="ws-detail-label">Schedule:</span>
+                                                        <span class="ws-detail-value">{option.fullDateTimeRange}</span>
+                                                    </div>
+                                                    <div class="ws-batch-detail-row">
+                                                        <span class="ws-detail-label">Mode:</span>
+                                                        <span class="ws-detail-value">{option.mode}</span>
+                                                    </div>
+                                                    <template if:true={option.location}>
+                                                        <div class="ws-batch-detail-row">
+                                                            <span class="ws-detail-label">Location:</span>
+                                                            <span class="ws-detail-value">{option.location}</span>
+                                                        </div>
+                                                    </template>
+                                                    <template if:true={option.meetingLink}>
+                                                        <div class="ws-batch-detail-row">
+                                                            <span class="ws-detail-label">Meeting Link:</span>
+                                                            <a href={option.meetingLink} target="_blank" class="ws-detail-link">
+                                                                Join Online Session
+                                                            </a>
+                                                        </div>
+                                                    </template>
+                                                    <div class="ws-batch-detail-row">
+                                                        <span class="ws-detail-label">Enrollment:</span>
+                                                        <span class="ws-detail-value">{option.seatCount}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </template>
+
+                                <template if:false={selectedWorkshopForModal.hasBatchOptions}>
+                                    <p class="ws-empty-note">Batch information is being loaded. Please check your registration details in "My Registrations" tab.</p>
+                                </template>
+                            </template>
+
+                            <!-- NOT REGISTERED VIEW - Batch Selection -->
+                            <template if:false={selectedWorkshopForModal.isRegistered}>
+                                <template if:true={selectedWorkshopForModal.isReadOnlyWorkshop}>
+                                    <p class="ws-modal-info">
+                                        <lightning-icon icon-name="utility:info" size="xx-small"></lightning-icon>
+                                        This workshop is marked as no-registration-required. You can review the details, but no registration action is needed.
+                                    </p>
+
+                                    <template if:true={selectedWorkshopForModal.hasSessionBatchDetails}>
+                                        <h3 class="ws-modal-section-title">Session Access Details:</h3>
+                                        <div class="ws-batch-option-grid">
+                                            <template for:each={selectedWorkshopForModal.sessionBatchDetails} for:item="sessionDetail">
+                                                <article key={sessionDetail.sessionName} class="ws-batch-option-card">
+                                                    <div class="ws-batch-option-header">
+                                                        <h4 class="ws-batch-option-title">Session {sessionDetail.sessionNumber} - {sessionDetail.batchLabel}</h4>
+                                                    </div>
+                                                    <div class="ws-batch-option-details">
+                                                        <div class="ws-batch-option-row">
+                                                            <span class="ws-detail-label">Start Date:</span>
+                                                            <span>{sessionDetail.startDate}</span>
+                                                        </div>
+                                                        <div class="ws-batch-option-row">
+                                                            <span class="ws-detail-label">Start Time:</span>
+                                                            <span>{sessionDetail.startTime}</span>
+                                                        </div>
+                                                        <div class="ws-batch-option-row">
+                                                            <span class="ws-detail-label">End Date:</span>
+                                                            <span>{sessionDetail.endDate}</span>
+                                                        </div>
+                                                        <div class="ws-batch-option-row">
+                                                            <span class="ws-detail-label">End Time:</span>
+                                                            <span>{sessionDetail.endTime}</span>
+                                                        </div>
+                                                        <div class="ws-batch-option-row">
+                                                            <span class="ws-detail-label">Mode:</span>
+                                                            <span>{sessionDetail.mode}</span>
+                                                        </div>
+                                                        <template if:true={sessionDetail.location}>
+                                                            <div class="ws-batch-option-row">
+                                                                <span class="ws-detail-label">Location:</span>
+                                                                <span>{sessionDetail.location}</span>
+                                                            </div>
+                                                        </template>
+                                                        <template if:true={sessionDetail.meetingLink}>
+                                                            <div class="ws-batch-option-row">
+                                                                <span class="ws-detail-label">Meeting Link:</span>
+                                                                <a href={sessionDetail.meetingLink} target="_blank" class="ws-detail-link">Open Session Link</a>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </article>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </template>
+
+                                <template if:false={selectedWorkshopForModal.isReadOnlyWorkshop}>
+                                    <p class="ws-modal-info">
+                                        <lightning-icon icon-name="utility:info" size="xx-small"></lightning-icon>
+                                        This workshop has {selectedWorkshopForModal.sessionCount} sessions. Select your preferred time slot below - you will attend all sessions at this time.
+                                    </p>
+
+                                    <h3 class="ws-modal-section-title">Choose your session time:</h3>
+                                    <div class="ws-batch-option-grid">
+                                        <template for:each={selectedWorkshopForModal.batchOptions} for:item="option">
+                                            <article key={option.label}
+                                                     class="ws-batch-option-card"
+                                                     data-label={option.label}
+                                                     data-selected={selectedBatchLabel}
+                                                     onclick={handleSelectBatchLabel}>
+                                                <div class="ws-batch-option-header">
+                                                    <h4 class="ws-batch-option-title">{option.label}</h4>
+                                                </div>
+                                                <div class="ws-batch-option-details">
+                                                    <div class="ws-batch-option-row">
+                                                        <span class="ws-detail-label">Start Date:</span>
+                                                        <span>{option.startDate}</span>
+                                                    </div>
+                                                    <div class="ws-batch-option-row">
+                                                        <span class="ws-detail-label">Start Time:</span>
+                                                        <span>{option.startTime}</span>
+                                                    </div>
+                                                    <div class="ws-batch-option-row">
+                                                        <span class="ws-detail-label">End Date:</span>
+                                                        <span>{option.endDate}</span>
+                                                    </div>
+                                                    <div class="ws-batch-option-row">
+                                                        <span class="ws-detail-label">End Time:</span>
+                                                        <span>{option.endTime}</span>
+                                                    </div>
+                                                    <div class="ws-batch-option-row">
+                                                        <span class="ws-detail-label">Mode:</span>
+                                                        <span>{option.mode}</span>
+                                                    </div>
+                                                    <div class="ws-batch-option-row">
+                                                        <span class="ws-detail-label">Seats:</span>
+                                                        <span>{option.seatCount}</span>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+
+                            <h3 class="ws-modal-section-title">Workshop Files:</h3>
+
+                            <template if:true={isWorkshopFilesLoading}>
+                                <div class="ws-files-state">
+                                    <div class="loader-ring"></div>
+                                    <p class="ws-empty-note">Loading workshop files...</p>
+                                </div>
+                            </template>
+
+                            <template if:true={workshopFilesError}>
+                                <div class="alert alert-error slds-m-bottom_medium">
+                                    <lightning-icon icon-name="utility:error" size="x-small"></lightning-icon>
+                                    <span>{workshopFilesError}</span>
+                                </div>
+                            </template>
+
+                            <template if:false={isWorkshopFilesLoading}>
+                                <template if:true={selectedWorkshopForModal.hasWorkshopFiles}>
+                                    <div class="ws-file-list">
+                                        <template for:each={selectedWorkshopForModal.workshopFiles} for:item="file">
+                                            <article key={file.contentVersionId} class="ws-file-card">
+                                                <div class="ws-file-card__header">
+                                                    <div>
+                                                        <h4 class="ws-file-card__title">{file.title}</h4>
+                                                        <p class="ws-file-card__meta">Uploaded {file.formattedDate} by {file.uploadedBy}</p>
+                                                    </div>
+                                                    <button
+                                                        class="slds-button slds-button_brand btn-sm"
+                                                        data-workshopid={selectedWorkshopForModal.workshopId}
+                                                        data-versionid={file.contentVersionId}
+                                                        data-title={file.title}
+                                                        data-extension={file.fileExtension}
+                                                        onclick={handleStudentWorkshopFileDownload}>
+                                                        Download
+                                                    </button>
+                                                </div>
+                                                <div class="ws-file-card__details">
+                                                    <span class="ws-file-pill">{file.fileType}</span>
+                                                    <span class="ws-file-detail">{file.formattedSize}</span>
+                                                    <span class="ws-file-detail">{file.downloadCount} downloads</span>
+                                                    <span class="ws-file-detail">Access: {file.accessLabel}</span>
+                                                </div>
+                                            </article>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template if:false={selectedWorkshopForModal.hasWorkshopFiles}>
+                                    <div class="ws-files-state">
+                                        <p class="ws-empty-note">No workshop files are available yet.</p>
+                                    </div>
+                                </template>
+
+                                <template if:true={selectedWorkshopForModal.hasRestrictedFiles}>
+                                    <p class="ws-restricted-note">Some workshop files are restricted until registration or a broader access scope is granted.</p>
+                                </template>
+                            </template>
+                        </div>
+
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={handleCloseWorkshopDetailsModal}>Close</button>
+                            <template if:false={selectedWorkshopForModal.isRegistered}>
+                                <template if:false={selectedWorkshopForModal.isReadOnlyWorkshop}>
+                                    <button class="slds-button slds-button_brand" onclick={handleRegisterFromModal} disabled={isRegistering}>
+                                        <template if:false={isRegistering}>Register</template>
+                                        <template if:true={isRegistering}>Registering…</template>
+                                    </button>
+                                </template>
+                            </template>
+                        </footer>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ═══ REGISTRATION DETAILS MODAL ═══ -->
+            <template if:true={isRegistrationDetailsModalOpen}>
+                <div class="slds-backdrop slds-backdrop_open" onclick={handleCloseRegistrationDetailsModal}></div>
+                <div role="dialog" aria-modal="true" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                onclick={handleCloseRegistrationDetailsModal} aria-label="Close">
+                                <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading_medium">{selectedRegistrationForModal.Workshop__r.Name}</h2>
+                            <p class="ws-modal-subtitle">Batch: {selectedRegistrationForModal.Batch_Label__c} - Status: {selectedRegistrationForModal.Status__c}</p>
+                        </header>
+
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <div class="ws-batch-detail-card">
+                                <div class="ws-batch-detail-header">
+                                    <h4 class="ws-batch-detail-title">{selectedRegistrationForModal.Batch_Label__c}</h4>
+                                </div>
+                                <div class="ws-batch-detail-rows">
+                                    <div class="ws-batch-detail-row">
+                                        <span class="ws-detail-label">Workshop:</span>
+                                        <span class="ws-detail-value">{selectedRegistrationForModal.Workshop__r.Name}</span>
+                                    </div>
+                                    <div class="ws-batch-detail-row">
+                                        <span class="ws-detail-label">Status:</span>
+                                        <span class="ws-detail-value">{selectedRegistrationForModal.Status__c}</span>
+                                    </div>
+                                    <div class="ws-batch-detail-row">
+                                        <span class="ws-detail-label">Sessions:</span>
+                                        <span class="ws-detail-value">{selectedRegistrationForModal.Workshop__r.Total_Sessions__c} sessions</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="ws-modal-section-title slds-m-top_medium">Your Sessions:</h3>
+                            <template if:true={selectedRegistrationForModal.Workshop_Attendances__r}>
+                                <div class="ws-attendance-list">
+                                    <template for:each={selectedRegistrationForModal.Workshop_Attendances__r} for:item="att">
+                                        <article key={att.Id} class="ws-attendance-card">
+                                            <div class="ws-attendance-header">
+                                                <h4 class="ws-attendance-title">Session {att.Workshop_Session__r.Session_Number__c}</h4>
+                                                <span class="ws-badge ws-badge--info">{att.Attendance_Status__c}</span>
+                                            </div>
+                                            <div class="ws-attendance-details">
+                                                <div class="ws-attendance-row">
+                                                    <span class="ws-detail-label">Start Date:</span>
+                                                    <span>
+                                                        <lightning-formatted-date-time
+                                                            value={att.Workshop_Batch__r.Start_DateTime__c}
+                                                            year="numeric"
+                                                            month="short"
+                                                            day="2-digit">
+                                                        </lightning-formatted-date-time>
+                                                    </span>
+                                                </div>
+                                                <div class="ws-attendance-row">
+                                                    <span class="ws-detail-label">Start Time:</span>
+                                                    <span>
+                                                        <lightning-formatted-date-time
+                                                            value={att.Workshop_Batch__r.Start_DateTime__c}
+                                                            hour="numeric"
+                                                            minute="2-digit">
+                                                        </lightning-formatted-date-time>
+                                                    </span>
+                                                </div>
+                                                <div class="ws-attendance-row">
+                                                    <span class="ws-detail-label">End Date:</span>
+                                                    <span>
+                                                        <lightning-formatted-date-time
+                                                            value={att.Workshop_Batch__r.End_DateTime__c}
+                                                            year="numeric"
+                                                            month="short"
+                                                            day="2-digit">
+                                                        </lightning-formatted-date-time>
+                                                    </span>
+                                                </div>
+                                                <div class="ws-attendance-row">
+                                                    <span class="ws-detail-label">End Time:</span>
+                                                    <span>
+                                                        <lightning-formatted-date-time
+                                                            value={att.Workshop_Batch__r.End_DateTime__c}
+                                                            hour="numeric"
+                                                            minute="2-digit">
+                                                        </lightning-formatted-date-time>
+                                                    </span>
+                                                </div>
+                                                <div class="ws-attendance-row">
+                                                    <span class="ws-detail-label">Mode:</span>
+                                                    <span>{att.Workshop_Batch__r.Mode__c}</span>
+                                                </div>
+                                                <template if:true={att.Workshop_Batch__r.Location__c}>
+                                                    <div class="ws-attendance-row">
+                                                        <span class="ws-detail-label">Location:</span>
+                                                        <span>{att.Workshop_Batch__r.Location__c}</span>
+                                                    </div>
+                                                </template>
+                                                <template if:true={att.Workshop_Batch__r.Meeting_Link__c}>
+                                                    <div class="ws-attendance-row">
+                                                        <span class="ws-detail-label">Link:</span>
+                                                        <a href={att.Workshop_Batch__r.Meeting_Link__c} target="_blank" class="ws-attendance-link">
+                                                            Join Meeting
+                                                        </a>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </article>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={selectedRegistrationForModal.Workshop_Attendances__r}>
+                                <p class="ws-empty-note">No attendance records found for this registration.</p>
+                            </template>
+                        </div>
+
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={handleCloseRegistrationDetailsModal}>Close</button>
+                        </footer>
+                    </div>
+                </div>
+            </template>
+
+        </template>
+        <!-- END WORKSHOPS TAB -->
+
+    </div>
+</template>

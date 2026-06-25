@@ -1,0 +1,2307 @@
+<template>
+  <div class="slds-card">
+    <div class="slds-p-around_medium">
+      <!-- OTP Authentication is now handled by parent component (guestUserPortal) -->
+
+      <!-- CASE LIST VIEW - Sid -->
+      <template if:true={showCaseList}>
+        <div class="slds-card">
+          <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__body">
+                <h2 class="slds-card__header-title">
+                  <span>My Cases</span>
+                </h2>
+              </div>
+            </header>
+            <div class="slds-no-flex">
+              <lightning-button variant="brand" label="Raise a Case" onclick={handleNewRequest} 
+                icon-name="utility:add" class="slds-m-left_x-small"></lightning-button>
+            </div>
+          </div>
+          <div class="slds-card__body slds-card__body_inner">
+            <template if:true={isLoading}>
+              <div class="slds-text-align_center slds-p-around_large">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                <p class="slds-m-top_small">Loading cases...</p>
+              </div>
+            </template>
+
+            <template if:false={isLoading}>
+              <template if:true={contactCases.length}>
+                <div class="table-container">
+                  <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead>
+                      <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                          <div class="slds-truncate" title="Case Number">Case Number</div>
+                        </th>
+                        <th class="" scope="col">
+                          <div class="slds-truncate" title="Subject">Subject</div>
+                        </th>
+                        <th class="" scope="col">
+                          <div class="slds-truncate" title="Type">Type</div>
+                        </th>
+                        <template if:false={isGuestUser}>
+                          <th class="" scope="col">
+                            <div class="slds-truncate" title="Status">Status</div>
+                          </th>
+                        </template>
+                        <th class="" scope="col">
+                          <div class="slds-truncate" title="Created Date">Created Date</div>
+                        </th>
+                        <template if:false={isGuestUser}>
+                          <th class="" scope="col">
+                            <div class="slds-truncate" title="Actions">Actions</div>
+                          </th>
+                        </template>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template for:each={contactCases} for:item="caseItem">
+                        <tr key={caseItem.Id} class="slds-hint-parent">
+                          <td data-label="Case Number">
+                            <template if:true={isGuestUser}>
+                              <div class="slds-truncate" title={caseItem.CaseNumber}>
+                                <a href="javascript:void(0);" onclick={handleCaseClick} data-id={caseItem.Id}>{caseItem.CaseNumber}</a>
+                              </div>
+                            </template>
+                            <template if:false={isGuestUser}>
+                              <div class="slds-truncate" title={caseItem.CaseNumber}>{caseItem.CaseNumber}</div>
+                            </template>
+                          </td>
+                          <td data-label="Subject">
+                            <div class="subject-wrap" title={caseItem.Subject}>{caseItem.Subject}</div>
+                          </td>
+                          <td data-label="Type">
+                            <div class="slds-truncate" title={caseItem.RecordType.Name}>{caseItem.RecordType.Name}</div>
+                          </td>
+                          <template if:false={isGuestUser}>
+                            <td data-label="Status">
+                              <lightning-badge label={caseItem.Status}></lightning-badge>
+                            </td>
+                          </template>
+                          <td data-label="Created Date">
+                            <lightning-formatted-date-time value={caseItem.CreatedDate} 
+                              year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                          </td>
+                          <template if:false={isGuestUser}>
+                            <td data-label="Actions">
+                              <lightning-button-icon icon-name="utility:preview" alternative-text="View Details" 
+                                title="View Details" onclick={handleCaseClick} data-id={caseItem.Id}
+                                variant="border-filled"></lightning-button-icon>
+                            </td>
+                          </template>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+
+              <template if:false={contactCases.length}>
+                <div class="slds-text-align_center slds-p-around_large">
+                  <lightning-icon icon-name="utility:cases" size="large" class="slds-m-bottom_small"></lightning-icon>
+                  <p class="slds-text-heading_small">No cases found</p>
+                  <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                    You haven't submitted any cases yet. Click "Raise a Case" to get started.
+                  </p>
+                </div>
+              </template>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <!-- CASE DETAIL MODAL - Sid -->
+      <template if:true={isCaseModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                title="Close" onclick={closeCaseModal}>
+                <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+              </button>
+              <h2 class="slds-modal__title slds-hyphenate">Case Details - {caseDetail.CaseNumber}</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium">
+              <div class="slds-grid slds-wrap slds-gutters_small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <div class="slds-form-element">
+                    <label class="slds-form-element__label">Case Number</label>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static">{caseDetail.CaseNumber}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <div class="slds-form-element">
+                    <label class="slds-form-element__label">Status</label>
+                    <div class="slds-form-element__control">
+                      <lightning-badge label={caseDetail.Status}></lightning-badge>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <div class="slds-form-element">
+                    <label class="slds-form-element__label">Owner</label>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static">{ownerName}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <div class="slds-form-element">
+                    <label class="slds-form-element__label">Record Type</label>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static">{caseDetail.RecordType.Name}</div>
+                    </div>
+                  </div>
+                </div>
+                <template if:true={caseDetail.Program__r}>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Program</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseDetail.Program__r.Name}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <template if:true={caseDetail.LOA_Type__c}>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">LOA Type</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseDetail.LOA_Type__c}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <div class="slds-col slds-size_1-of-1">
+                  <div class="slds-form-element">
+                    <label class="slds-form-element__label">Subject</label>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static">{caseDetail.Subject}</div>
+                    </div>
+                  </div>
+                </div>
+                <template if:true={caseDetail.Description}>
+                  <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Description</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseDetail.Description}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <!-- From Term: visible whenever populated, regardless of record type or sub type -->
+                <template if:true={caseDetail.From_Term__c}>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">From Term</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseDetail.From_Term__c}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <!-- To Term: visible whenever populated, regardless of record type or sub type -->
+                <template if:true={caseDetail.To_Term__c}>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">To Term</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseDetail.To_Term__c}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <!-- Requested End Date: visible whenever populated (e.g. Fee Exception sub type) -->
+                <template if:true={caseDetail.Requested_End_Date__c}>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Requested End Date</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">
+                          <lightning-formatted-date-time value={caseDetail.Requested_End_Date__c}
+                            year="numeric" month="short" day="2-digit">
+                          </lightning-formatted-date-time>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+              </div> <!-- end slds-grid slds-wrap slds-gutters_small -->
+
+              <!-- Case Documents Section in Modal -->
+              <div class="slds-m-top_medium">
+                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Case Documents</h3>
+                <template if:true={hasActualCaseFiles}>
+                  <ul class="slds-has-dividers_top-space">
+                    <template for:each={formattedCaseFiles} for:item="file">
+                      <li key={file.id} class="slds-item slds-p-around_x-small">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                          <div class="slds-col slds-has-flexi-truncate">
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                              <lightning-icon icon-name={file.iconName} size="small" class="slds-m-right_x-small">
+                              </lightning-icon>
+                              <div class="slds-truncate">
+                                <strong>{file.name}</strong>
+                                <div class="slds-text-body_small slds-text-color_weak">
+                                  {file.formattedSize} • {file.type}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="slds-col slds-no-flex">
+                            <lightning-button variant="neutral" label="Download" icon-name="utility:download"
+                              data-id={file.id} onclick={handleDownloadCaseFile} class="slds-m-left_x-small">
+                            </lightning-button>
+                          </div>
+                        </div>
+                      </li>
+                    </template>
+                  </ul>
+                </template>
+                <template if:false={hasActualCaseFiles}>
+                  <div class="slds-text-align_center slds-p-around_small slds-text-color_weak">
+                    <p class="slds-text-body_small">No documents have been attached to this case yet.</p>
+                  </div>
+                </template>
+              </div>
+
+            </div> <!-- end slds-modal__content -->
+
+            <footer class="slds-modal__footer">
+              <template if:true={isGuestUser}>
+                <lightning-button variant="brand" label="Back to List" onclick={closeCaseModal}></lightning-button>
+              </template>
+              <template if:false={isGuestUser}>
+                <lightning-button variant="neutral" label="Close" onclick={closeCaseModal}></lightning-button>
+              </template>
+            </footer>
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+
+      <!-- NEW CASE SCENARIO - Only show when NOT showing case list -->
+      <template if:false={recordId}>
+        <template if:false={showCaseList}>
+
+        <!-- STEP 1: Record Type Selection (Simplified) -->
+        <template if:true={showRecordTypeSelection}>
+          <template if:true={hasRecordTypes}>
+            <div class="slds-card selection-card">
+              <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                  <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span>Select Request Type</span>
+                    </h2>
+                  </div>
+                </header>
+                <div class="slds-no-flex">
+                  <template if:true={showBackToListButton}>
+                    <lightning-button variant="neutral" label="Back to List" onclick={handleBackToList} 
+                      icon-name="utility:back" class="slds-m-left_x-small"></lightning-button>
+                  </template>
+                </div>
+              </div>
+              <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-form-element">
+                  <lightning-combobox name="recordType" label="Request Type" value={selectedRecordTypeId}
+                    placeholder="Select a request type" options={recordTypeOptions} onchange={handleRecordTypeChange}
+                    variant="label-stacked" required>
+                  </lightning-combobox>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <template if:false={hasRecordTypes}> 
+            <div class="slds-text-align_center slds-p-around_large">
+              <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+              <p class="slds-m-top_small">Loading request types...</p>
+            </div>
+   
+          </template>
+        </template>
+
+        <!-- STEP 1.2: Sub Type Selection for General Support -->
+        <template if:true={showSubTypeSelection}>
+          <div class="slds-card selection-card">
+            <div class="slds-card__header slds-grid">
+              <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                  <h2 class="slds-card__header-title">
+                    <span>Select Request Sub Type</span>
+                  </h2>
+                </div>
+              </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+              <div class="slds-form-element slds-m-bottom_small">
+                <label class="slds-form-element__label">Selected Request Type</label>
+                <div class="slds-form-element__control">
+                  <div class="slds-text-body_regular">{selectedRecordTypeLabel}</div>
+                </div>
+              </div>
+
+              <template if:true={subTypeOptions.length}>
+                <lightning-combobox name="subType" label="Sub Type" value={selectedSubType} options={subTypeOptions}
+                  onchange={handleSubTypeSelect} placeholder="Select a sub type" variant="label-stacked" required>
+                </lightning-combobox>
+
+                <template if:true={showSubCategorySelection}>
+                  <lightning-combobox name="subCategory" label="Sub Category" value={selectedSubCategory} options={subCategoryOptions}
+                    onchange={handleSubCategoryChange} placeholder="Select a sub category" variant="label-stacked" required>
+                  </lightning-combobox>
+                </template>
+
+                <div class="slds-m-top_medium">
+                  <lightning-button variant="brand" label="Continue" onclick={handleSubTypeConfirm}
+                    disabled={isSubTypeContinueDisabled} class="slds-m-right_x-small">
+                  </lightning-button>
+                  <lightning-button variant="neutral" label="Back" onclick={handleBackToRecordType}>
+                  </lightning-button>
+                </div>
+              </template>
+
+              <template if:false={subTypeOptions.length}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                  <p class="slds-text-color_error">No sub types available</p>
+                  <lightning-button variant="neutral" label="Back to Request Types" onclick={handleBackToRecordType}
+                    class="slds-m-top_small">
+                  </lightning-button>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+
+        <!-- STEP 1.5: Rejoin Case Selection -->
+        <template if:true={showRejoinCaseSelection}>
+          <div class="slds-card">
+            <div class="slds-card__header slds-grid">
+              <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                  <h2 class="slds-card__header-title">
+                    <span>Select Leave of Absence Case to Rejoin</span>
+                  </h2>
+                </div>
+              </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+              <div class="slds-form-element slds-m-bottom_small">
+                <label class="slds-form-element__label">Selected Request Type</label>
+                <div class="slds-form-element__control">
+                  <div class="slds-text-body_regular">{selectedRecordTypeLabel}</div>
+                </div>
+              </div>
+
+              <template if:true={hasRejoinCaseOptions}>
+                <lightning-combobox name="rejoinCase" label="Select Leave of Absence Case" value={selectedRejoinCaseId}
+                  options={rejoinCaseOptions} onchange={handleRejoinCaseSelect}
+                  placeholder="Choose an approved Leave of Absence case to rejoin" variant="label-stacked" required>
+                </lightning-combobox>
+
+                <template if:true={isRejoinCaseSelected}>
+                  <div class="slds-notify slds-notify_toast slds-theme_info slds-m-top_small" role="status">
+                    <div class="slds-notify__content">
+                      <h2 class="slds-text-heading_small">Selected Case Details:</h2>
+                      <div class="slds-m-top_xx-small">
+                        <strong>Case Number:</strong> {selectedRejoinCaseNumber}<br/>
+                        <strong>LOA Type:</strong> {selectedRejoinCaseLOA}<br/>
+                        <strong>Program:</strong> {selectedRejoinCaseProgram}<br/>
+                        <strong>From Term:</strong> {selectedRejoinCaseFromTerm}<br/>
+                        <strong>To Term:</strong> {selectedRejoinCaseToTerm}
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <div class="slds-m-top_medium">
+                  <lightning-button variant="brand" label="Continue" onclick={handleRejoinCaseConfirm}
+                    disabled={isRejoinCaseNotSelected} class="slds-m-right_x-small">
+                  </lightning-button>
+                  <lightning-button variant="neutral" label="Back" onclick={handleBackToRecordType}>
+                  </lightning-button>
+                </div>
+              </template>
+
+              <template if:false={hasRejoinCaseOptions}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                  <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                  <p class="slds-text-color_error slds-m-top_x-small">
+                    No approved Leave of Absence cases found for Rejoin request.
+                  </p>
+                  <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                    You need to have an approved Leave of Absence case to create a Rejoin request.
+                  </p>
+                  <lightning-button variant="neutral" label="Back to Request Types" onclick={handleBackToRecordType}
+                    class="slds-m-top_small">
+                  </lightning-button>
+                </div>
+              </template>
+
+              <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_large">
+                  <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                  <p class="slds-m-top_small">Loading approved Leave of Absence cases...</p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+<!-- sid -->
+        <!-- STEP 1.6: Return and Replace Case Selection -->
+        <template if:true={showReturnReplaceCaseSelection}>
+          <div class="slds-card">
+            <div class="slds-card__header slds-grid">
+              <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                  <h2 class="slds-card__header-title">
+                    <span>Select Case for Return and Replace</span>
+                  </h2>
+                </div>
+              </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+              <div class="slds-form-element slds-m-bottom_small">
+                <label class="slds-form-element__label">Selected Request Type</label>
+                <div class="slds-form-element__control">
+                  <div class="slds-text-body_regular">{selectedRecordTypeLabel}</div>
+                </div>
+              </div>
+
+              <template if:true={hasReturnReplaceCaseOptions}>
+                <lightning-combobox name="returnReplaceCase" label="Select Case to Return/Replace" value={selectedReturnReplaceCaseId}
+                  options={returnReplaceCaseOptions} onchange={handleReturnReplaceCaseSelect}
+                  placeholder="Choose an eligible case" variant="label-stacked" required>
+                </lightning-combobox>
+
+                <template if:true={isReturnReplaceCaseSelected}>
+                  <div class="slds-notify slds-notify_toast slds-theme_info slds-m-top_small" role="status">
+                    <div class="slds-notify__content">
+                      <h2 class="slds-text-heading_small">Selected Case Details:</h2>
+                      <div class="slds-m-top_xx-small">
+                        <strong>Case Number:</strong> {selectedReturnReplaceCaseNumber}<br/>
+                        <strong>LOA Type:</strong> {selectedReturnReplaceCaseLOA}<br/>
+                        <strong>Program:</strong> {selectedReturnReplaceCaseProgram}<br/>
+                        <strong>From Term:</strong> {selectedReturnReplaceCaseFromTerm}<br/>
+                        <strong>To Term:</strong> {selectedReturnReplaceCaseToTerm}
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <div class="slds-m-top_medium">
+                  <lightning-button variant="brand" label="Continue" onclick={handleReturnReplaceCaseConfirm}
+                    disabled={isReturnReplaceCaseNotSelected} class="slds-m-right_x-small">
+                  </lightning-button>
+                  <lightning-button variant="neutral" label="Back" onclick={handleBackToRecordType}>
+                  </lightning-button>
+                </div>
+              </template>
+
+              <template if:false={hasReturnReplaceCaseOptions}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                  <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                  <p class="slds-text-color_error slds-m-top_x-small">
+                    No eligible cases found for Return and Replace.
+                  </p>
+                  <lightning-button variant="neutral" label="Back to Request Types" onclick={handleBackToRecordType}
+                    class="slds-m-top_small">
+                  </lightning-button>
+                </div>
+              </template>
+
+              <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_large">
+                  <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                  <p class="slds-m-top_small">Loading eligible cases...</p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+
+        <!-- Sid -->
+        <!-- Main Form (New Request) -->
+        <template if:true={showForm}>
+          <template if:false={recordId}>
+            <!-- Selected Record Type Info -->
+            <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+              <span class="slds-assistive-text">Info</span>
+              <h2>
+                <strong>Request Type:</strong> {selectedRecordTypeLabel}
+                <template if:true={selectedSubType}>
+                  - {selectedSubTypeLabel}
+                </template>
+              </h2>
+            </div>
+
+            <!-- Show linked case for Rejoin -->
+            <template if:true={isRejoin}>
+              <div class="slds-notify slds-notify_toast slds-theme_warning slds-m-bottom_medium" role="status">
+                <div class="slds-notify__content">
+                  <h2 class="slds-text-heading_small">Rejoining Case: {selectedRejoinCaseNumber}</h2>
+                </div>
+              </div>
+            </template>
+
+            <!-- Accordion Sections -->
+            <lightning-accordion active-section-name={activeSections} allow-multiple-sections-open>
+
+              <!-- Contact Information Section -->
+              <lightning-accordion-section name="contactInfo" label="Contact Information">
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Contact Name</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{contactName}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Account Name</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{accountName}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Email</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{email}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Phone</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">
+                          <template if:true={contactPhone}>{contactPhone}</template>
+                          <template if:false={contactPhone}>{contactMobile}</template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Mobile Phone</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{contactMobile}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ADD THESE TWO FIELDS FOR EXISTING CASE 
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Alternate Email</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseAlternateEmail}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Alternate Phone</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{caseAlternatePhone}</div>
+                      </div>
+                    </div>
+                  </div>-->
+                  <!-- Program Field -->
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Program</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">{programName}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- PGID Field for Withdrawal Cases -->
+                  <template if:true={isWithdrawalCase}>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                      <div class="slds-form-element">
+                        <label class="slds-form-element__label">PGID</label>
+                        <div class="slds-form-element__control">
+                          <div class="slds-form-element__static">
+                            <template if:true={pgid}>
+                              {pgid}
+                            </template>
+                            <template if:false={pgid}>
+                              <span class="slds-text-color_weak">Not available</span>
+                            </template>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Completed Terms</label>
+                      <div class="slds-form-element__control">
+                        <template if:true={hasCompletedTerms}>
+                          <div class="slds-form-element__static">{completedTermName}</div>
+                        </template>
+                        <template if:false={hasCompletedTerms}>
+                          <div class="slds-form-element__static slds-text-color_weak">
+                            No completed terms found
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Commented for UAT Feedabck Akash -->
+                  <!--<div class="slds-col slds-size_1-of-1">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">Mailing Address</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-form-element__static">
+                          {mailingStreet}<br/>
+                        {mailingCity}, {mailingState} {mailingPostalCode}<br/>
+                        {mailingCountry}
+                        </div>
+                      </div>
+                    </div>
+                  </div>-->
+                </div>
+              </lightning-accordion-section>
+
+              <!-- Request Details Section -->
+              <lightning-accordion-section name="requestDetails" label="Request Details">
+                <div class="slds-grid slds-wrap slds-gutters_small">
+
+                  <!-- Return and Replace Specific Fields -->
+                  <!-- In the Request Details section, update the Return and Replace fields: -->
+                  <template if:true={isReturnReplace}>
+                    <!-- Selected Case Info -->
+                    <div class="slds-col slds-size_1-of-1">
+                      <div class="slds-notify slds-notify_toast slds-theme_info slds-m-bottom_medium" role="status">
+                        <div class="slds-notify__content">
+                          <h2 class="slds-text-heading_small">Return and Replace Request</h2>
+                          <p class="slds-m-top_xx-small">
+                            You are requesting to return and replace courses in your program.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Cohort Selection -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                      <lightning-combobox name="cohort" label="Select Cohort" value={selectedCohortId}
+                        options={cohortOptions} onchange={handleInputChange} placeholder="Select Cohort to Return"
+                        variant="label-stacked" required message-when-value-missing="Cohort selection is required">
+                      </lightning-combobox>
+                    </div>
+
+                    <!-- Course Selection -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                      <lightning-combobox name="returnReplaceCourse" label="Select Course to Return"
+                        value={selectedReturnReplaceCourseId} options={returnReplaceCourseOptions}
+                        onchange={handleReturnReplaceCourseSelect} placeholder="Select a course" variant="label-stacked"
+                        required message-when-value-missing="Course selection is required">
+                      </lightning-combobox>
+                    </div>
+
+                    <!-- Subject Field -->
+                    <div class="slds-col slds-size_1-of-1">
+                      <lightning-input name="subject" label="Subject" value={computedSubject} onchange={handleInputChange}
+                        placeholder="Brief description of your return and replace request" variant="label-stacked"
+                        disabled="true" required>
+                      </lightning-input>
+                    </div>
+
+                    <!-- Return and Replace Reason -->
+                    <div class="slds-col slds-size_1-of-1">
+                      <lightning-textarea name="description" label="Return and Replace Reason" value={description}
+                        onchange={handleInputChange}
+                        placeholder="Please provide detailed reason for returning and replacing..."
+                        variant="label-stacked" required>
+                      </lightning-textarea>
+                    </div>
+
+
+                  </template>
+
+<!-- Wellbeing Record Type Specific Fields -->
+<!-- Wellbeing Record Type Specific Fields -->
+<template if:true={shouldShowWellbeingFields}>
+    <div class="slds-col slds-size_1-of-1">
+        <h3 class="slds-text-heading_small slds-m-bottom_x-small">Wellbeing Details</h3>
+    </div>
+    
+    <!-- <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+        <lightning-combobox name="wellbeingSeverity" label="Severity" value={wellbeingSeverity}
+            onchange={handleInputChange} placeholder="Select Severity"
+            options={wellbeingSeverityOptions} variant="label-stacked" required>
+      </lightning-combobox>
+    </div> -->
+    
+    <!-- <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+       <lightning-combobox name="wellbeingModeOfInteraction" label="Mode of Interaction" 
+                  value={wellbeingModeOfInteraction} onchange={handleInputChange} 
+                  options={wellbeingModeOfInteractionOptions}
+                  placeholder="Select Mode of Interaction" variant="label-stacked" required>
+        </lightning-combobox>
+    </div> -->
+    
+    <!-- <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+        <lightning-combobox name="wellbeingType" label="Type" value={wellbeingType}
+    onchange={handleInputChange} placeholder="Select Type"
+    options={wellbeingTypeOptions} variant="label-stacked" required>
+</lightning-combobox>
+    </div> -->
+    
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                      <lightning-combobox name="wellbeingActionTaken" label="Action Taken" value={wellbeingActionTaken}
+                          onchange={handleInputChange} placeholder="Describe action taken"
+                          options={wellbeingActionTakenOptions} variant="label-stacked" required>
+                      </lightning-combobox>
+                  </div> 
+</template>
+
+                  <!-- Fee Exception Specific Fields -->
+                  <template if:true={isFeeExceptionCase}>
+                    <!-- Requested End Date Field -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                      <lightning-input type="date" name="requestedEndDate" label="Requested End Date"
+                        value={requestedEndDate} onchange={handleInputChange} variant="label-stacked" required>
+                      </lightning-input>
+                    </div>
+
+                    <!-- Subject Field -->
+                    <div class="slds-col slds-size_1-of-1">
+                      <lightning-input name="subject" label="Subject" value={computedSubject} onchange={handleInputChange}
+                        placeholder="Brief description of your fee exception request" variant="label-stacked" disabled="true" required>
+                      </lightning-input>
+                    </div>
+
+                    <!-- Reason Field -->
+                    <div class="slds-col slds-size_1-of-1">
+                      <lightning-textarea name="description" label="Reason For Request" value={description}
+                        onchange={handleInputChange}
+                        placeholder="Please provide detailed information about your fee exception request"
+                        variant="label-stacked" required>
+                      </lightning-textarea>
+                    </div>
+                  </template>
+
+                  <!-- Term Overlap Validation Section -->
+                  <template if:true={showTermValidation}>
+                    <div class="slds-col slds-size_1-of-1">
+                      <div class="slds-notify slds-notify_alert slds-theme_error slds-m-bottom_small" role="alert">
+                        <span class="slds-assistive-text">Error</span>
+                        <h2>
+                          <strong>Term Overlap Detected!</strong>
+                        </h2>
+                        <div class="slds-m-top_x-small">
+                          <p>{termValidationMessage}</p>
+                        </div>
+                      </div>
+
+                      <!-- Show overlapping cases details -->
+                      <template if:true={overlappingCases.length}>
+                        <div class="slds-box slds-box_small slds-theme_error slds-m-bottom_small">
+                          <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                            Overlapping Cases ({overlappingCases.length})
+                          </h3>
+                          <ul class="slds-list_dotted">
+                            <template for:each={formattedOverlappingCases} for:item="caseInfo">
+                              <li key={caseInfo.caseId} class="slds-item slds-m-bottom_xx-small">
+                                <div class="slds-grid slds-wrap">
+                                  <div class="slds-col slds-size_1-of-1">
+                                    <strong>{caseInfo.displayText}</strong>
+                                  </div>
+                                  <div class="slds-col slds-size_1-of-1 slds-text-color_strong slds-text-body_small">
+                                    Program: {caseInfo.programName} | Status: {caseInfo.status}
+                                  </div>
+                                </div>
+                              </li>
+                            </template>
+                          </ul>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+
+
+
+                  <!-- Existing fields for other case types -->
+                  <template if:false={isFeeExceptionCase}>
+                    <!-- LOA Type Field - Hidden for Event & Budget -->
+                    <template if:true={shouldShowLoaType}>
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="loaType" label="LOA Type" value={loaType} options={loaTypeOptions}
+                          onchange={handleInputChange} placeholder="Select Leave of Absence Type"
+                          variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+                      <!-- Student ID Field - Prepopulated from ProgramEnrollment -->
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="text" name="studentId" label="Student ID" value={pgid}
+                          variant="label-stacked" readonly>
+                        </lightning-input>
+                      </div>
+                    </template>
+
+                    <!-- Event & Budget Proposal Fields -->
+                    <template if:true={showEventBudgetFields}>
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-input type="text" name="eventTitle" label="Event Title" value={eventTitle}
+                          onchange={handleEventTitleChange} placeholder="Enter event title" variant="label-stacked"
+                          required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="datetime" name="eventProposedDateTime" label="Proposed Date/Time"
+                          value={eventProposedDateTime} onchange={handleEventProposedDateTimeChange}
+                          variant="label-stacked" required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="text" name="eventVenue" label="Venue" value={eventVenue}
+                          onchange={handleEventVenueChange} placeholder="Enter venue details" variant="label-stacked"
+                          required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="eventHostBody" label="Host Body" value={eventHostBody}
+                          options={eventHostBodyOptions} onchange={handleEventHostBodyChange}
+                          placeholder="Select Host Body" variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="number" name="eventExpectedHeadcount" label="Expected Headcount"
+                          value={eventExpectedHeadcount} onchange={handleEventExpectedHeadcountChange}
+                          variant="label-stacked" required min="1">
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="number" name="eventBudgetAsk" label="Budget Ask (₹)"
+                          value={eventBudgetAsk} onchange={handleEventBudgetAskChange} variant="label-stacked" required
+                          min="0" step="0.01">
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea name="eventDescription" label="Event Description" value={eventDescription}
+                          onchange={handleEventDescriptionChange}
+                          placeholder="Provide detailed description of the event" variant="label-stacked" required>
+                        </lightning-textarea>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea name="eventContacts" label="Contacts" value={eventContacts}
+                          onchange={handleEventContactsChange}
+                          placeholder="Provide contact information for event organizers" variant="label-stacked"
+                          required>
+                        </lightning-textarea>
+                      </div>
+                    </template>
+
+                    <template if:true={shouldShowCohortSelection}>
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 cohort-dropdown-container">
+                        <lightning-combobox name="cohort" label="Select Cohort" value={selectedCohortId}
+                          options={cohortOptions} onchange={handleInputChange} placeholder="Select Cohort to Rejoin"
+                          disabled={isAcademicSessionDisabled} variant="label-stacked" required
+                          message-when-value-missing="Cohort selection is required">
+                        </lightning-combobox>
+                      </div>
+                    </template>
+
+                    <!-- Academic Session Fields - Hidden for Event & Budget -->
+                    <template if:true={shouldShowAcademicSessionFields}>
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="text" name="academicYear" label="Academic Year" value={academicYear}
+                          variant="label-stacked" readonly>
+                        </lightning-input>
+                      </div>
+                      <template if:false={isRejoin}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                          <lightning-combobox name="fromTerm" label="From Term" value={fromTerm}
+                            options={academicSessionOptions} onchange={handleInputChange} placeholder="Select From Term"
+                            disabled={isAcademicSessionDisabled} variant="label-stacked" required
+                            message-when-value-missing="From Term is required">
+                          </lightning-combobox>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                          <lightning-combobox name="toTerm" label="To Term" value={toTerm}
+                            options={academicSessionOptions} onchange={handleInputChange} placeholder="Select To Term"
+                            disabled={isAcademicSessionDisabled} variant="label-stacked" required
+                            message-when-value-missing="To Term is required">
+                          </lightning-combobox>
+                        </div>
+                      </template>
+                      <template if:true={isRejoin}>
+        <div class="slds-col slds-size_1-of-1">
+            <div class="slds-notify slds-notify_toast slds-theme_info" role="status">
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">Terms Inherited from LOA Case:</h2>
+                    <div class="slds-m-top_xx-small">
+                        <strong>From Term:</strong> {fromTermName}<br/>
+                        <strong>To Term:</strong> {toTermName}<br/>
+                        <small class="slds-text-color_weak">
+                            These terms are automatically inherited from your selected Leave of Absence case.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+                      <template if:true={fromTerm}>
+                        <template if:true={toTerm}>
+                          <div class="slds-col slds-size_1-of-1 slds-m-top_x-small">
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                              <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-text-body_small">
+                                  Selected: <strong>{fromTermLabel}</strong> to <strong>{toTermLabel}</strong>
+                                </div>
+                              </div>
+                              <div class="slds-col slds-no-flex">
+                                <lightning-button variant="neutral" label="Check Overlap" icon-name="utility:warning"
+                                  onclick={handleCheckOverlap} class="slds-m-left_x-small" disabled={isLoading}>
+                                </lightning-button>
+                              </div>
+                            </div>
+
+                            <!-- Validation status icon -->
+                            <template if:true={showTermValidation}>
+                              <div class="slds-m-top_xx-small">
+                                <lightning-icon icon-name="utility:error" size="x-small" variant="error"
+                                  class="slds-m-right_xx-small">
+                                </lightning-icon>
+                                <span class="slds-text-color_error slds-text-body_small">
+                            Overlap detected - Please review
+                        </span>
+                              </div>
+                            </template>
+
+                            <template if:true={showNoOverlapMessage}>
+                              <div class="slds-m-top_xx-small">
+                                <lightning-icon icon-name="utility:success" size="x-small" variant="success"
+                                  class="slds-m-right_xx-small">
+                                </lightning-icon>
+                                <span class="slds-text-color_success slds-text-body_small">
+            No term overlap detected
+        </span>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </template>
+
+                      <!-- Courses Section -->
+                      <!-- Courses Section - Only show for LOA record type -->
+                      <!-- Courses Section - Only show for LOA record type -->
+                      <!-- In your template -->
+                      <template if:true={isLOARecordType}>
+                        <template if:true={fromTerm}>
+                          <template if:true={toTerm}>
+                            <div class="slds-col slds-size_1-of-1">
+                              <div class="slds-box slds-box_x-small slds-m-top_small">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
+                                  <div class="slds-col slds-has-flexi-truncate">
+                                    <h3 class="slds-text-heading_small">Missed courses</h3>
+                                    <p class="slds-text-body_small slds-m-top_xx-small">
+                                      From: {fromTermLabel} | To: {toTermLabel}
+                                    </p>
+                                  </div>
+                                  <div class="slds-col slds-no-flex">
+                                    <lightning-button variant="neutral" label="Refresh" icon-name="utility:refresh"
+                                      onclick={loadCoursesBySelectedTerms} if:false={isLoading}>
+                                    </lightning-button>
+                                  </div>
+                                </div>
+
+                                <template if:true={isLoading}>
+                                  <div class="slds-text-align_center slds-p-around_small">
+                                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                                    <p class="slds-m-top_small">Loading courses...</p>
+                                  </div>
+                                </template>
+
+                                <template if:false={isLoading}>
+                                  <!-- Debug information -->
+                                  <div class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                                    Showing courses for: {filteredCourses.length} course(s) found
+                                  </div>
+
+                                  <template if:true={hasFilteredCourses}>
+                                    <div class="slds-grid slds-wrap">
+                                      <template for:each={coursesByTerm} for:item="termGroup">
+                                        <div key={termGroup.termName}
+                                          class="slds-col slds-size_1-of-1 slds-m-bottom_small">
+                                          <div class="slds-card slds-card_boundary">
+                                            <div class="slds-card__header slds-grid">
+                                              <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                                <div class="slds-media__body">
+                                                  <h3 class="slds-text-heading_small slds-truncate">
+                                                    {termGroup.termName} ({termGroup.courses.length} courses)
+                                                  </h3>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div class="slds-card__body slds-card__body_inner">
+                                              <ul class="slds-list_dotted slds-list_vertical">
+                                                <template for:each={termGroup.courses} for:item="course">
+                                                  <li key={course.courseOfferingParticipantId} class="slds-item">
+                                                    {course.learningCourseName}
+                                                  </li>
+                                                </template>
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </template>
+                                    </div>
+                                  </template>
+
+                                  <template if:false={hasFilteredCourses}>
+                                    <div class="slds-text-align_center slds-p-around_medium">
+                                      <lightning-icon icon-name="utility:warning" size="small"
+                                        class="slds-m-bottom_x-small"></lightning-icon>
+                                      <p class="slds-text-color_weak">No courses found for the selected terms.</p>
+                                      <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                        Make sure you're enrolled in courses for these terms.
+                                      </p>
+                                    </div>
+                                  </template>
+                                </template>
+                              </div>
+                            </div>
+                          </template>
+                        </template>
+                      </template>
+                    </template>
+
+                    <template if:true={showAttendanceExceptionFields}>
+
+                      <!-- Info Banner -->
+                      <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_small" role="alert">
+                          <span class="slds-assistive-text">Info</span>
+                          <h2>
+                            <strong>Attendance Exception Request:</strong> Please select the session for which you were absent. The corresponding course will be auto-populated.
+                          </h2>
+                        </div>
+                      </div>
+
+                      <!-- Session Dropdown - First -->
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="attendanceSession" label="Session" value={selectedSessionId}
+                          options={sessionOptions} onchange={handleSessionChange} placeholder="Select Session"
+                          variant="label-stacked" required message-when-value-missing="Session selection is required">
+                        </lightning-combobox>
+                      </div>
+
+                      <!-- Course - Auto-populated -->
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input name="attendanceCourse" label="Course" value={selectedCourseName}
+                          variant="label-stacked" readonly required>
+                        </lightning-input>
+                      </div>
+
+                      <!-- Attendance Exception Reason Picklist -->
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="attendanceExceptionReason" label="Attendance Exception Reason"
+                          value={attendanceExceptionReason} options={attendanceExceptionReasonOptions}
+                          onchange={handleAttendanceReasonChange} placeholder="Select Reason" variant="label-stacked"
+                          required message-when-value-missing="Reason is required">
+                        </lightning-combobox>
+                      </div>
+
+                      <!-- Warning if no sessions found -->
+                      <template if:true={noAttendanceSessions}>
+                        <div class="slds-col slds-size_1-of-1">
+                          <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>
+                              No sessions found with absent attendance status. You must have at least one course
+                              attendance record with status 'Absent' to create an attendance exception request.
+                            </h2>
+                          </div>
+                        </div>
+                      </template>
+
+                      <!-- Show selected details -->
+                      <template if:true={showSelectedDetails}>
+                        <div class="slds-col slds-size_1-of-1">
+                          <div class="slds-notify slds-notify_toast slds-theme_info" role="status">
+                            <div class="slds-notify__content">
+                              <h2 class="slds-text-heading_small">Selected Session Details:</h2>
+                              <div class="slds-m-top_xx-small">
+                                <strong>Session:</strong> {selectedSessionKey}<br/>
+                                <!-- <strong>Course:</strong> {selectedCourseName}<br/> -->
+                                <template if:true={selectedSessionDate}>
+                                  <strong>Date:</strong> {selectedSessionDate}<br/>
+                                </template>
+                                <template if:true={selectedSessionTime}>
+                                  <strong>Time:</strong> {selectedSessionTime}<br/>
+                                </template>
+                                <strong>Extracted Absence Date:</strong> {extractedDateOfAbsence}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+
+                    </template>
+
+                    <!-- In the Request Details section, after the Academic Session fields -->
+                    <template if:true={isWithdrawalCase}>
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="email" name="alternateEmail" label="Alternate Email"
+                          value={alternateEmail} onchange={handleInputChange}
+                          placeholder="Enter alternate email address" variant="label-stacked">
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="tel" name="alternatePhone" label="Alternate Phone" value={alternatePhone}
+                          onchange={handleInputChange} placeholder="Enter alternate phone number"
+                          variant="label-stacked">
+                        </lightning-input>
+                      </div>
+                    </template>
+
+
+                    <!-- Rejoin Case Location Field -->
+                    <template if:true={isRejoin}>
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-combobox name="location" label="Location" value={locationValue}
+                          options={locationOptions} onchange={handleInputChange} placeholder="Select Location"
+                          variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+                    </template>
+
+                    <!-- Name Change Fields -->
+                    <template if:true={showNameChangeFields}>
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-input type="text" name="requestedLegalName" label="Requested Legal Name"
+                          value={requestedLegalName} onchange={handleInputChange}
+                          placeholder="Enter your requested legal name" variant="label-stacked" required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea name="nameChangeReason" label="Reason for Name Change"
+                          value={nameChangeReason} onchange={handleInputChange}
+                          placeholder="Please provide the reason for your name change request" variant="label-stacked"
+                          required>
+                        </lightning-textarea>
+                      </div>
+                    </template>
+
+                    <!-- Visa NOC Fields -->
+                    <template if:true={showVisaNocFields}>
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="text" name="passportNumber" label="Passport Number"
+                          value={passportNumber} onchange={handleInputChange} placeholder="Enter passport number"
+                          variant="label-stacked" required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="date" name="passportExpiry" label="Passport Expiry Date"
+                          value={passportExpiry} onchange={handleInputChange} variant="label-stacked" required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="visaType" label="Visa Type" value={visaType} options={visaTypeOptions}
+                          onchange={handleInputChange} placeholder="Select Visa Type" variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="visaPurpose" label="Visa Purpose" value={visaPurpose}
+                          options={visaPurposeOptions} onchange={handleInputChange} placeholder="Select Visa Purpose"
+                          variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="date" name="travelStartDate" label="Travel Start Date"
+                          value={travelStartDate} onchange={handleInputChange} variant="label-stacked" required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="date" name="travelEndDate" label="Travel End Date" value={travelEndDate}
+                          onchange={handleInputChange} variant="label-stacked" required>
+                        </lightning-input>
+                      </div>
+                    </template>
+
+                    <!-- Academic Records Fields -->
+                    <template if:true={showAcademicRecordsFields}>
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="documentType" label="Document Type" value={documentType}
+                          options={documentTypeOptions} onchange={handleInputChange} placeholder="Select Document Type"
+                          variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="deliveryMode" label="Delivery Mode" value={deliveryMode}
+                          options={deliveryModeOptions} onchange={handleInputChange} placeholder="Select Delivery Mode"
+                          variant="label-stacked" required>
+                        </lightning-combobox>
+                      </div>
+
+                      <!-- <template if:true={showPrintDeliveryWarning}>
+                        <div class="slds-col slds-size_1-of-1">
+                          <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>
+                              For Print delivery mode, please upload either fee payment receipt or ID proof document.
+                            </h2>
+                          </div>
+                        </div>
+                      </template> -->
+
+                      <!-- Conditionally show Dispatch Address -->
+                      <!-- Show Dispatch Address only when delivery mode is Print -->
+                      <template if:true={showDispatchAddress}>
+                        <div class="slds-col slds-size_1-of-1">
+                          <lightning-textarea name="dispatchAddress" label="Dispatch Address" value={dispatchAddress}
+                            onchange={handleInputChange} placeholder="Please provide the complete dispatch address"
+                            variant="label-stacked" required>
+                          </lightning-textarea>
+                        </div>
+                      </template>
+
+                    </template>
+
+                    <!-- Subject and Description Fields -->
+                    <template if:true={shouldShowSubjectAndDescription}>
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-input name="subject" label="Subject" value={computedSubject} onchange={handleInputChange}
+                          placeholder="Description of issue" variant="label-stacked" disabled="true" required>
+                        </lightning-input>
+                      </div>
+
+                      <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea name="description" label="Reason For Request" value={description}
+                          onchange={handleInputChange}
+                          placeholder="Please provide detailed information about your leave request"
+                          variant="label-stacked" required>
+                        </lightning-textarea>
+                      </div> 
+                    </template>
+                  </template>
+
+                </div>
+              </lightning-accordion-section>
+
+              <template if:true={shouldShowAttachDocuments}>
+                <lightning-accordion-section name="attachDocuments" label="Upload Supporting Documents">
+                <template if:true={showDocumentMessage}>
+                  <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    <h2>
+                      Please attach document if any
+                    </h2>
+                  </div>
+                </template>
+                <div class="slds-form-element">
+                  <label class="slds-form-element__label">Upload Files</label>
+                  <div class="slds-form-element__control">
+                    <lightning-input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple
+                      onchange={handleFileChange}>
+                    </lightning-input>
+                    <div class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                      Maximum file size: 5MB per file • Supported formats: PDF, JPG, PNG, DOC, DOCX
+                    </div>
+                  </div>
+                </div>
+
+                <template if:true={hasUploadedFiles}>
+                  <div class="slds-m-top_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                      Attached Documents ({uploadedFilesCount}) • {formattedTotalFileSize}
+                    </h3>
+                    <ul class="slds-has-dividers_top-space">
+                      <template for:each={formattedUploadedFiles} for:item="file">
+                        <li key={file.id} class="slds-item slds-p-around_x-small">
+                          <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-col slds-has-flexi-truncate">
+                              <div class="slds-grid slds-grid_vertical-align-center">
+                                <lightning-icon icon-name={file.iconName} size="small" class="slds-m-right_x-small">
+                                </lightning-icon>
+                                <div class="slds-truncate">
+                                  <strong>{file.name}</strong>
+                                  <template if:true={file.isSignedVersion}>
+                                    <lightning-badge label="Signed" class="slds-m-left_x-small"></lightning-badge>
+                                  </template>
+                                  <div class="slds-text-body_small slds-text-color_weak">{file.formattedSize}</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                              <lightning-button-icon icon-name="utility:preview" alternative-text="Preview"
+                                title="Preview" data-id={file.id} onclick={handlePreviewFile}
+                                class="slds-m-left_x-small">
+                              </lightning-button-icon>
+                              <lightning-button-icon icon-name="utility:delete" alternative-text="Remove" title="Remove"
+                                data-id={file.id} onclick={handleRemoveFile} variant="error"
+                                class="slds-m-left_x-small">
+                              </lightning-button-icon>
+                            </div>
+                          </div>
+                        </li>
+                      </template>
+                    </ul>
+                  </div>
+                </template>
+
+                <template if:false={hasUploadedFiles}>
+                  <div class="slds-text-align_center slds-p-around_medium slds-text-color_weak">
+                    <p>No files uploaded yet</p>
+                  </div>
+                </template>
+              </lightning-accordion-section>
+              </template>
+
+            </lightning-accordion>
+
+            <!-- Submit Button -->
+            <div class="slds-m-top_large slds-text-align_center">
+              <lightning-button variant="brand" label={submitButtonLabel} onclick={handleSubmit} disabled={isLoading}
+                class="slds-m-horizontal_x-small">
+              </lightning-button>
+              <lightning-button variant="neutral" label="Cancel" onclick={handleBackToRecordType}
+                class="slds-m-horizontal_x-small">
+              </lightning-button>
+            </div>
+
+            <template if:true={isLoading}>
+              <div class="slds-text-align_center slds-m-top_medium">
+                <lightning-spinner alternative-text="Processing" size="medium"></lightning-spinner>
+              </div>
+            </template>
+          </template>
+        </template>
+      </template>
+    </template>
+
+      <!-- EXISTING CASE SCENARIO -->
+      <template if:true={recordId}>
+
+        <!-- Case Header -->
+        <!-- Case Header -->
+        <div class="slds-page-header slds-m-bottom_medium">
+          <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+              <div class="slds-media">
+                <div class="slds-media__figure">
+                  <lightning-icon icon-name="standard:case" size="medium"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                  <h1 class="slds-page-header__title">
+                    <template if:true={caseNumber}>
+                      Case: {caseNumber}
+                    </template>
+                    <template if:false={caseNumber}>
+                      <!-- Case: {recordId} -->
+                    </template>
+                    <!-- Always show the current status badge with LABEL -->
+                    <!-- In your case header -->
+                    <template if:true={caseStatusLabel}>
+                      <lightning-badge label={caseStatusLabel} class="slds-m-left_small"></lightning-badge>
+                    </template>
+                  </h1>
+                  <p class="slds-page-header__name-meta">
+                    <template if:true={isCaseClosed}>
+                      This case is closed. No further actions can be taken.
+                    </template>
+                    <template if:true={isCaseRejected}>
+                      This case has been rejected. No further actions can be taken.
+                    </template>
+                    <!-- commented for UAT FeedBack -->
+                    <!--<template if:false={isCaseClosed}>
+                      Upload documents for your existing leave request
+                    </template>-->
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion Sections for Existing Case -->
+        <lightning-accordion active-section-name={activeSections} allow-multiple-sections-open>
+
+          <!-- Contact Information Section -->
+          <lightning-accordion-section name="contactInfo" label="Contact Information">
+            <template if:true={showRejoinPaymentButton}>
+              <c-case-rejoin-payment record-id={recordId}></c-case-rejoin-payment>
+            </template>
+            <div class="info-grid">
+              <div class="info-grid__row">
+                <div class="info-grid__cell">
+                  <div class="info-grid__label">Contact Name</div>
+                  <div class="info-grid__value">{contactName}</div>
+                </div>
+                <div class="info-grid__cell">
+                  <div class="info-grid__label">Account Name</div>
+                  <div class="info-grid__value">{accountName}</div>
+                </div>
+              </div>
+              <div class="info-grid__row">
+                <div class="info-grid__cell">
+                  <div class="info-grid__label">Email</div>
+                  <div class="info-grid__value">{email}</div>
+                </div>
+                <div class="info-grid__cell">
+                  <div class="info-grid__label">Phone</div>
+                  <div class="info-grid__value">
+                    <template if:true={contactPhone}>{contactPhone}</template>
+                    <template if:false={contactPhone}>{contactMobile}</template>
+                  </div>
+                </div>
+              </div>
+              <div class="info-grid__row">
+                <div class="info-grid__cell">
+                  <div class="info-grid__label">Mobile Phone</div>
+                  <div class="info-grid__value">{contactMobile}</div>
+                </div>
+                <div class="info-grid__cell">
+                  <div class="info-grid__label">Case Owner</div>
+                  <div class="info-grid__value">{ownerName}</div>
+                </div>
+              </div>
+            </div>
+          </lightning-accordion-section>
+
+          <!-- Request Details Section -->
+          <lightning-accordion-section name="requestDetails" label="Request Details">
+
+              <!-- Amount Due Section -->
+              <template if:true={showAmountField}>
+                <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-bottom_medium" role="alert">
+                  <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small slds-m-bottom_x-small">
+                      <lightning-icon icon-name="utility:moneybag" size="small"></lightning-icon>
+                      Payment Required
+                    </h2>
+                    <div class="info-grid">
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Amount Due</div>
+                          <div class="info-grid__value">
+                            <span style="color: #d62525; font-weight: bold;">₹{formattedCaseAmount}</span>
+                          </div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Status</div>
+                          <div class="info-grid__value">
+                            <lightning-badge label="Pending Payment" variant="warning"></lightning-badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="slds-m-top_x-small slds-text-color_weak">
+                      <p class="slds-text-body_small">
+                        Please complete the payment to proceed with your Rejoin request.
+                        The payment must be completed before your case can be processed further.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Fee Exception Specific Fields -->
+              <template if:true={isExistingFeeExceptionCase}>
+                <div class="info-grid">
+                  <div class="info-grid__row">
+                    <div class="info-grid__cell">
+                      <div class="info-grid__label">Requested End Date</div>
+                      <div class="info-grid__value">{requestedEndDate}</div>
+                    </div>
+                    <div class="info-grid__cell"></div>
+                  </div>
+                  <div class="info-grid__row">
+                    <div class="info-grid__cell" style="flex: 1 1 100%;">
+                      <div class="info-grid__label">Subject</div>
+                      <div class="info-grid__value">{computedSubject}</div>
+                    </div>
+                  </div>
+                  <div class="info-grid__row">
+                    <div class="info-grid__cell" style="flex: 1 1 100%;">
+                      <div class="info-grid__label">Reason For Request</div>
+                      <div class="info-grid__value">{caseDescription}</div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Existing fields for other case types -->
+              <template if:false={isFeeExceptionCase}>
+
+                <!-- Event & Budget Fields for Existing Case -->
+                <template if:true={showEventBudgetFields}>
+                  <div class="info-grid info-grid--three">
+                    <div class="info-grid__row">
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Program</div>
+                        <div class="info-grid__value">{caseProgram}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Venue</div>
+                        <div class="info-grid__value">{eventVenue}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Expected Headcount</div>
+                        <div class="info-grid__value">{eventExpectedHeadcount}</div>
+                      </div>
+                    </div>
+                    <div class="info-grid__row">
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Event Title</div>
+                        <div class="info-grid__value">{eventTitle}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Proposed Date/Time</div>
+                        <div class="info-grid__value">{eventProposedDateTime}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Host Body</div>
+                        <div class="info-grid__value">{eventHostBody}</div>
+                      </div>
+                    </div>
+                    <div class="info-grid__row">
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Event Description</div>
+                        <div class="info-grid__value">{eventDescription}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Budget Ask (₹)</div>
+                        <div class="info-grid__value">{eventBudgetAsk}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Contacts</div>
+                        <div class="info-grid__value">{eventContacts}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Non-Event case types -->
+                <template if:false={showEventBudgetFields}>
+                  <div class="info-grid">
+                    <!-- Program row -->
+                    <div class="info-grid__row">
+                      <div class="info-grid__cell">
+                        <div class="info-grid__label">Program</div>
+                        <div class="info-grid__value">{caseProgram}</div>
+                      </div>
+                      <div class="info-grid__cell">
+                        <template if:true={isExistingWithdrawalCase}>
+                          <div class="info-grid__label">PGID</div>
+                          <div class="info-grid__value">
+                            <template if:true={pgid}>{pgid}</template>
+                            <template if:false={pgid}><span class="slds-text-color_weak">Not available</span></template>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+
+                    <!-- Withdrawal alternate fields -->
+                    <template if:true={isExistingWithdrawalCase}>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Alternate Email</div>
+                          <div class="info-grid__value">{caseAlternateEmail}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Alternate Phone</div>
+                          <div class="info-grid__value">{caseAlternatePhone}</div>
+                        </div>
+                      </div>
+                    </template>
+
+                    <!-- Academic Session Fields -->
+                    <template if:true={shouldShowAcademicSessionFieldsInCase}>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">From Term</div>
+                          <div class="info-grid__value">{caseFromTerm}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">To Term</div>
+                          <div class="info-grid__value">{caseToTerm}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Academic Year</div>
+                          <div class="info-grid__value">{academicYear}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Student Id</div>
+                          <div class="info-grid__value">{pgid}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Completed Term</div>
+                          <div class="info-grid__value">
+                            <template if:true={completedTermName}>{completedTermName}</template>
+                            <template if:false={completedTermName}><span class="slds-text-color_weak">No completed terms found</span></template>
+                          </div>
+                        </div>
+                        <div class="info-grid__cell"></div>
+                      </div>
+                    </template>
+
+                    <!-- Academic Records Fields -->
+                    <template if:true={caseShowAcademicRecordsFields}>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Document Type</div>
+                          <div class="info-grid__value">{caseDocumentType}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Delivery Mode</div>
+                          <div class="info-grid__value">{caseDeliveryMode}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell" style="flex: 1 1 100%;">
+                          <div class="info-grid__label">Dispatch Address</div>
+                          <div class="info-grid__value">
+                            <template if:true={isPrintDeliveryMode}>{caseDispatchAddress}</template>
+                            <template if:false={isPrintDeliveryMode}><span class="slds-text-color_weak">Not required for {caseDeliveryMode} delivery</span></template>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+
+                    <!-- Visa NOC Fields -->
+                    <template if:true={caseShowVisaNocFields}>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Passport Number</div>
+                          <div class="info-grid__value">{casePassportNumber}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Passport Expiry Date</div>
+                          <div class="info-grid__value">{casePassportExpiry}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Visa Type</div>
+                          <div class="info-grid__value">{caseVisaType}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Visa Purpose</div>
+                          <div class="info-grid__value">{caseVisaPurpose}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Travel Start Date</div>
+                          <div class="info-grid__value">{caseTravelStartDate}</div>
+                        </div>
+                        <div class="info-grid__cell">
+                          <div class="info-grid__label">Travel End Date</div>
+                          <div class="info-grid__value">{caseTravelEndDate}</div>
+                        </div>
+                      </div>
+                    </template>
+
+                    <!-- Name Change Fields -->
+                    <template if:true={caseShowNameChangeFields}>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell" style="flex: 1 1 100%;">
+                          <div class="info-grid__label">Requested Legal Name</div>
+                          <div class="info-grid__value">{caseRequestedLegalName}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell" style="flex: 1 1 100%;">
+                          <div class="info-grid__label">Reason for Name Change</div>
+                          <div class="info-grid__value">{caseNameChangeReason}</div>
+                        </div>
+                      </div>
+                    </template>
+
+                    <!-- Subject and Description -->
+                    <template if:true={shouldShowSubjectAndDescriptionInCase}>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell" style="flex: 1 1 100%;">
+                          <div class="info-grid__label">Subject</div>
+                          <div class="info-grid__value">{computedSubject}</div>
+                        </div>
+                      </div>
+                      <div class="info-grid__row">
+                        <div class="info-grid__cell" style="flex: 1 1 100%;">
+                          <div class="info-grid__label">Description</div>
+                          <div class="info-grid__value">{caseDescription}</div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+
+              </template>
+
+              <!-- Your Courses -->
+              <template if:true={isExistingLOARecordType}>
+                <template if:true={hasUserCourses}>
+                  <h3 class="slds-text-heading_small slds-m-top_medium slds-m-bottom_x-small">Your Courses</h3>
+                  <ul class="slds-list_dotted">
+                    <template for:each={userCourses} for:item="course">
+                      <li key={course.courseOfferingParticipantId}>{course.learningCourseName}</li>
+                    </template>
+                  </ul>
+                </template>
+              </template>
+
+              <!-- Wellbeing Fields for Existing Case -->
+<template if:true={shouldShowWellbeingFieldsInCase}>
+    <h3 class="slds-text-heading_small slds-m-top_medium slds-m-bottom_x-small">Wellbeing Details</h3>
+    <div class="info-grid">
+      <div class="info-grid__row">
+        <div class="info-grid__cell">
+          <div class="info-grid__label">Action Taken</div>
+          <div class="info-grid__value">{caseWellbeingActionTaken}</div>
+        </div>
+        <div class="info-grid__cell"></div>
+      </div>
+    </div>
+</template>
+          </lightning-accordion-section>
+
+          <!-- In the existing case scenario, add this after the Case Information section -->
+          <!-- Bank Details Section for Existing Withdrawal Cases -->
+          <!-- In your template --><!-- Wellbeing Fields for Existing Case -->
+
+          <template if:true={shouldShowBankDetails}>
+            <!-- <template if:true={showBankDetailsReadOnly}>
+              <lightning-accordion-section name="bankDetails" label="Bank Account Details">
+                <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+                  <span class="slds-assistive-text">Info</span>
+                  <h2>
+                    <strong>Important:</strong> Bank account details for withdrawal processing (Read Only).
+                  </h2>
+                </div>
+
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input type="text" name="accountHolderName" label="Account Holder Name"
+                      value={caseAccountHolderName} readonly
+                      placeholder="Enter account holder name as per bank records" variant="label-stacked" required>
+                    </lightning-input>
+                  </div>
+
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input type="text" name="accountNumber" label="Account Number" value={caseAccountNumber}
+                      readonly placeholder="Enter your bank account number" variant="label-stacked"
+                      required>
+                    </lightning-input>
+                  </div>
+
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input type="text" name="ifscCode" label="IFSC Code" value={caseIfscCode}
+                      readonly placeholder="Enter IFSC code" variant="label-stacked" required>
+                    </lightning-input>
+                  </div>
+
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input type="text" name="bankName" label="Bank Name" value={caseBankName}
+                      readonly placeholder="Enter bank name" variant="label-stacked" required>
+                    </lightning-input>
+                  </div>
+
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input type="text" name="branchName" label="Branch Name" value={caseBranchName}
+                      readonly placeholder="Enter branch name" variant="label-stacked" required>
+                    </lightning-input>
+                  </div>
+                </div>
+              </lightning-accordion-section>
+            </template> -->
+
+            <!-- <template if:false={showBankDetailsReadOnly}> -->
+              <lightning-accordion-section name="bankDetails" label="Bank Account Details">
+              <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Info</span>
+                <h2>
+                  <strong>Important:</strong> Please provide your bank account details for withdrawal processing.
+                </h2>
+              </div>
+
+              <div class="slds-grid slds-wrap slds-gutters_small">
+                <!-- Account Holder Name -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <lightning-input type="text" name="accountHolderName" label="Account Holder Name"
+                    value={caseAccountHolderName} onchange={handleInputChange} 
+                    placeholder="Enter account holder name as per bank records" variant="label-stacked" required disabled = {showBankDetailsReadOnly}>
+                  </lightning-input>
+                </div>
+
+                <!-- Account Number -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <lightning-input type="text" name="accountNumber" label="Account Number" value={caseAccountNumber}
+                    onchange={handleInputChange} placeholder="Enter your bank account number" variant="label-stacked"
+                    required disabled = {showBankDetailsReadOnly}>
+                  </lightning-input>
+                </div>
+
+                <!-- IFSC Code -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <lightning-input type="text" name="ifscCode" label="IFSC Code" value={caseIfscCode}
+                    onchange={handleInputChange} placeholder="Enter IFSC code" variant="label-stacked" required disabled = {showBankDetailsReadOnly}>
+                  </lightning-input>
+                </div>
+
+                <!-- Bank Name -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <lightning-input type="text" name="bankName" label="Bank Name" value={caseBankName}
+                    onchange={handleInputChange} placeholder="Enter bank name" variant="label-stacked" required disabled = {showBankDetailsReadOnly}>
+                  </lightning-input>
+                </div>
+
+                <!-- Branch Name -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <lightning-input type="text" name="branchName" label="Branch Name" value={caseBranchName}
+                    onchange={handleInputChange} placeholder="Enter branch name" variant="label-stacked" required disabled = {showBankDetailsReadOnly}>
+                  </lightning-input>
+                </div>
+              </div>
+            </lightning-accordion-section>
+            <!-- </template> -->
+          </template>
+
+          <!-- Remove the Bank Details section from the new case Request Details section -->
+          <!-- (The one you added earlier should be removed for new Withdrawal cases) -->
+
+          <!-- Case Documents Section -->
+          <lightning-accordion-section name="caseDocuments" label="Case Documents Available for Download">
+            <template if:true={hasActualCaseFiles}>
+              <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Info</span>
+                <h2>
+                  <strong>Instructions:</strong> 1. Download documents below → 2. Print and sign → 3. Upload Supporting Documents
+                </h2>
+              </div>
+
+              <ul class="slds-has-dividers_top-space">
+                <template for:each={formattedCaseFiles} for:item="file">
+                  <li key={file.id} class="slds-item slds-p-around_x-small">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                      <div class="slds-col slds-has-flexi-truncate">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                          <lightning-icon icon-name={file.iconName} size="small" class="slds-m-right_x-small">
+                          </lightning-icon>
+                          <div class="slds-truncate">
+                            <strong>{file.name}</strong>
+                            <div class="slds-text-body_small slds-text-color_weak">
+                              {file.formattedSize} • {file.type} • Uploaded: {file.uploadedDate}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="slds-col slds-no-flex">
+                        <lightning-button variant="neutral" label="Download" icon-name="utility:download"
+                          data-id={file.id} onclick={handleDownloadCaseFile} class="slds-m-left_x-small">
+                        </lightning-button>
+                        <lightning-button variant="neutral" label="Preview" icon-name="utility:preview"
+                          data-id={file.id} onclick={handlePreviewCaseFile} class="slds-m-left_x-small">
+                        </lightning-button>
+                      </div>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+            </template>
+
+            <template if:false={hasActualCaseFiles}>
+              <div class="slds-text-align_center slds-p-around_medium slds-text-color_weak">
+                <lightning-icon icon-name="utility:file" size="medium" class="slds-m-bottom_small"></lightning-icon>
+                <p class="slds-m-top_small"><strong>No documents have been attached to this case yet.</strong></p>
+                <p class="slds-text-body_small">Documents will appear here once they are added by the support team.</p>
+              </div>
+            </template>
+          </lightning-accordion-section>
+
+          <!-- Terms and Conditions Section -->
+          <!-- Terms and Conditions Section -->
+          <!-- Terms and Conditions Section -->
+          <!-- Terms and Conditions Section -->
+          <template if:true={recordId}>
+            <!-- Terms and Conditions Section -->
+            <!-- In your template -->
+            <template if:true={showTermsSection}>
+              <lightning-accordion-section name="termsConditions" label="Terms and Conditions">
+                <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+                  <span class="slds-assistive-text">Info</span>
+                  <h2>
+                    <strong>Important:</strong> Please read and accept the terms and conditions to proceed with your
+                    case.
+                    <template if:true={isExistingWithdrawalCase}>
+                      <br/><small>Withdrawal Request - Bank Account Processing</small>
+                    </template>
+                  </h2>
+                </div>
+
+                <!-- Show Terms and Conditions Data -->
+                <!-- <template if:true={showTermsAndConditionsData}>
+                  <div class="slds-box slds-box_small slds-theme_default slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">Terms and Conditions</h3>
+                    <div class="slds-scrollable" style="max-height: 300px; overflow-y: auto;">
+                      <div class="slds-text-body_small slds-p-around_small"
+                        style="white-space: pre-wrap; font-family: inherit;">
+                        {termsAndConditionsData}
+                      </div>
+                    </div>
+                  </div>
+                </template> -->
+
+                <!-- Acceptance Checkboxes -->
+                <div class="slds-form-element">
+                  <label class="slds-form-element__label"><strong>Acceptance Required *</strong></label>
+                  <div class="slds-form-element__control">
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                      <!-- Accept Checkbox -->
+                      <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-checkbox">
+                          <input type="checkbox"
+                       name="termsAccept"
+                       id="termsAccept"
+                       checked={termsAccepted}
+                       onchange={handleTermsCheckboxChange} />
+                          <label class="slds-checkbox__label" for="termsAccept">
+                    <span class="slds-checkbox_faux"></span>
+                    <span class="slds-form-element__label">I Accept the Terms and Conditions</span>
+                </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reason for Rejection (Only show when NOT accepting) -->
+                <template if:true={showRejectionReason}>
+                  <div class="slds-m-top_medium">
+                    <lightning-textarea name="termsReason" label="Reason for Rejection *" value={termsReason}
+                      onchange={handleTermsReasonChange}
+                      placeholder="Please provide your reason for rejecting the terms and conditions..."
+                      variant="label-stacked" required>
+                    </lightning-textarea>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                      This field is required if you are rejecting the terms and conditions.
+                    </p>
+                  </div>
+                </template>
+              </lightning-accordion-section>
+            </template>
+          </template>
+          <!-- Financial Statement Section -->
+          <!-- Financial Statement Section -->
+          <template if:true={showFinancialStatementSection}>
+            <template if:false={isCaseClosed}>
+              
+              <lightning-accordion-section name="financialStatement" label="Financial Statement Acceptance Required">
+                <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-bottom_medium" role="alert">
+                  <span class="slds-assistive-text">Warning</span>
+                  <h2>
+                    <strong>Important:</strong> Your case requires acceptance of the financial statement before
+                    proceeding.
+                  </h2>
+                </div>
+
+                <!-- Use radio buttons for better UX -->
+                <div class="slds-form-element">
+                  <label class="slds-form-element__label"><strong>Financial Statement Response *</strong></label>
+                  <div class="slds-form-element__control">
+                    <div class="slds-radio_button-group">
+                      <span class="slds-button slds-radio_button">
+                            <input type="radio" id="financialStatementAccept" 
+                                   name="financialStatementResponse" 
+                                   value="accepted"
+                                   checked={financialStatementAccepted}
+                                   onchange={handleFinancialStatementResponseChange} />
+                            <label class="slds-radio_button__label" for="financialStatementAccept">
+                                <span class="slds-radio_faux">Accept</span>
+                      </label>
+                      </span>
+                      <span class="slds-button slds-radio_button">
+                            <input type="radio" id="financialStatementReject" 
+                                   name="financialStatementResponse" 
+                                   value="rejected"
+                                   checked={financialStatementRejected}
+                                   onchange={handleFinancialStatementResponseChange} />
+                            <label class="slds-radio_button__label" for="financialStatementReject">
+                                <span class="slds-radio_faux">Reject</span>
+                      </label>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reason field (only show when rejected) -->
+                <template if:true={financialStatementRejected}>
+                  <div class="slds-m-top_medium">
+                    <lightning-textarea name="financialStatementReason" label="Reason for Rejection *"
+                      value={financialStatementReason} onchange={handleFinancialStatementReasonChange}
+                      placeholder="Please provide your reason for rejecting the financial statement..."
+                      variant="label-stacked" required>
+                    </lightning-textarea>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                      This field is required to document your rejection reason.
+                    </p>
+                  </div>
+                </template>
+              </lightning-accordion-section>
+            
+            </template>
+          </template>
+
+          <!-- Actions Section (2-column: Comments and Upload) -->
+            <lightning-accordion-section name="actions" label="Actions">
+              <div class="slds-grid slds-wrap slds-gutters_small">
+
+                <!-- Comments Column -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                  <template if:true={showCommentSection}>
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Case Comments</h3>
+
+                    <template if:false={isCaseClosed}>
+                      <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-textarea name="newComment" label="Add a Comment" value={newCommentText}
+                          onchange={handleCommentChange} placeholder="Type your comment here..." variant="label-stacked">
+                        </lightning-textarea>
+                        <lightning-button variant="brand" label="Add Comment" icon-name="utility:add"
+                          onclick={handleAddComment} disabled={isLoading} class="slds-m-top_small">
+                        </lightning-button>
+                      </div>
+                    </template>
+
+                    <template if:true={hasCaseComments}>
+                      <h4 class="slds-text-heading_small slds-m-bottom_x-small">
+                        Previous Comments ({caseComments.length})
+                      </h4>
+                      <ul class="slds-has-dividers_top-space">
+                        <template for:each={caseComments} for:item="comment">
+                          <li key={comment.Id} class="slds-item slds-p-around_x-small">
+                            <div class="slds-grid slds-wrap">
+                              <div class="slds-col slds-size_1-of-1">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                  <lightning-icon icon-name="standard:user" size="x-small" class="slds-m-right_x-small">
+                                  </lightning-icon>
+                                  <strong>{comment.displayName}</strong>
+                                  <template if:true={comment.isCurrentUser}>
+                                    <lightning-badge label="You" class="slds-m-left_x-small"></lightning-badge>
+                                  </template>
+                                  <span class="slds-text-body_small slds-text-color_weak slds-m-left_small">
+                                {comment.formattedDate}
+                              </span>
+                                </div>
+                              </div>
+                              <div class="slds-col slds-size_1-of-1 slds-m-top_x-small">
+                                <p class="comment-body">{comment.CommentBody}</p>
+                              </div>
+                            </div>
+                          </li>
+                        </template>
+                      </ul>
+                    </template>
+
+                    <template if:false={hasCaseComments}>
+                      <div class="slds-text-align_center slds-p-around_medium slds-text-color_weak">
+                        <p>No comments yet. Be the first to add a comment!</p>
+                      </div>
+                    </template>
+                  </template>
+                </div>
+
+                <!-- Upload Documents Column -->
+                <template if:false={isCaseClosed}>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Upload Supporting Documents</h3>
+
+                  <div class="slds-form-element">
+                    <label class="slds-form-element__label">Upload Files</label>
+                    <div class="slds-form-element__control">
+                      <lightning-input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple
+                        onchange={handleFileChange}>
+                      </lightning-input>
+                      <div class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                        Maximum file size: 5MB per file • Supported formats: PDF, JPG, PNG, DOC, DOCX
+                      </div>
+                    </div>
+                  </div>
+
+                  <template if:true={hasUploadedFiles}>
+                    <div class="slds-m-top_medium">
+                      <h4 class="slds-text-heading_small slds-m-bottom_x-small">
+                        Signed Documents Ready for Upload ({uploadedFilesCount}) • {formattedTotalFileSize}
+                      </h4>
+                      <ul class="slds-has-dividers_top-space">
+                        <template for:each={formattedUploadedFiles} for:item="file">
+                          <li key={file.id} class="slds-item slds-p-around_x-small">
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                              <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                  <lightning-icon icon-name={file.iconName} size="small" class="slds-m-right_x-small">
+                                  </lightning-icon>
+                                  <div class="slds-truncate">
+                                    <strong>{file.name}</strong>
+                                    <template if:true={file.isSignedVersion}>
+                                      <lightning-badge label="Signed" class="slds-m-left_x-small"></lightning-badge>
+                                    </template>
+                                    <div class="slds-text-body_small slds-text-color_weak">{file.formattedSize}</div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="slds-col slds-no-flex">
+                                <lightning-button-icon icon-name="utility:preview" alternative-text="Preview"
+                                  title="Preview" data-id={file.id} onclick={handlePreviewFile}
+                                  class="slds-m-left_x-small">
+                                </lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:delete" alternative-text="Remove"
+                                  title="Remove" data-id={file.id} onclick={handleRemoveFile} variant="error"
+                                  class="slds-m-left_x-small">
+                                </lightning-button-icon>
+                              </div>
+                            </div>
+                          </li>
+                        </template>
+                      </ul>
+                    </div>
+                  </template>
+
+                  <template if:false={hasUploadedFiles}>
+                    <div class="slds-text-align_center slds-p-around_medium slds-text-color_weak">
+                      <p>No files uploaded yet</p>
+                    </div>
+                  </template>
+                </div>
+                </template>
+              </div>
+            </lightning-accordion-section>
+        </lightning-accordion>
+
+        <!-- Submit Button for Existing Case -->
+        <template if:false={isCaseClosed}>
+          <div class="slds-m-top_large slds-text-align_center">
+            <lightning-button variant="brand" label="Submit" onclick={handleSubmit} disabled={isLoading}>
+            </lightning-button>
+          </div>
+        </template>
+        <template if:true={isCaseClosed}>
+          <div class="slds-notify slds-notify_alert slds-theme_info slds-m-top_large" role="alert">
+            <span class="slds-assistive-text">Info</span>
+            <h2>
+              This case is closed. No further actions can be taken.
+            </h2>
+          </div>
+        </template>
+
+        <template if:true={isLoading}>
+          <div class="slds-text-align_center slds-m-top_medium">
+            <lightning-spinner alternative-text="Processing" size="medium"></lightning-spinner>
+          </div>
+        </template>
+      </template>
+
+      <!-- File Preview Modal -->
+      <template if:true={showFilePreview}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeFilePreview}>
+              <lightning-icon icon-name="utility:close" size="small" alternative-text="Close"></lightning-icon>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+              <h2 class="slds-modal__title slds-hyphenate">{selectedFile.name}</h2>
+              <p class="slds-m-top_x-small">{selectedFile.formattedSize} • {selectedFile.type}</p>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" style="min-height: 400px;">
+              <template if:true={selectedFile}>
+
+                <!-- PDF Preview -->
+                <template if:true={selectedFile.ispdf}>
+                  <template if:true={selectedFile.useDistributionUrl}>
+                    <iframe src={selectedFile.previewUrl} title={selectedFile.name}
+                      style="width: 100%; height: 500px; border: none;"></iframe>
+                  </template>
+                  <template if:false={selectedFile.useDistributionUrl}>
+                    <object data={selectedFile.base64} type="application/pdf" style="width: 100%; height: 500px;">
+                    <div class="slds-text-align_center slds-p-around_large">
+                      <lightning-icon icon-name="doctype:pdf" size="large"></lightning-icon>
+                      <p class="slds-m-top_small">PDF preview not available</p>
+                      <p class="slds-text-color_weak">Please download to view</p>
+                    </div>
+                  </object>
+                  </template>
+                </template>
+
+                <!-- Image Preview -->
+                <template if:true={selectedFile.isimage}>
+                  <div class="slds-text-align_center">
+                    <img src={selectedFile.base64} alt={selectedFile.name} style="max-width: 100%; height: auto;" />
+                  </div>
+                </template>
+
+                <!-- Other Files -->
+                <template if:false={selectedFile.ispdf}>
+                  <template if:false={selectedFile.isimage}>
+                    <div class="slds-text-align_center slds-p-around_large">
+                      <lightning-icon icon-name={selectedFile.iconname} size="large"></lightning-icon>
+                      <p class="slds-m-top_small">Preview not available for this file type</p>
+                      <p class="slds-text-color_weak">Download the file to view it</p>
+                    </div>
+                  </template>
+                </template>
+
+              </template>
+            </div>
+            <footer class="slds-modal__footer">
+              <lightning-button variant="neutral" label="Close" onclick={closeFilePreview}>
+              </lightning-button>
+              <lightning-button variant="brand" label="Download" icon-name="utility:download"
+                onclick={handleDownloadFile}>
+              </lightning-button>
+              <template if:true={selectedFile.useDistributionUrl}>
+                <lightning-button variant="neutral" label="Open in New Tab" icon-name="utility:new_window"
+                  onclick={handleOpenInNewTab}>
+                </lightning-button>
+              </template>
+            </footer>
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+
+      <!-- //Sid -->
+      <!-- End of form content -->
+    </div>
+  </div>
+</template>

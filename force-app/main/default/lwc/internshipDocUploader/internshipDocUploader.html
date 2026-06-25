@@ -1,0 +1,80 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 04-21-2026
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <div class="slds-p-around_medium">
+
+        <!-- Document Type Picklist -->
+        <div class="slds-form-element slds-m-bottom_medium">
+            <label class="slds-form-element__label">
+                <abbr class="slds-required" title="required">*</abbr>
+                Document Type
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" onchange={handleTypeChange}>
+                        <option value="">-- Select Document Type --</option>
+                        <option value="Summer Internship Offer Letter">Summer Internship Offer Letter</option>
+                        <option value="Internship Completion Certificate">Internship Completion Certificate</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <template if:true={showTypeError}>
+                <p class="slds-text-color_error slds-m-top_xx-small">
+                    Please select a document type.
+                </p>
+            </template>
+        </div>
+
+        <!-- File Upload — shown only after type selected -->
+        <template if:true={documentType}>
+
+            <template if:false={fileName}>
+                <lightning-file-upload
+                    label="Select File"
+                    name="internshipFileUpload"
+                    accepted-formats=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                    record-id={recordId}
+                    onuploadfinished={handleUploadFinished}>
+                </lightning-file-upload>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                    Allowed: PDF, DOC, DOCX, JPG, PNG
+                </p>
+            </template>
+
+            <template if:true={fileName}>
+                <div class="slds-box slds-theme_shade slds-m-top_small">
+                    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                        <div class="slds-col">
+                            <lightning-icon
+                                icon-name="doctype:attachment"
+                                size="small"
+                                class="slds-m-right_x-small">
+                            </lightning-icon>
+                            <span class="slds-text-body_regular">{fileName}</span>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <lightning-button-icon
+                                icon-name="utility:delete"
+                                variant="border-filled"
+                                size="small"
+                                alternative-text="Remove"
+                                onclick={removeFile}>
+                            </lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+                <p class="slds-text-color_success slds-m-top_x-small slds-text-body_small">
+                    ✓ File ready to upload
+                </p>
+            </template>
+
+        </template>
+
+    </div>
+</template>

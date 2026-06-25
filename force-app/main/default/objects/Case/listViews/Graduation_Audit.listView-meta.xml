@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Graduation_Audit</fullName>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Program__c</columns>
+    <columns>Academic_Term__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Case.Graduate_Audit</value>
+    </filters>
+    <label>Graduation Audit</label>
+</ListView>

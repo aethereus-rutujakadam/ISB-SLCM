@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Sub_Status__c</fullName>
+    <label>Sub Sub Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Attendance Audit</fullName>
+                <default>false</default>
+                <label>Attendance Audit</label>
+            </value>
+            <value>
+                <fullName>Certificate Issued</fullName>
+                <default>false</default>
+                <label>Certificate Issued</label>
+            </value>
+            <value>
+                <fullName>Certificate Pending</fullName>
+                <default>false</default>
+                <label>Certificate Pending</label>
+            </value>
+            <value>
+                <fullName>Certificate Re-Issued</fullName>
+                <default>false</default>
+                <label>Certificate Re-Issued</label>
+            </value>
+            <value>
+                <fullName>Current Student</fullName>
+                <default>false</default>
+                <label>Current Student</label>
+            </value>
+            <value>
+                <fullName>Enrolled</fullName>
+                <default>false</default>
+                <label>Enrolled</label>
+            </value>
+            <value>
+                <fullName>Enrolling</fullName>
+                <default>false</default>
+                <label>Enrolling</label>
+            </value>
+            <value>
+                <fullName>Failed</fullName>
+                <default>false</default>
+                <label>Failed</label>
+            </value>
+            <value>
+                <fullName>Fee Pending</fullName>
+                <default>false</default>
+                <label>Fee Pending</label>
+            </value>
+            <value>
+                <fullName>Graduated</fullName>
+                <default>false</default>
+                <label>Graduated</label>
+            </value>
+            <value>
+                <fullName>Graduating</fullName>
+                <default>false</default>
+                <label>Graduating</label>
+            </value>
+            <value>
+                <fullName>Inactive for Fee Payment</fullName>
+                <default>false</default>
+                <label>Inactive for Fee Payment</label>
+            </value>
+            <value>
+                <fullName>Leave of Absence</fullName>
+                <default>false</default>
+                <label>Leave of Absence</label>
+            </value>
+            <value>
+                <fullName>Not Graduating</fullName>
+                <default>false</default>
+                <label>Not Graduating</label>
+            </value>
+            <value>
+                <fullName>Outgoing exchange</fullName>
+                <default>false</default>
+                <label>Outgoing exchange</label>
+            </value>
+            <value>
+                <fullName>Passed</fullName>
+                <default>false</default>
+                <label>Passed</label>
+            </value>
+            <value>
+                <fullName>Re-Registered</fullName>
+                <default>false</default>
+                <label>Re-Registered</label>
+            </value>
+            <value>
+                <fullName>Return and Replace</fullName>
+                <default>false</default>
+                <label>Return and Replace</label>
+            </value>
+            <value>
+                <fullName>Return and Retake</fullName>
+                <default>false</default>
+                <label>Return and Retake</label>
+            </value>
+            <value>
+                <fullName>Ready for Invoice</fullName>
+                <default>false</default>
+                <label>Ready for Invoice</label>
+            </value>
+            <value>
+                <fullName>Offer Accepted</fullName>
+                <default>false</default>
+                <label>Offer Accepted</label>
+            </value>
+            <value>
+                <fullName>Deferral Accepted</fullName>
+                <default>false</default>
+                <label>Deferral Accepted</label>
+            </value>
+            <value>
+                <fullName>Incoming Exchange</fullName>
+                <default>false</default>
+                <label>Incoming Exchange</label>
+            </value>
+            <value>
+                <fullName>Commitment Fees Lapsed</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Commitment Fees Lapsed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

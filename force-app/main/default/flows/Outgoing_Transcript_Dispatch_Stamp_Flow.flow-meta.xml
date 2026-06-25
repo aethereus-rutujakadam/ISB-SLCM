@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Decision_Which_Flag</name>
+        <label>Which Dispatch Flag Changed?</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <defaultConnectorLabel>None</defaultConnectorLabel>
+        <rules>
+            <name>Transcript_Dispatched_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Transcript_Dispatched__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_Dispatch</targetReference>
+            </connector>
+            <label>Transcript Dispatched Changed to True</label>
+        </rules>
+        <rules>
+            <name>Partner_Transcript_Received_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Partner_Transcript_Received__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_Partner_Transcript</targetReference>
+            </connector>
+            <label>Partner Transcript Received Changed to True</label>
+        </rules>
+    </decisions>
+    <description>ISB-6099 — Auto-stamps Dispatch_Date__c and Dispatched_By__c when Transcript_Dispatched__c is set to true on an Outgoing Exchange Case. Also stamps Partner_Transcript_Upload_Date__c when Partner_Transcript_Received__c flips to true.</description>
+    <label>Outgoing Transcript Dispatch Stamp Flow</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Stamp_Dispatch</name>
+        <label>Stamp Dispatch Date and By</label>
+        <locationX>44</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>Dispatch_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Dispatched_By__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_Partner_Transcript</name>
+        <label>Stamp Partner Transcript Upload Date</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>Partner_Transcript_Upload_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
+    <start>
+        <locationX>176</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Decision_Which_Flag</targetReference>
+        </connector>
+        <filterFormula>{!$Record.RecordType.DeveloperName} = &apos;Outgoing_Exchange&apos; &amp;&amp; (
+  (ISCHANGED({!$Record.Transcript_Dispatched__c}) &amp;&amp; {!$Record.Transcript_Dispatched__c}) ||
+  (ISCHANGED({!$Record.Partner_Transcript_Received__c}) &amp;&amp; {!$Record.Partner_Transcript_Received__c})
+)</filterFormula>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

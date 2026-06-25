@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>sfal__ProxyName__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The name of the person checking in to a waiting room on behalf of a student.</description>
+    <inlineHelpText>The name of the person checking in to a waiting room on behalf of a student.</inlineHelpText>
+    <label>Proxy Name</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

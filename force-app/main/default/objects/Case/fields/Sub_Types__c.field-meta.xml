@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Types__c</fullName>
+    <label>Sub Types</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Name Change / Display</fullName>
+                <default>false</default>
+                <label>Name Change / Display</label>
+            </value>
+            <value>
+                <fullName>Graduation Walk — Exception Petition</fullName>
+                <default>false</default>
+                <label>Graduation Walk — Exception Petition</label>
+            </value>
+            <value>
+                <fullName>Visa NOC</fullName>
+                <default>false</default>
+                <label>Visa NOC</label>
+            </value>
+            <value>
+                <fullName>Academic Records (Certificates / Transcripts)</fullName>
+                <default>false</default>
+                <label>Academic Records (Certificates / Transcripts)</label>
+            </value>
+            <value>
+                <fullName>Fee Exception</fullName>
+                <default>false</default>
+                <label>Fee Exception</label>
+            </value>
+            <value>
+                <fullName>Bidding (Registro)</fullName>
+                <default>false</default>
+                <label>Bidding (Registro)</label>
+            </value>
+            <value>
+                <fullName>Incoming &amp; Outgoing Student Exchange (Registro)</fullName>
+                <default>false</default>
+                <label>Incoming &amp; Outgoing Student Exchange (Registro)</label>
+            </value>
+            <value>
+                <fullName>Academic</fullName>
+                <default>false</default>
+                <label>Academic</label>
+            </value>
+            <value>
+                <fullName>Events &amp; Budgets</fullName>
+                <default>false</default>
+                <label>Events &amp; Budgets</label>
+            </value>
+            <value>
+                <fullName>Special Interest Group Request</fullName>
+                <default>false</default>
+                <label>Special Interest Group Request</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

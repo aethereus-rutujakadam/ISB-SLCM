@@ -1,0 +1,326 @@
+<template>
+    <div class="feedback-container slds-p-around_medium">
+        
+        <!-- Loading State -->
+        <template if:true={isLoading}>
+            <div class="slds-is-relative slds-p-around_large">
+                <lightning-spinner alternative-text="Loading..." size="medium" variant="brand"></lightning-spinner>
+                <p class="slds-text-align_center slds-m-top_large">Loading feedback form...</p>
+            </div>
+        </template>
+
+        <!-- Error State -->
+        <template if:true={errorMessage}>
+            <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" variant="inverse" class="slds-m-right_x-small"></lightning-icon>
+                <h2>{errorMessage}</h2>
+            </div>
+        </template>
+
+        <!-- Already Submitted State -->
+        <template if:true={alreadySubmitted}>
+            <div class="slds-box slds-theme_success slds-theme_alert-texture slds-text-align_center">
+                <lightning-icon icon-name="utility:success" size="medium" variant="inverse" class="slds-m-bottom_small"></lightning-icon>
+                <h2 class="slds-text-heading_medium">Feedback Already Submitted</h2>
+                <p class="slds-m-top_small">Thank you! You have already submitted feedback for this session.</p>
+            </div>
+        </template>
+
+        <!-- Expired State (Token-based flow) -->
+        <template if:true={isExpired}>
+            <div class="slds-box slds-theme_warning slds-theme_alert-texture slds-text-align_center">
+                <lightning-icon icon-name="utility:warning" size="medium" variant="inverse" class="slds-m-bottom_small"></lightning-icon>
+                <h2 class="slds-text-heading_medium">Feedback Period Expired</h2>
+                <p class="slds-m-top_small">The feedback submission deadline has passed. This link is no longer active.</p>
+            </div>
+        </template>
+
+        <!-- Thank You State -->
+        <template if:true={submissionSuccess}>
+            <div class="slds-box slds-theme_success slds-theme_alert-texture slds-text-align_center">
+                <lightning-icon icon-name="utility:success" size="medium" variant="inverse" class="slds-m-bottom_small"></lightning-icon>
+                <h2 class="slds-text-heading_medium">Thank You!</h2>
+                <p class="slds-m-top_small">Your feedback has been submitted successfully.</p>
+                <template if:true={feedbackId}>
+                    <p class="slds-text-body_small slds-m-top_medium">Reference ID: {feedbackId}</p>
+                </template>
+            </div>
+        </template>
+
+        <!-- Main Feedback Form -->
+        <template if:false={isLoading}>
+            <template if:false={errorMessage}>
+                <template if:false={alreadySubmitted}>
+                    <template if:false={submissionSuccess}>
+                        <template if:false={isExpired}>
+                        
+                        <lightning-card>
+                            <div slot="title">
+                                <h1 class="slds-text-heading_medium slds-truncate">{templateData.template.Name}</h1>
+                                <template if:true={dueDate}>
+                                    <p class="slds-text-body_small slds-text-color_weak">Please submit by: {dueDate}</p>
+                                </template>
+                            </div>
+                            
+                            <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                                
+                                <!-- Template Description -->
+                                <template if:true={templateData.template.Description__c}>
+                                    <div class="slds-text-body_regular slds-m-bottom_medium">
+                                        <lightning-formatted-rich-text value={templateData.template.Description__c}></lightning-formatted-rich-text>
+                                    </div>
+                                </template>
+
+                                <!-- Batch Mode: Progress & Selection -->
+                                <template if:true={isBatchMode}>
+                                    
+                                    <!-- Progress Indicator -->
+                                    <div class="slds-box slds-theme_info slds-m-bottom_medium">
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <div>
+                                                <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                <span class="slds-text-body_regular">
+                                                    <strong>Progress:</strong> {submittedCount} of {feedbackOptions.length} completed
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="slds-text-body_regular slds-text-color_weak">
+                                                    {pendingCount} remaining
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Course-AA Selection Picklist -->
+                                    <div class="slds-box slds-theme_shade slds-m-bottom_large">
+                                        <lightning-combobox
+                                            name="feedbackOption"
+                                            label="Select Course and Academic Associate"
+                                            value={selectedFeedbackId}
+                                            placeholder="Choose a combination to provide feedback"
+                                            options={feedbackOptions}
+                                            onchange={handleFeedbackOptionChange}
+                                            required>
+                                        </lightning-combobox>
+                                        <div class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                            Please select one option to submit feedback for that specific course and Academic Associate.
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Selected Context Display -->
+                                    <template if:true={selectedFeedbackId}>
+                                        <div class="slds-box slds-theme_default slds-m-bottom_large">
+                                            <div class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small">
+                                                Providing Feedback For:
+                                            </div>
+                                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                                <template if:true={contextData.courseOfferingName}>
+                                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                                        <div class="slds-text-body_small slds-text-color_weak">Course</div>
+                                                        <div class="slds-text-body_regular"><strong>{contextData.courseOfferingName}</strong></div>
+                                                    </div>
+                                                </template>
+                                                <template if:true={contextData.academicAssociateName}>
+                                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                                        <div class="slds-text-body_small slds-text-color_weak">Academic Associate</div>
+                                                        <div class="slds-text-body_regular"><strong>{contextData.academicAssociateName}</strong></div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    
+                                </template>
+
+                                <!-- Context Information (Non-Batch Mode) -->
+                                <template if:false={isBatchMode}>
+                                <template if:true={showContext}>
+                                    <div class="slds-box slds-theme_shade slds-m-bottom_large">
+                                        <div class="slds-grid slds-wrap slds-gutters_small">
+                                            
+                                            <template if:true={showAAName}>
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                    <div class="slds-text-title_caps slds-text-color_weak">Academic Associate</div>
+                                                    <div class="slds-text-heading_small">{contextData.academicAssociateName}</div>
+                                                </div>
+                                            </template>
+
+                                            <template if:true={contextData.courseOfferingName}>
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                    <div class="slds-text-title_caps slds-text-color_weak">Course</div>
+                                                    <div class="slds-text-heading_small">{contextData.courseOfferingName}</div>
+                                                </div>
+                                            </template>
+
+                                            <template if:true={contextData.facultyName}>
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                    <div class="slds-text-title_caps slds-text-color_weak">Faculty</div>
+                                                    <div class="slds-text-body_regular">{contextData.facultyName}</div>
+                                                </div>
+                                            </template>
+
+                                            <template if:true={contextData.programName}>
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                    <div class="slds-text-title_caps slds-text-color_weak">Program</div>
+                                                    <div class="slds-text-body_regular">{contextData.programName}</div>
+                                                </div>
+                                            </template>
+
+                                            <template if:true={contextData.caseNumber}>
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                    <div class="slds-text-title_caps slds-text-color_weak">Case Number</div>
+                                                    <div class="slds-text-body_regular">{contextData.caseNumber}</div>
+                                                </div>
+                                                <template if:true={contextData.caseSubject}>
+                                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                        <div class="slds-text-title_caps slds-text-color_weak">Subject</div>
+                                                        <div class="slds-text-body_regular">{contextData.caseSubject}</div>
+                                                    </div>
+                                                </template>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                </template>
+
+                                <!-- Manual AA Input -->
+                                <template if:true={showManualAAInput}>
+                                    <div class="slds-box slds-theme_shade slds-m-bottom_large">
+                                        <lightning-input 
+                                            type="text" 
+                                            label="Academic Associate Name" 
+                                            placeholder="Enter First Name Last Name"
+                                            field-level-help="Please enter the full name (First Name Last Name) of the Academic Associate."
+                                            required 
+                                            value={manualAAName}
+                                            onchange={handleAANameChange}
+                                            message-when-value-missing="Please enter the Academic Associate Name">
+                                        </lightning-input>
+                                    </div>
+                                </template>
+
+                                <!-- Questions -->
+                                <div class="slds-form slds-form_stacked">
+                                    <template for:each={questions} for:item="question">
+                                        <div key={question.Id} class="slds-form-element slds-m-bottom_large">
+                                            
+                                            <label class="slds-form-element__label slds-text-heading_small">
+                                                <span class="slds-m-right_xx-small">{question.displayOrder}.</span>
+                                                {question.Question_Text__c}
+                                                <template if:true={question.Required__c}>
+                                                    <abbr class="slds-required" title="required">*</abbr>
+                                                </template>
+                                            </label>
+
+                                            <div class="slds-form-element__control slds-m-top_x-small">
+                                                
+                                                <!-- Text Input -->
+                                                <template if:true={question.isText}>
+                                                    <lightning-textarea
+                                                        data-id={question.Id}
+                                                        value={question.answer}
+                                                        onchange={handleAnswerChange}
+                                                        variant="label-hidden"
+                                                        required={question.Required__c}>
+                                                    </lightning-textarea>
+                                                </template>
+
+                                                <!-- Rating Input -->
+                                                <template if:true={question.isRating}>
+                                                    <lightning-radio-group
+                                                        data-id={question.Id}
+                                                        options={question.ratingOptions}
+                                                        value={question.answer}
+                                                        onchange={handleAnswerChange}
+                                                        type="button"
+                                                        variant="label-hidden"
+                                                        required={question.Required__c}>
+                                                    </lightning-radio-group>
+                                                    <div class="slds-grid slds-grid_align-spread slds-text-color_weak slds-text-body_small slds-m-top_xx-small" style="max-width: 300px;">
+                                                        <span>{question.minLabel}</span>
+                                                        <span>{question.maxLabel}</span>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Picklist Input -->
+                                                <template if:true={question.isPicklist}>
+                                                    <lightning-combobox
+                                                        data-id={question.Id}
+                                                        value={question.answer}
+                                                        options={question.picklistOptions}
+                                                        onchange={handleAnswerChange}
+                                                        variant="label-hidden"
+                                                        required={question.Required__c}>
+                                                    </lightning-combobox>
+                                                </template>
+
+                                                <!-- Yes/No Input -->
+                                                <template if:true={question.isYesNo}>
+                                                    <lightning-radio-group
+                                                        data-id={question.Id}
+                                                        value={question.answer}
+                                                        options={yesNoOptions}
+                                                        onchange={handleAnswerChange}
+                                                        type="button"
+                                                        variant="label-hidden"
+                                                        required={question.Required__c}>
+                                                    </lightning-radio-group>
+                                                </template>
+
+                                                <!-- Multi-Select Input -->
+                                                <template if:true={question.isMultiSelect}>
+                                                    <lightning-dual-listbox
+                                                        data-id={question.Id}
+                                                        source-label="Available"
+                                                        selected-label="Selected"
+                                                        options={question.picklistOptions}
+                                                        value={question.answer}
+                                                        onchange={handleAnswerChange}
+                                                        variant="label-hidden"
+                                                        required={question.Required__c}>
+                                                    </lightning-dual-listbox>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Anonymous Checkbox -->
+                                <template if:true={allowAnonymous}>
+                                    <div class="slds-m-vertical_medium slds-p-around_small slds-theme_shade">
+                                        <lightning-input 
+                                            type="checkbox"
+                                            label="Submit this feedback anonymously"
+                                            checked={isAnonymous}
+                                            onchange={handleAnonymousChange}>
+                                        </lightning-input>
+                                    </div>
+                                </template>
+
+                                <!-- Submit Button -->
+                                <div class="slds-align_absolute-center slds-m-top_large">
+                                    <lightning-button
+                                        label="Submit Feedback"
+                                        variant="brand"
+                                        onclick={handleSubmit}
+                                        disabled={isSubmitDisabled}
+                                        class="slds-p-horizontal_large">
+                                    </lightning-button>
+                                    <template if:true={isBatchMode}>
+                                        <div class="slds-text-body_small slds-text-color_weak slds-text-align_center slds-m-top_small">
+                                            {pendingCount} feedback form(s) remaining
+                                        </div>
+                                    </template>
+                                </div>
+
+                            </div>
+                        </lightning-card>
+
+                        </template>
+                    </template>
+                </template>
+            </template>
+        </template>
+
+    </div>
+</template>

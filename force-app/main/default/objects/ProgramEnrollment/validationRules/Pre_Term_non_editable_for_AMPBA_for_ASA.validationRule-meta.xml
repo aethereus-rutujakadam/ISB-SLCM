@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pre_Term_non_editable_for_AMPBA_for_ASA</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    $UserRole.Name = &quot;ASA Senior Manager&quot;,
+    Program.Program_Code__c = &quot;AMPBA&quot;,
+    ISCHANGED(Pre_Term__c)
+)</errorConditionFormula>
+    <errorMessage>ASA Senior Manager Role Cannot Edit Pre Term of AMPBA Program</errorMessage>
+</ValidationRule>

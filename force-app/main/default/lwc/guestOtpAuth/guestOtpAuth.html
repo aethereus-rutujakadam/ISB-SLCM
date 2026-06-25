@@ -1,0 +1,89 @@
+<template>
+    <template if:false={verified}>
+        <!-- Email Section -->
+        <div class="slds-form-element slds-m-bottom_medium">
+            <lightning-input 
+                label="Email" 
+                onchange={handleEmail} 
+                class="slds-m-bottom_medium"
+                placeholder="Enter your ISB email">
+            </lightning-input>
+            
+            <!-- Email Error Message -->
+            <template if:true={errorMessage}>
+                <div class="slds-m-vertical_x-small error-message">
+                    {errorMessage}
+                </div>
+            </template>
+
+            <!-- Send OTP Button -->
+            <lightning-button 
+                label="Send OTP" 
+                onclick={sendOtp} 
+                variant="brand" 
+                class="slds-m-top_small"
+                disabled={isLoading}>
+            </lightning-button>
+        </div>
+
+        <!-- OTP Section -->
+        <template if:true={otpSent}>
+            <div class="slds-form-element slds-m-top_medium otp-section">
+                <div class="slds-text-title slds-m-bottom_small">Step 2: Verify OTP</div>
+                
+                <!-- OTP Input with Error Styling -->
+                <div class={otpInputContainerClass}>
+                    <lightning-input 
+                        label="Enter OTP" 
+                        onchange={handleOtp} 
+                        class={otpInputClass}
+                        placeholder="Enter 6-digit code"
+                        maxlength="6"
+                        disabled={maxAttemptsExceeded}
+                        required>
+                    </lightning-input>
+                </div>
+
+                <!-- OTP Error Message -->
+                <template if:true={otpErrorMessage}>
+                    <div class="slds-m-vertical_x-small error-message otp-error">
+                        {otpErrorMessage}
+                    </div>
+                </template>
+
+                <!-- OTP Info Text -->
+                <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                    📧 OTP valid for 10 minutes. Check your email for the code.
+                </p>
+
+                <!-- Verify OTP Button -->
+                <!-- Show 'Send OTP Again' button when max attempts exceeded (AC-003) -->
+                <template if:true={maxAttemptsExceeded}>
+                    <lightning-button 
+                        label="Send OTP Again" 
+                        onclick={sendOtp} 
+                        variant="brand" 
+                        class="slds-m-top_small"
+                        disabled={isLoading}>
+                    </lightning-button>
+                </template>
+                
+                <!-- Show 'Verify OTP' button when attempts remain (AC-004) -->
+                <template if:false={maxAttemptsExceeded}>
+                    <lightning-button 
+                        label="Verify OTP" 
+                        onclick={verifyOtp} 
+                        variant="brand" 
+                        class="slds-m-top_small"
+                        disabled={isLoading}>
+                    </lightning-button>
+                </template>
+            </div>
+        </template>
+    </template>
+
+    <!-- Success State -->
+    <template if:true={verified}>
+        <slot></slot>
+    </template>
+</template>

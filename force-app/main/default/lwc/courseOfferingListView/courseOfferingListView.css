@@ -1,0 +1,281 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CourseOffering List View – Component Styles
+   Follows SLDS design tokens & augments with custom premium polish.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Root / Card Shell ─────────────────────────────────────────────── */
+.col-container {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* ── Card Header ───────────────────────────────────────────────────── */
+.card-title-slot {
+    display        : flex;
+    align-items    : center;
+    gap            : 0.5rem;
+}
+
+.card-heading {
+    font-weight    : 700;
+    font-size      : 1rem;
+    color          : #032d60;
+    letter-spacing : 0.01em;
+}
+
+.record-count-badge {
+    display          : inline-flex;
+    align-items      : center;
+    background       : #e8f4fd;
+    color            : #0176d3;
+    border           : 1px solid #c9e0f5;
+    border-radius    : 12px;
+    padding          : 0.1rem 0.65rem;
+    font-size        : 0.72rem;
+    font-weight      : 600;
+    letter-spacing   : 0.02em;
+    white-space      : nowrap;
+    transition       : background 0.2s ease;
+}
+
+/* ── Filter Bar ────────────────────────────────────────────────────── */
+.filter-bar {
+    background    : #f8fafd;
+    border-bottom : 1px solid #ddebf7;
+    border-top    : 1px solid #e3edf8;
+    padding       : 0.75rem 1rem !important;
+}
+
+.filter-col {
+    min-width : 160px;
+}
+
+.filter-actions {
+    display         : flex;
+    align-items     : flex-end;
+    gap             : 0.75rem;
+    justify-content : flex-start;
+    padding-top     : 1.55rem !important; /* align with combobox bottom */
+}
+
+.filter-hint {
+    display     : flex;
+    align-items : center;
+    font-size   : 0.72rem;
+    color       : #0176d3;
+    font-weight : 600;
+    white-space : nowrap;
+    animation   : fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Loading Spinner ────────────────────────────────────────────────── */
+.spinner-container {
+    position        : relative;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    min-height      : 200px;
+    width           : 100%;
+}
+
+/* ── Error State ────────────────────────────────────────────────────── */
+.error-container {
+    display         : flex;
+    align-items     : center;
+    background      : #fff1f0;
+    border          : 1px solid #ffd6d2;
+    border-radius   : 4px;
+    margin          : 0.75rem 1rem;
+    padding         : 0.75rem 1rem;
+    color           : #ba0517;
+    font-size       : 0.875rem;
+    animation       : fadeIn 0.2s ease;
+}
+
+/* ── Empty State ────────────────────────────────────────────────────── */
+.empty-state {
+    display        : flex;
+    flex-direction : column;
+    align-items    : center;
+    padding        : 3.5rem 1rem !important;
+    color          : #747474;
+    animation      : fadeIn 0.25s ease;
+}
+
+.empty-icon {
+    --sds-c-icon-color-foreground-default : #b0c4de;
+}
+
+/* ── Table Container ────────────────────────────────────────────────── */
+.table-container {
+    overflow-x : auto;
+    width      : 100%;
+}
+
+/* ── Table ──────────────────────────────────────────────────────────── */
+.co-table {
+    width         : 100%;
+    table-layout  : fixed;
+    border-radius : 0;
+}
+
+/* Column widths */
+.col-name { width: 14%; }
+
+/* Header row */
+.co-table thead tr {
+    background    : #f3f7fb;
+    border-bottom : 2px solid #c9dff5;
+}
+
+.co-table thead th {
+    cursor           : pointer;
+    user-select      : none;
+    padding          : 0.6rem 0.75rem !important;
+    font-size        : 0.72rem;
+    font-weight      : 700;
+    color            : #444;
+    letter-spacing   : 0.06em;
+    text-transform   : uppercase;
+    white-space      : nowrap;
+    transition       : background 0.15s ease, color 0.15s ease;
+    position         : relative;
+}
+
+.co-table thead th:hover {
+    background : #ddeeff;
+    color      : #0176d3;
+}
+
+.sort-header {
+    display     : flex;
+    align-items : center;
+    gap         : 0.3rem;
+}
+
+.sort-icon {
+    --sds-c-icon-color-foreground-default: #0176d3;
+    flex-shrink: 0;
+}
+
+/* Body rows */
+.co-row {
+    transition : background 0.12s ease;
+}
+
+.co-row:hover {
+    background : #f0f7ff !important;
+}
+
+.co-row td {
+    padding        : 0.55rem 0.75rem !important;
+    font-size      : 0.8125rem;
+    color          : #222;
+    vertical-align : middle;
+    border-bottom  : 1px solid #e8edf2;
+}
+
+/* Zebra stripe for even rows */
+.co-table tbody tr:nth-child(even) {
+    background : #fafcff;
+}
+
+/* ── Row Link ───────────────────────────────────────────────────────── */
+.row-link {
+    color           : #0176d3;
+    font-weight     : 600;
+    text-decoration : none;
+    transition      : color 0.15s ease;
+}
+
+.row-link:hover {
+    color           : #032d60;
+    text-decoration : underline;
+}
+
+/* ── Academic Year Badge ─────────────────────────────────────────────── */
+.ay-badge {
+    display          : inline-block;
+    background       : #e8f4fd;
+    color            : #0176d3;
+    border           : 1px solid #b0d4f0;
+    border-radius    : 10px;
+    padding          : 0.1rem 0.6rem;
+    font-size        : 0.72rem;
+    font-weight      : 600;
+    white-space      : nowrap;
+    max-width        : 100%;
+    overflow         : hidden;
+    text-overflow    : ellipsis;
+}
+
+/* ── Pagination Bar ─────────────────────────────────────────────────── */
+.pagination-bar {
+    border-top  : 1px solid #dde8f5;
+    background  : #f8fafd;
+    flex-wrap   : wrap;
+    gap         : 0.5rem;
+    align-items : center;
+}
+
+.pagination-left {
+    gap         : 0.4rem;
+    align-items : center;
+    flex-wrap   : wrap;
+}
+
+.pagination-right {
+    gap         : 0.25rem;
+    align-items : center;
+    flex-wrap   : wrap;
+}
+
+.page-summary {
+    color       : #555;
+    font-size   : 0.8rem;
+    white-space : nowrap;
+    font-weight : 500;
+}
+
+.page-indicator {
+    display       : inline-block;
+    min-width     : 7rem;
+    text-align    : center;
+    font-size     : 0.8rem;
+    color         : #222;
+    font-weight   : 600;
+    padding       : 0 0.4rem;
+    white-space   : nowrap;
+}
+
+/* Slim page-size combobox */
+.page-size-picker {
+    max-width : 5.5rem;
+}
+
+/* ── Responsive adjustments ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction : column;
+    }
+
+    .filter-col {
+        width     : 100%;
+        max-width : 100%;
+    }
+
+    .pagination-bar {
+        flex-direction  : column;
+        align-items     : flex-start;
+    }
+
+    .co-table thead th,
+    .co-row td {
+        font-size : 0.75rem;
+        padding   : 0.45rem 0.5rem !important;
+    }
+}

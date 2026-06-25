@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Planing_for_Bank_loan__c</fullName>
+    <defaultValue>false</defaultValue>
+    <label>Planing for Bank loan</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

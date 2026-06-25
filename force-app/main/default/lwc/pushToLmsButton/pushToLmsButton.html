@@ -1,0 +1,177 @@
+<template>
+    <div class="lwc-dashboard">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- HEADER                                                          -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="dashboard-header course-header">
+            <div class="header-left">
+                <lightning-icon icon-name="standard:instructive_usage" size="medium" variant="inverse"></lightning-icon>
+                <div class="header-text">
+                    <h1 class="header-title">LMS Course Offering Push Dashboard</h1>
+                    <p class="header-subtitle">Create Courses and Groups in Moodle from Salesforce Course Offerings</p>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card stat-total">
+                    <div class="stat-number">{stats.totalCourses}</div>
+                    <div class="stat-label">Total Courses</div>
+                </div>
+                <div class="stat-card stat-pending">
+                    <div class="stat-number">{stats.pendingCourses}</div>
+                    <div class="stat-label">Unprocessed</div>
+                </div>
+                <div class="stat-card stat-success">
+                    <div class="stat-number">{stats.successCourses}</div>
+                    <div class="stat-label">Created</div>
+                </div>
+                <div class="stat-card stat-failed">
+                    <div class="stat-number">{stats.failedCourses}</div>
+                    <div class="stat-label">Failures</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- NAVIGATION TABS                                                 -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="nav-section">
+            <button class={pendingTabCls} onclick={handleNavToSync}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                Pending Creation
+                <span class="nav-badge badge-pending">{stats.pendingCourses}</span>
+            </button>
+            <button class={successTabCls} onclick={handleNavToSuccess}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                Sync History
+                <span class="nav-badge badge-success">{stats.successCourses}</span>
+            </button>
+            <button class={failedTabCls} onclick={handleNavToFailed}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"/></svg>
+                Failed Records
+                <span class="nav-badge badge-failed">{stats.failedCourses}</span>
+            </button>
+            <button class="nav-tab refresh-tab" onclick={handleRefresh}>
+                <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                Refresh
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- FILTERS                                                         -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="filter-section">
+            <div class="slds-grid slds-wrap slds-gutters slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+                    <lightning-input type="search" label="Search Courses" placeholder="Find by name..." value={searchKey} onchange={handleSearch}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Academic Year" options={yearOptions} value={year} onchange={handleYear}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Program" options={programOptions} value={program} onchange={handleProg}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Academic Term" options={termOptions} value={term} onchange={handleTerm}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                    <lightning-combobox label="Academic Session" options={sessionOptions} value={session} onchange={handleSess}></lightning-combobox>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ACTION BAR                                                      -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <template if:false={isSuccessView}>
+            <div class="action-bar">
+                <lightning-button
+                    variant="brand"
+                    label="Push Selected Courses to LMS"
+                    icon-name="utility:send"
+                    onclick={handleBulkPush}
+                    disabled={isBulkPushDisabled}
+                    loading={isActionLoading}>
+                </lightning-button>
+                <template if:true={isBulkPushDisabled}>
+                    <span class="action-hint">Please select one or more rows above</span>
+                </template>
+                <template if:false={isBulkPushDisabled}>
+                    <span class="action-hint selected-hint">{selectedRows.length} Courses selected for Moodle creation</span>
+                </template>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- MAIN TABLE                                                      -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="table-section">
+            <template if:true={isLoading}>
+                <div class="spinner-overlay">
+                    <lightning-spinner alternative-text="Loading..." size="medium" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+
+            <div class="table-heading-bar">
+                <span class="table-view-label">{tableHeading}</span>
+                <span class="table-count">{rangeText}</span>
+                <div class="table-nav">
+                    <lightning-button-group>
+                        <lightning-button-icon icon-name="utility:chevronleft" variant="border-filled" onclick={handlePrev} disabled={isPrevDisabled}></lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:chevronright" variant="border-filled" onclick={handleNext} disabled={isNextDisabled}></lightning-button-icon>
+                    </lightning-button-group>
+                </div>
+            </div>
+
+            <template if:true={hasRows}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={rows}
+                    columns={currentColumns}
+                    selected-rows={selectedRowKeys}
+                    onrowselection={handleSelection}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column={isSuccessView}>
+                </lightning-datatable>
+            </template>
+
+            <template if:false={hasRows}>
+                <div class="empty-state">
+                    <lightning-icon icon-name="utility:inbox" size="large"></lightning-icon>
+                    <p class="empty-title">{emptyTitle}</p>
+                    <p class="empty-sub">{emptySubtitle}</p>
+                </div>
+            </template>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ERROR DETAIL MODAL                                              -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <template if:true={showErrorModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header modal-header-failed">
+                        <lightning-button-icon icon-name="utility:close" variant="bare-inverse" class="slds-modal__close" onclick={closeModal}></lightning-button-icon>
+                        <h2 class="slds-text-heading_medium slds-text-color_inverse">LMS Sync Error Detail</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="error-detail-box">
+                            <p class="error-label">Last Error Message:</p>
+                            <div class="error-text">{currentError}</div>
+                        </div>
+                        <div class="slds-m-top_medium">
+                            <p class="error-label">Impacted Course:</p>
+                            <p>{selectedRowName}</p>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Close" onclick={closeModal}></lightning-button>
+                        <lightning-button label="Retry Sync" variant="brand" onclick={handleRetryRow} class="slds-m-left_x-small"></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </div>
+</template>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_OUT_03_One_Active_Case</fullName>
+    <active>false</active>
+    <description>V-OUT-03: Parked — EXISTS() is not supported in validation rule formulas. Duplicate case guard for Outgoing Exchange is enforced in OutgoingExchangeRegistroIntegration.cls (Phase 4).</description>
+    <errorConditionFormula>FALSE</errorConditionFormula>
+    <errorDisplayField>ContactId</errorDisplayField>
+    <errorMessage>An active Outgoing Exchange Case already exists for this student. Close the existing case before creating a new one.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_OUT_05_Finance_Gate</fullName>
+    <active>true</active>
+    <description>V-OUT-05: Blocks stage advancement past ASA In Progress when Finance has not been cleared. Finance Cleared must be set to Cleared before the case can move to RO Review or beyond.</description>
+    <errorConditionFormula>AND(
+    RecordType.DeveloperName = &apos;Outgoing_Exchange&apos;,
+    OR(
+        ISPICKVAL(Status, &apos;RO Review&apos;),
+        ISPICKVAL(Status, &apos;Transcript Check&apos;),
+        ISPICKVAL(Status, &apos;Student Credit Check&apos;),
+        ISPICKVAL(Status, &apos;Closed&apos;)
+    ),
+    NOT(ISPICKVAL(Finance_Cleared__c, &apos;Cleared&apos;))
+)</errorConditionFormula>
+    <errorDisplayField>Finance_Cleared__c</errorDisplayField>
+    <errorMessage>Finance must be cleared before case can progress past ASA In Progress.</errorMessage>
+</ValidationRule>

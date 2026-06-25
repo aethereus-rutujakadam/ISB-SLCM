@@ -1,0 +1,46 @@
+<template>
+    <lightning-card title="My Courses" icon-name="standard:education">
+        <div slot="actions">
+            <template if:true={totalCourses}>
+                <lightning-badge label={totalCourses}></lightning-badge>
+            </template>
+        </div>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-text-align_center slds-p-around_medium">
+                <lightning-spinner alternative-text="Loading courses..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={error}>
+            <div class="slds-text-align_center slds-p-around_medium">
+                <p class="slds-text-color_error">{error}</p>
+            </div>
+        </template>
+
+        <!-- No Courses -->
+        <template if:false={hasData}>
+            <template if:false={isLoading}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    <lightning-icon icon-name="utility:education" size="large" class="slds-m-bottom_small"></lightning-icon>
+                    <p class="slds-text-color_weak">No courses found.</p>
+                </div>
+            </template>
+        </template>
+
+        <!-- Courses Data Table -->
+        <template if:true={hasData}>
+            <div class="slds-p-around_none">
+                <lightning-datatable
+                    key-field="id"
+                    data={courses}
+                    columns={columns}
+                    hide-checkbox-column
+                    column-widths-mode="auto">
+                </lightning-datatable>
+            </div>
+        </template>
+    </lightning-card>
+</template>

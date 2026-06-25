@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fee_Related_Queries_Status_Validation</fullName>
+    <active>true</active>
+    <description>When Sub Category is &quot;Fee Related Queries&quot;, only the following Status values are permitted: Submitted, In Review, Closed, Rejected.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Sub_Category__c, &quot;Fee Related Queries&quot;),
+    NOT(OR(
+        ISPICKVAL(Status, &quot;Submitted&quot;),
+        ISPICKVAL(Status, &quot;In Review&quot;),
+        ISPICKVAL(Status, &quot;Closed&quot;),
+        ISPICKVAL(Status, &quot;Rejected&quot;)
+    ))
+)</errorConditionFormula>
+    <errorMessage>For Fee Related Queries, the Status must be one of: Submitted, In Review, Closed, or Rejected.</errorMessage>
+</ValidationRule>

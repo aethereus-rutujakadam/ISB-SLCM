@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Student_Success_Compact_Layout</fullName>
+    <fields>Reason</fields>
+    <fields>Status</fields>
+    <fields>Priority</fields>
+    <fields>ParentId</fields>
+    <label>Student Success Compact Layout</label>
+</CompactLayout>

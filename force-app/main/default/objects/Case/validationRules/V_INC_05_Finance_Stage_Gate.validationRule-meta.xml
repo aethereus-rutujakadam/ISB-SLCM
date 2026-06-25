@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_INC_05_Finance_Stage_Gate</fullName>
+    <active>true</active>
+    <description>V-INC-05: Blocks case stage advancement past Finance Review Incoming when Finance Cleared is Open or Hold. Finance must update status to Cleared or Partially Cleared before the case can progress.</description>
+    <errorConditionFormula>ISCHANGED(Status) &amp;&amp; TEXT(PRIORVALUE(Status)) != &apos;Draft&apos; &amp;&amp; TEXT(PRIORVALUE(Status)) == &apos;Finance Review Incoming&apos; &amp;&amp; (ISPICKVAL(Finance_Cleared__c, &apos;Open&apos;) || ISPICKVAL(Finance_Cleared__c, &apos;Hold&apos;))</errorConditionFormula>
+    <errorDisplayField>Finance_Cleared__c</errorDisplayField>
+    <errorMessage>Finance clearance must be updated (Cleared or Partially Cleared) before advancing from Finance Review Incoming. Finance Cleared is currently Open or Hold.</errorMessage>
+</ValidationRule>

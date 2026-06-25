@@ -1,0 +1,1062 @@
+﻿<template>
+    <div class="internship-portal slds-p-around_medium">
+
+        <!-- ── Page Header ──────────────────────────────────────────────────── -->
+        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
+            <div class="slds-col slds-has-flexi-truncate">
+                <h1 class="slds-text-heading_large slds-m-bottom_xx-small">My Internships</h1>
+                <p class="slds-text-body_regular slds-text-color_weak">
+                    Manage your internship records and supporting documents
+                </p>
+            </div>
+            <template if:false={hasNoInternships}>
+                <div class="slds-col slds-no-flex">
+                    <lightning-button
+                        label="+ Add Internship"
+                        variant="brand"
+                        onclick={handleAdd}
+                    ></lightning-button>
+                </div>
+            </template>
+        </div>
+
+        <!-- ── Loading ──────────────────────────────────────────────────────── -->
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-p-around_large">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ── Content ──────────────────────────────────────────────────────── -->
+        <template if:false={isLoading}>
+
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!-- LIST VIEW                                                       -->
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <template if:true={isListView}>
+                <!-- Empty state -->
+                <template if:true={hasNoInternships}>
+                    <div class="slds-illustration slds-p-vertical_xx-large slds-text-align_center">
+                        <p class="slds-text-heading_small slds-text-color_weak slds-m-bottom_small">
+                            No internships added yet.
+                        </p>
+                        <lightning-button
+                            label="Add Your Summer Internship"
+                            variant="brand"
+                            onclick={handleAdd}
+                        ></lightning-button>
+                    </div>
+                </template>
+
+                <!-- ── Internship Table ──────────────────────────────────── -->
+                <template if:false={hasNoInternships}>
+                    <div class="slds-card slds-m-bottom_medium">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_fixed-layout">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col" style="width:3rem"><div class="slds-truncate">#</div></th>
+                                    <th scope="col"><div class="slds-truncate">Company Name</div></th>
+                                    <th scope="col"><div class="slds-truncate">Role</div></th>
+                                    <th scope="col"><div class="slds-truncate">Location</div></th>
+                                    <th scope="col" style="width:10rem"><div class="slds-truncate">Start Date</div></th>
+                                    <th scope="col" style="width:10rem"><div class="slds-truncate">End Date</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={processedInternships} for:item="row">
+                                    <tr key={row.Id} class="data-row" data-id={row.Id} onclick={handleRowClick}>
+                                        <td>{row.rowIndex}</td>
+                                        <td data-label="Company Name">
+                                            <span class="slds-text-link">{row.Company_Name__c}</span>
+                                        </td>
+                                        <td data-label="Role">{row.Designation__c}</td>
+                                        <td data-label="Location">{row.Job_Location__c}</td>
+                                        <td data-label="Start Date">{row.formattedStartDate}</td>
+                                        <td data-label="End Date">{row.formattedEndDate}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <!-- / Internship Table -->
+            </template>
+            <!-- / LIST VIEW -->
+
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!-- DETAIL VIEW                                                     -->
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <template if:true={isDetailView}>
+                <template if:true={selectedInternship}>
+                    
+                    <!-- Back navigation -->
+                    <div class="slds-m-bottom_medium">
+                        <lightning-button 
+                            label="Back to List" 
+                            icon-name="utility:back"
+                            onclick={handleBackToList}
+                            class="slds-m-bottom_small"
+                        ></lightning-button>
+                    </div>
+
+                    <!-- Internship Details Card -->
+                    <div class="slds-card slds-m-bottom_medium">
+                        <div class="slds-card__header slds-grid">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <span>Internship Details</span>
+                                    </h2>
+                                </div>
+                            </header>
+                            <div class="slds-no-flex">
+                                <lightning-button 
+                                    label="Edit" 
+                                    icon-name="utility:edit"
+                                    onclick={handleEdit}
+                                    disabled={isReadOnly}
+                                    title={editButtonTitle}
+                                ></lightning-button>
+                            </div>
+                        </div>
+                        <div class="slds-card__body slds-card__body_inner">
+                            <!-- 2-column grid for fields -->
+                            <div class="slds-form" role="list">
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Company Name</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Company_Name__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Designation</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Designation__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Start Date</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.formattedStartDate}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">End Date</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.formattedEndDate}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Job Location</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Job_Location__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Industry</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Industry__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Sub Industry</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Sub_Industry__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Job Function</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Job_Function__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Total Stipend</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.Total_Stipend__c} {selectedInternship.Stipend_Currency__c}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                            <span class="slds-form-element__label">Read Only</span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-form-element__static">{selectedInternship.readOnlyLabel}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Internship Details Card -->
+
+                    <!-- Documents Related List Card -->
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-grid">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <span>Documents</span>
+                                    </h2>
+                                </div>
+                            </header>
+                            <div class="slds-no-flex">
+                                <template if:false={showAddDocForm}>
+                                    <lightning-button
+                                        label="Add Document"
+                                        icon-name="utility:add"
+                                        onclick={handleShowAddDoc}
+                                        disabled={isReadOnly}
+                                        title={addDocButtonTitle}
+                                    ></lightning-button>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <template if:true={detailHasDocs}>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col" style="width:25%"><div class="slds-truncate">Type</div></th>
+                                            <th scope="col" style="width:35%"><div class="slds-truncate">Title</div></th>
+                                            <th scope="col" style="width:20%"><div class="slds-truncate">Upload Date</div></th>
+                                            <th scope="col" style="width:20%"><div class="slds-truncate">Actions</div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={detailDocs} for:item="doc">
+                                            <tr key={doc.Id}>
+                                                <td>{doc.Document_Type__c}</td>
+                                                <td>{doc.Document_Title__c}</td>
+                                                <td>{doc.Upload_Date__c}</td>
+                                                <td>
+                                                    <lightning-button-icon
+                                                        icon-name="utility:preview"
+                                                        variant="border-filled"
+                                                        size="small"
+                                                        alternative-text="Preview"
+                                                        title="Preview Document"
+                                                        data-id={doc.Id}
+                                                        onclick={handlePreviewDoc}
+                                                        class="slds-m-right_xx-small"
+                                                    ></lightning-button-icon>
+                                                    <lightning-button-icon
+                                                        icon-name="utility:delete"
+                                                        variant="border-filled"
+                                                        size="small"
+                                                        alternative-text="Delete"
+                                                        title="Delete Document"
+                                                        data-id={doc.Id}
+                                                        onclick={handleDeleteDoc}
+                                                        disabled={isReadOnly}
+                                                    ></lightning-button-icon>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </template>
+                            <template if:false={detailHasDocs}>
+                                <div class="slds-text-align_center slds-p-around_medium">
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        No documents uploaded yet.
+                                    </p>
+                                </div>
+                            </template>
+
+                            <!-- Inline Add Doc Form -->
+                            <template if:true={showAddDocForm}>
+                                <div class="slds-box slds-m-around_medium">
+                                    <template if:true={isDocFormStep1}>
+                                        <h4 class="slds-text-heading_small slds-m-bottom_small">Add Document — Step 1 of 2: Details</h4>
+                                        <lightning-combobox
+                                            label="Document Type"
+                                            required
+                                            options={docTypeOptions}
+                                            value={newDoc.Document_Type__c}
+                                            placeholder="-- Select Type --"
+                                            data-field="Document_Type__c"
+                                            onchange={handleDocFieldChange}
+                                            class="slds-m-bottom_small"
+                                        ></lightning-combobox>
+                                        <template if:true={docTypeError}>
+                                            <p class="slds-text-color_error slds-m-bottom_small">{docTypeError}</p>
+                                        </template>
+                                        <lightning-input
+                                            label="Document Title"
+                                            required
+                                            value={newDoc.Document_Title__c}
+                                            data-field="Document_Title__c"
+                                            onchange={handleDocFieldChange}
+                                            class="slds-m-bottom_small"
+                                        ></lightning-input>
+                                        <template if:true={docTitleError}>
+                                            <p class="slds-text-color_error slds-m-bottom_small">{docTitleError}</p>
+                                        </template>
+                                        <lightning-textarea
+                                            label="Notes (Optional)"
+                                            value={newDoc.Notes__c}
+                                            data-field="Notes__c"
+                                            onchange={handleDocFieldChange}
+                                            class="slds-m-bottom_small"
+                                        ></lightning-textarea>
+                                        <div class="slds-grid slds-grid_align-end slds-m-top_small">
+                                            <lightning-button label="Cancel" onclick={handleCancelAddDoc} class="slds-m-right_x-small"></lightning-button>
+                                            <lightning-button label="Next: Attach File" variant="brand" onclick={handleSaveDocMetadata} disabled={isCreatingDoc}></lightning-button>
+                                        </div>
+                                    </template>
+                                    <template if:true={isDocFormStep2}>
+                                        <h4 class="slds-text-heading_small slds-m-bottom_small">Add Document — Step 2 of 2: Attach File</h4>
+                                        <p class="slds-text-body_small slds-m-bottom_medium">
+                                            Document record saved. Upload the file below (PDF, JPG, PNG, Word).
+                                        </p>
+                                        <lightning-file-upload
+                                            label="Upload File"
+                                            name="documentFile"
+                                            accepted-formats=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                                            record-id={newDocRecordId}
+                                            onuploadfinished={handleUploadFinished}
+                                        ></lightning-file-upload>
+                                        <div class="slds-m-top_small">
+                                            <lightning-button label="Skip File Upload" onclick={handleSkipFileUpload}></lightning-button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- / Documents Related List Card -->
+
+                </template>
+            </template>
+            <!-- / DETAIL VIEW -->
+
+        </template>
+        <!-- / Content -->
+
+
+        <!-- ================================================================ -->
+        <!-- ADD INTERNSHIP WIZARD (wizard flow for new internships)        -->
+        <!-- ================================================================ -->
+        <template if:true={isModalOpen}>
+            <template if:true={isWizardMode}>
+                <section class="slds-modal slds-fade-in-open slds-modal_large" role="dialog" aria-modal="true">
+                    <div class="slds-modal__container">
+                        
+                        <header class="slds-modal__header">
+                            <lightning-button-icon
+                                icon-name="utility:close"
+                                variant="bare"
+                                alternative-text="Close"
+                                class="slds-modal__close modal-close-btn"
+                                onclick={handleWizardCancel}
+                            ></lightning-button-icon>
+                            <h2 class="slds-modal__title">{wizardTitle}</h2>
+                            
+                            <!-- Progress indicator (non-clickable) -->
+                            <div class="wizard-progress slds-m-top_small">
+                                <div class={step1BarClass}>
+                                    <span class="step-badge">1</span>
+                                    <span class="step-label">Internship Details</span>
+                                </div>
+                                <div class={step2BarClass}>
+                                    <span class="step-badge">2</span>
+                                    <span class="step-label">Add Documents &amp; Upload Files</span>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- ── Wizard Step 1: Internship Details ────────────── -->
+                        <template if:true={isWizardStep1}>
+                            <div class="slds-modal__content slds-p-around_medium">
+                                <div class="slds-grid slds-wrap slds-gutters">
+
+                                    <!-- Company Name -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-input
+                                            label="Company Name"
+                                            required
+                                            value={selectedRecord.Company_Name__c}
+                                            data-field="Company_Name__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-input>
+                                    </div>
+
+                                    <!-- Designation -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-input
+                                            label="Designation / Role"
+                                            required
+                                            value={selectedRecord.Designation__c}
+                                            data-field="Designation__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-input>
+                                    </div>
+
+                                    <!-- Start Date -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-input
+                                            type="date"
+                                            label="Start Date"
+                                            required
+                                            value={selectedRecord.Start_Date__c}
+                                            data-field="Start_Date__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-input>
+                                    </div>
+
+                                    <!-- End Date -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-input
+                                            type="date"
+                                            label="End Date"
+                                            required
+                                            value={selectedRecord.End_Date__c}
+                                            data-field="End_Date__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-input>
+                                    </div>
+
+                                    <!-- Job Location -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-input
+                                            label="Job Location"
+                                            required
+                                            value={selectedRecord.Job_Location__c}
+                                            data-field="Job_Location__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-input>
+                                    </div>
+
+                                    <!-- Industry -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-combobox
+                                            label="Industry"
+                                            required
+                                            options={industryOptions}
+                                            value={selectedRecord.Industry__c}
+                                            placeholder="-- Select Industry --"
+                                            data-field="Industry__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-combobox>
+                                    </div>
+
+                                    <!-- Sub Industry -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-combobox
+                                            label="Sub Industry"
+                                            required
+                                            options={filteredSubIndustryOptions}
+                                            value={selectedRecord.Sub_Industry__c}
+                                            placeholder="-- Select Sub Industry --"
+                                            disabled={isSubIndustryDisabled}
+                                            data-field="Sub_Industry__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-combobox>
+                                    </div>
+
+                                    <!-- Job Function -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-combobox
+                                            label="Job Function"
+                                            required
+                                            options={jobFunctionOptions}
+                                            value={selectedRecord.Job_Function__c}
+                                            placeholder="-- Select Job Function --"
+                                            data-field="Job_Function__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-combobox>
+                                        <div class="job-function-link">
+                                            <a href={functionListUrl} target="_blank" rel="noopener noreferrer">View Function List</a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Total Stipend -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-input
+                                            type="number"
+                                            label="Total Stipend"
+                                            required
+                                            value={selectedRecord.Total_Stipend__c}
+                                            min="0"
+                                            step="0.01"
+                                            data-field="Total_Stipend__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-input>
+                                    </div>
+
+                                    <!-- Stipend Currency -->
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                        <lightning-combobox
+                                            label="Stipend Currency"
+                                            required
+                                            options={stipendCurrencyOptions}
+                                            value={selectedRecord.Stipend_Currency__c}
+                                            placeholder="-- Select Currency --"
+                                            data-field="Stipend_Currency__c"
+                                            onchange={handleFieldChange}
+                                        ></lightning-combobox>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <lightning-button label="Cancel" onclick={handleWizardCancel} class="slds-m-right_x-small"></lightning-button>
+                                <lightning-button label="Next: Add Documents" variant="brand" onclick={handleWizardNext}></lightning-button>
+                            </footer>
+                        </template>
+
+                        <!-- ── Wizard Step 2: Add Documents & Upload Files ─────────────────── -->
+                        <template if:true={isWizardStep2}>
+                            <div class="slds-modal__content slds-p-around_medium">
+                                
+                                <!-- Loading State -->
+                                <template if:true={isSaving}>
+                                    <div class="loading-overlay slds-align_absolute-center slds-p-vertical_xx-large">
+                                        <lightning-spinner alternative-text="Creating internship and uploading files..." size="large"></lightning-spinner>
+                                        <p class="slds-text-heading_small slds-m-top_medium">{uploadStatusMessage}</p>
+                                    </div>
+                                </template>
+
+                                <!-- Form (when not saving) -->
+                                <template if:false={isSaving}>
+                                    <p class="slds-text-body_regular slds-m-bottom_medium">
+                                        Both the Summer Internship Offer Letter and Internship Completion Certificate are mandatory to submit the form.
+                                    </p>
+
+                                <!-- Document entries -->
+                                <template for:each={wizardDocuments} for:item="doc">
+                                    <div key={doc.tempId} class="slds-box slds-m-bottom_small">
+                                        <div class="slds-grid slds-wrap slds-gutters_small">
+                                            
+                                            <!-- Document Type -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_small">
+                                                <lightning-combobox
+                                                    label="Document Type"
+                                                    required
+                                                    options={docTypeOptions}
+                                                    value={doc.Document_Type__c}
+                                                    placeholder="-- Select Type --"
+                                                    data-docid={doc.tempId}
+                                                    data-field="Document_Type__c"
+                                                    onchange={handleWizardDocFieldChange}
+                                                ></lightning-combobox>
+                                                <template if:true={doc.typeError}>
+                                                    <p class="slds-text-color_error slds-text-body_small slds-m-top_xx-small">{doc.typeError}</p>
+                                                </template>
+                                            </div>
+
+                                            <!-- Document Title -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_small">
+                                                <lightning-input
+                                                    label="Document Title"
+                                                    required
+                                                    value={doc.Document_Title__c}
+                                                    data-docid={doc.tempId}
+                                                    data-field="Document_Title__c"
+                                                    onchange={handleWizardDocFieldChange}
+                                                ></lightning-input>
+                                                <template if:true={doc.titleError}>
+                                                    <p class="slds-text-color_error slds-text-body_small slds-m-top_xx-small">{doc.titleError}</p>
+                                                </template>
+                                            </div>
+
+                                            <!-- Remove button (top right) -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-text-align_right slds-m-bottom_small">
+                                                <lightning-button-icon
+                                                    icon-name="utility:delete"
+                                                    variant="border-filled"
+                                                    alternative-text="Remove"
+                                                    title="Remove Document"
+                                                    data-id={doc.tempId}
+                                                    onclick={handleRemoveWizardDoc}
+                                                    class="slds-m-top_large"
+                                                ></lightning-button-icon>
+                                            </div>
+
+                                            <!-- Notes -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                <lightning-textarea
+                                                    label="Notes (Optional)"
+                                                    value={doc.Notes__c}
+                                                    data-docid={doc.tempId}
+                                                    data-field="Notes__c"
+                                                    onchange={handleWizardDocFieldChange}
+                                                ></lightning-textarea>
+                                            </div>
+
+                                            <!-- File Upload -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" for={doc.tempId}>
+                                                        <abbr class="slds-required" title="required">* </abbr>Upload File
+                                                    </label>
+                                                    <div class="slds-form-element__control">
+                                                        <lightning-input
+                                                            type="file"
+                                                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                                                            data-docid={doc.tempId}
+                                                            onchange={handleWizardFileSelect}
+                                                        ></lightning-input>
+                                                        <template if:true={doc.fileName}>
+                                                            <div class="slds-text-body_small slds-text-color_success slds-m-top_xx-small">
+                                                                <lightning-icon icon-name="utility:success" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                {doc.fileName}
+                                                            </div>
+                                                        </template>
+                                                        <template if:true={doc.fileError}>
+                                                            <p class="slds-text-color_error slds-text-body_small slds-m-top_xx-small">{doc.fileError}</p>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </template>
+
+                                    <!-- Add Document button -->
+                                    <lightning-button
+                                        label="Add Another Document"
+                                        icon-name="utility:add"
+                                        onclick={handleAddWizardDoc}
+                                        class="slds-m-top_small"
+                                    ></lightning-button>
+                                </template>
+
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <lightning-button label="Back" icon-name="utility:back" onclick={handleWizardBack} class="slds-m-right_x-small" disabled={isSaving}></lightning-button>
+                                <lightning-button 
+                                    label="Submit" 
+                                    variant="brand" 
+                                    onclick={handleWizardNext} 
+                                    disabled={isCreateDisabled}
+                                ></lightning-button>
+                            </footer>
+                        </template>
+
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+
+            <!-- ================================================================ -->
+            <!-- EDIT MODAL (for editing existing internships)                   -->
+            <!-- ================================================================ -->
+            <template if:false={isWizardMode}>
+            <section class="slds-modal slds-fade-in-open slds-modal_large" role="dialog" aria-modal="true" aria-labelledby="modal-heading-01">
+                <div class="slds-modal__container">
+
+                    <header class="slds-modal__header slds-has-bottom-magnet">
+                        <lightning-button-icon
+                            icon-name="utility:close"
+                            variant="bare"
+                            alternative-text="Close"
+                            class="slds-modal__close modal-close-btn"
+                            onclick={handleModalCancel}
+                        ></lightning-button-icon>
+                        <h2 id="modal-heading-01" class="slds-modal__title">{modalTitle}</h2>
+
+                        <!-- Tabs (shown after the record is saved / when editing) -->
+                        <template if:true={showDocTab}>
+                            <div class="slds-tabs_default slds-m-top_small">
+                                <ul class="slds-tabs_default__nav" role="tablist">
+                                    <li class={formTabClass} role="presentation">
+                                        <a class="slds-tabs_default__link tab-link" role="tab" onclick={handleGoToForm}>
+                                            Internship Details
+                                        </a>
+                                    </li>
+                                    <li class={docsTabClass} role="presentation">
+                                        <a class="slds-tabs_default__link tab-link" role="tab" onclick={handleGoToDocs}>
+                                            Documents
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </template>
+                    </header>
+
+                    <!-- ── Form Step ──────────────────────────────────────── -->
+                    <template if:true={isFormStep}>
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <div class="slds-grid slds-wrap slds-gutters">
+
+                                <!-- Company Name -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-input
+                                        label="Company Name"
+                                        required
+                                        value={selectedRecord.Company_Name__c}
+                                        data-field="Company_Name__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-input>
+                                </div>
+
+                                <!-- Designation -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-input
+                                        label="Designation / Role"
+                                        required
+                                        value={selectedRecord.Designation__c}
+                                        data-field="Designation__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-input>
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-input
+                                        type="date"
+                                        label="Start Date"
+                                        required
+                                        value={selectedRecord.Start_Date__c}
+                                        data-field="Start_Date__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-input>
+                                </div>
+
+                                <!-- End Date -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-input
+                                        type="date"
+                                        label="End Date"
+                                        required
+                                        value={selectedRecord.End_Date__c}
+                                        data-field="End_Date__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-input>
+                                </div>
+
+                                <!-- Job Location -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-input
+                                        label="Job Location"
+                                        required
+                                        value={selectedRecord.Job_Location__c}
+                                        data-field="Job_Location__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-input>
+                                </div>
+
+                                <!-- Industry -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-combobox
+                                        label="Industry"
+                                        required
+                                        options={industryOptions}
+                                        value={selectedRecord.Industry__c}
+                                        placeholder="-- Select Industry --"
+                                        data-field="Industry__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-combobox>
+                                </div>
+
+                                <!-- Sub Industry -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-combobox
+                                        label="Sub Industry"
+                                        required
+                                        options={filteredSubIndustryOptions}
+                                        value={selectedRecord.Sub_Industry__c}
+                                        placeholder="-- Select Sub Industry --"
+                                        disabled={isSubIndustryDisabled}
+                                        data-field="Sub_Industry__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-combobox>
+                                </div>
+
+                                <!-- Job Function -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-combobox
+                                        label="Job Function"
+                                        required
+                                        options={jobFunctionOptions}
+                                        value={selectedRecord.Job_Function__c}
+                                        placeholder="-- Select Job Function --"
+                                        data-field="Job_Function__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-combobox>
+                                </div>
+
+                                <!-- Total Stipend -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-input
+                                        type="number"
+                                        label="Total Stipend"
+                                        required
+                                        value={selectedRecord.Total_Stipend__c}
+                                        min="0"
+                                        step="0.01"
+                                        data-field="Total_Stipend__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-input>
+                                </div>
+
+                                <!-- Stipend Currency -->
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                    <lightning-combobox
+                                        label="Stipend Currency"
+                                        required
+                                        options={stipendCurrencyOptions}
+                                        value={selectedRecord.Stipend_Currency__c}
+                                        placeholder="-- Select Currency --"
+                                        data-field="Stipend_Currency__c"
+                                        onchange={handleFieldChange}
+                                    ></lightning-combobox>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <lightning-button label="Cancel" onclick={handleModalCancel} class="slds-m-right_x-small"></lightning-button>
+                            <template if:true={isExistingRecord}>
+                                <lightning-button label="Manage Documents" icon-name="utility:file" onclick={handleGoToDocs} class="slds-m-right_x-small"></lightning-button>
+                            </template>
+                            <lightning-button label="Save &amp; Next" variant="brand" onclick={handleSave} disabled={isSaving}></lightning-button>
+                        </footer>
+                    </template>
+                    <!-- / Form Step -->
+
+                    <!-- ── Documents Step ─────────────────────────────────── -->
+                    <template if:true={isDocsStep}>
+                        <div class="slds-modal__content slds-p-around_medium">
+
+                            <!-- Existing documents table -->
+                            <template if:true={modalHasDocs}>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-m-bottom_medium">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col"><div class="slds-truncate">Type</div></th>
+                                            <th scope="col"><div class="slds-truncate">Title</div></th>
+                                            <th scope="col"><div class="slds-truncate">Upload Date</div></th>
+                                            <th scope="col" style="width:5rem"><div class="slds-truncate">Actions</div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={modalDocs} for:item="doc">
+                                            <tr key={doc.Id}>
+                                                <td>{doc.Document_Type__c}</td>
+                                                <td>{doc.Document_Title__c}</td>
+                                                <td>{doc.Upload_Date__c}</td>
+                                                <td>
+                                                    <lightning-button-icon
+                                                        icon-name="utility:preview"
+                                                        variant="border-filled"
+                                                        size="small"
+                                                        alternative-text="Preview"
+                                                        title="Preview Document"
+                                                        data-id={doc.Id}
+                                                        onclick={handlePreviewDoc}
+                                                    ></lightning-button-icon>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </template>
+                            <template if:false={modalHasDocs}>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">
+                                    No documents uploaded yet for this internship.
+                                </p>
+                            </template>
+
+                            <!-- Add Doc Form -->
+                            <template if:false={showAddDocForm}>
+                                <lightning-button
+                                    label="Add Document"
+                                    icon-name="utility:upload"
+                                    onclick={handleShowAddDoc}
+                                ></lightning-button>
+                            </template>
+
+                            <template if:true={showAddDocForm}>
+                                <div class="slds-box slds-m-top_small">
+                                    <template if:true={isDocFormStep1}>
+                                        <h4 class="slds-text-heading_small slds-m-bottom_small">Add Document &mdash; Step 1 of 2: Details</h4>
+                                        <lightning-combobox
+                                            label="Document Type"
+                                            required
+                                            options={docTypeOptions}
+                                            value={newDoc.Document_Type__c}
+                                            placeholder="-- Select Type --"
+                                            data-field="Document_Type__c"
+                                            onchange={handleDocFieldChange}
+                                            class="slds-m-bottom_small"
+                                        ></lightning-combobox>
+                                        <template if:true={docTypeError}>
+                                            <p class="slds-text-color_error slds-m-bottom_small">{docTypeError}</p>
+                                        </template>
+                                        <lightning-input
+                                            label="Document Title"
+                                            required
+                                            value={newDoc.Document_Title__c}
+                                            data-field="Document_Title__c"
+                                            onchange={handleDocFieldChange}
+                                            class="slds-m-bottom_small"
+                                        ></lightning-input>
+                                        <template if:true={docTitleError}>
+                                            <p class="slds-text-color_error slds-m-bottom_small">{docTitleError}</p>
+                                        </template>
+                                        <lightning-textarea
+                                            label="Notes (Optional)"
+                                            value={newDoc.Notes__c}
+                                            data-field="Notes__c"
+                                            onchange={handleDocFieldChange}
+                                            class="slds-m-bottom_small"
+                                        ></lightning-textarea>
+                                        <div class="slds-grid slds-grid_align-end slds-m-top_small">
+                                            <lightning-button label="Cancel" onclick={handleCancelAddDoc} class="slds-m-right_x-small"></lightning-button>
+                                            <lightning-button label="Next: Attach File" variant="brand" onclick={handleSaveDocMetadata} disabled={isCreatingDoc}></lightning-button>
+                                        </div>
+                                    </template>
+                                    <template if:true={isDocFormStep2}>
+                                        <h4 class="slds-text-heading_small slds-m-bottom_small">Add Document &mdash; Step 2 of 2: Attach File</h4>
+                                        <p class="slds-text-body_small slds-m-bottom_medium">
+                                            Document record saved. Upload the file below (PDF, JPG, PNG, Word).
+                                        </p>
+                                        <lightning-file-upload
+                                            label="Upload File"
+                                            name="documentFile"
+                                            accepted-formats=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                                            record-id={newDocRecordId}
+                                            onuploadfinished={handleUploadFinished}
+                                        ></lightning-file-upload>
+                                        <div class="slds-m-top_small">
+                                            <lightning-button label="Skip File Upload" onclick={handleSkipFileUpload}></lightning-button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <template if:false={showAddDocForm}>
+                                <lightning-button label="Back: Edit Details" icon-name="utility:back" onclick={handleGoToForm} class="slds-m-right_x-small"></lightning-button>
+                                <lightning-button label="Done" variant="brand" onclick={handleModalDone}></lightning-button>
+                            </template>
+                        </footer>
+                    </template>
+                    <!-- / Documents Step -->
+
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+            <!-- / Edit Modal -->
+        </template>
+        <!-- / Modal Container -->
+
+
+        <!-- ================================================================ -->
+        <!-- FILE PREVIEW MODAL                                                -->
+        <!-- ================================================================ -->
+        <template if:true={showFilePreview}>
+            <section role="dialog" tabindex="-1" aria-modal="true"
+                     class="slds-modal slds-fade-in-open fp-modal">
+                <div class="slds-modal__container fp-container">
+
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={closeFilePreview}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium slds-truncate">{previewFileName}</h2>
+                    </header>
+
+                    <!-- Modal body — image OR PDF iframe -->
+                    <div class="slds-modal__content fp-body" id="fp-content">
+                        <template if:true={previewSrc}>
+                            <template if:true={previewIsPdf}>
+                                <iframe src={previewSrc} class="fp-preview-iframe" title={previewFileName}></iframe>
+                            </template>
+                            <template if:false={previewIsPdf}>
+                                <img src={previewSrc} alt={previewFileName} class="fp-preview-img" />
+                            </template>
+                        </template>
+                        <template if:false={previewSrc}>
+                            <div class="fp-generic">
+                                <lightning-icon icon-name="doctype:attachment" size="large"
+                                               class="slds-m-bottom_small"></lightning-icon>
+                                <p class="slds-text-heading_small slds-m-bottom_x-small">{previewFileName}</p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    Preview not available. Download to open this file.
+                                </p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Close" onclick={closeFilePreview}></lightning-button>
+                    </footer>
+
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- ================================================================ -->
+        <!-- DELETE DOCUMENT CONFIRMATION MODAL                               -->
+        <!-- ================================================================ -->
+        <template if:true={showDeleteDocModal}>
+            <section class="slds-modal slds-fade-in-open slds-modal_small" role="alertdialog" aria-modal="true">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-modal__title">Delete Document</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <p>Are you sure you want to delete this document? This action cannot be undone.</p>
+                        <p class="slds-m-top_small slds-text-color_weak">
+                            This will also remove the attached file from the system.
+                        </p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Cancel" 
+                            onclick={handleDeleteDocCancel} 
+                            class="slds-m-right_x-small"
+                        ></lightning-button>
+                        <lightning-button 
+                            label="Delete" 
+                            variant="destructive" 
+                            onclick={handleDeleteDocConfirm} 
+                            disabled={isDeletingDoc}
+                        ></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </div>
+</template>

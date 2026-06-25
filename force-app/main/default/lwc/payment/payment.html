@@ -1,0 +1,418 @@
+<template>
+    <!-- Pay Now button on page -->
+    <lightning-button variant="brand" label="Pay Now" class="slds-m-top_medium" onclick={openModal}>
+    </lightning-button>
+
+    <!-- Modal -->
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="max-width: 750px;">
+
+                <!-- Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium">ISB Payment Page</h2>
+                </header>
+
+                <!-- Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+
+                    <!-- ✅ TOTAL PAYABLE (PENDING AMOUNT) -->
+                    <div class="slds-box slds-theme_default slds-m-bottom_medium">
+                        <div class="slds-text-align_center slds-m-bottom_small">
+                            <p class="slds-text-heading_small">
+                                <strong>Payment Details</strong>
+                            </p>
+                        </div>
+
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-3 slds-text-align_center slds-p-around_small">
+                                <p class="slds-text-body_small slds-text-color_weak">Total Amount</p>
+                                <p class="slds-text-heading_medium" style="color: #0176d3;">
+                                    <strong>₹{totalAmount}</strong>
+                                </p>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3 slds-text-align_center slds-p-around_small"
+                                style="border-left: 1px solid #dddbda; border-right: 1px solid #dddbda;">
+                                <p class="slds-text-body_small slds-text-color_weak">Paid Amount</p>
+                                <p class="slds-text-heading_medium" style="color: #2e844a;">
+                                    <strong>₹{paidAmount}</strong>
+                                </p>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3 slds-text-align_center slds-p-around_small">
+                                <p class="slds-text-body_small slds-text-color_weak">Pending Amount</p>
+                                <p class="slds-text-heading_medium" style="color: #c23934;">
+                                    <strong>₹{pendingAmount}</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="slds-text-body_small slds-text-align_center slds-m-top_small" style="color: #555;">
+                            (Includes GST)
+                        </p>
+                    </div>
+
+                    <!-- Wire Info Hyperlink -->
+                    <div class="slds-m-bottom_medium slds-text-align_right">
+                        <a href="javascript:void(0);" onclick={openWireInfo} class="slds-text-link">
+                            📄ISB Bank Account Details
+                        </a>
+                    </div>
+
+
+                    <!-- ✅ PARTIAL PAYMENT INPUT -->
+                    <lightning-input type="number" label="Enter Amount to Pay Now" value={payAmount} min="1"
+                        max={totalFees} onchange={handleAmountChange} class="slds-m-bottom_medium">
+                    </lightning-input>
+
+                    <!-- ✅ Remaining Amount Display -->
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">
+                        Remaining Due After This Payment: ₹{remainingAmount}
+                    </p>
+                    <template if:true={hasFeeBreakdown}>
+
+                        <div class="slds-m-bottom_medium">
+                            <p class="slds-text-heading_small slds-m-bottom_x-small" style="font-size:14px;">
+                                <b>Fee Breakage Details:</b>
+                            </p>
+
+                            <div class="slds-border_top slds-border_bottom slds-p-around_x-small">
+                                <template for:each={feeBreakdown} for:item="item">
+                                    <div key={item.feeType}
+                                        class="slds-grid slds-grid_align-spread slds-text-body_small slds-m-vertical_xx-small">
+                                        <span class="slds-col slds-text-color_weak">{item.feeType}</span>
+                                        <!-- <span class="slds-col slds-text-align_right">₹{item.amount}</span> -->
+                                        <span class="slds-col slds-text-align_right">
+                                                            ₹{item.amount}
+                                                            <template if:true={item.hasScholarship}>
+                                                                <span style="color: #2e844a; margin-left: 8px;">
+                                                                    (Scholarship: ₹{item.scholarshipAmount})
+                                                                </span>
+                                </template>
+                                </span>
+                            </div>
+                    </template>
+
+                    <div
+                        class="slds-grid slds-grid_align-spread slds-text-title slds-m-top_x-small slds-border_top slds-p-top_x-small">
+                        <span class="slds-col">Total Installment:</span>
+                        <span class="slds-col slds-text-align_right"><b>₹{totalInstallmentFees}</b></span>
+                    </div>
+                </div>
+
+                <p class="slds-text-body_small slds-m-top_small" style="color: #c90000;">
+                    * Transaction charges are extra and borne by the payer.
+                </p>
+            </div>
+    </template>
+
+    <!-- ✅ PAYMENT MODE SELECTION (Single Line with Better UI) -->
+    <!-- ✅ PAYMENT MODE SELECTION (All in Single Line) -->
+    <div class="slds-m-vertical_medium">
+        <div class="slds-box" style="background-color: #f3f3f3; border: 1px solid #dddbda;">
+            <label class="slds-form-element__label slds-text-heading_small slds-m-bottom_small">
+            <strong>Payment Mode</strong>
+        </label>
+            <div class="slds-grid slds-gutters_small" style="flex-wrap: nowrap; overflow-x: auto;">
+                <template for:each={paymentModeOptions} for:item="option">
+                    <div key={option.value} class="slds-col" style="flex: 0 0 auto; min-width: fit-content;">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-radio">
+                                    <input
+                                    type="radio"
+                                    id={option.value}
+                                    name="paymentModeRadio"
+                                    value={option.value}
+                                    checked={option.isChecked}
+                                    onchange={handlePaymentModeChangeCustom} />
+                                    <label class="slds-radio__label" for={option.value}>
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label" style="white-space: nowrap;">
+                                        {option.label}
+                                    </span>
+                                </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ OFFLINE PAYMENT FIELDS (Shown for all modes except Online Payment) -->
+    <template if:true={showOfflineFields}>
+        <div class="slds-box slds-theme_shade slds-p-around_medium slds-m-bottom_medium">
+
+            <!-- Cheque/DD Specific Fields -->
+            <template if:true={isChequeDD}>
+                <h3 class="slds-text-heading_small slds-m-bottom_small"
+                    style="border-left: 3px solid #0176d3; padding-left: 8px;">
+                    Cheque / DD Information
+                </h3>
+
+                <lightning-input type="text" label="Bank Name" value={bankName} onchange={handleBankNameChange}
+                    placeholder="Enter bank name" required class="slds-m-bottom_small">
+                </lightning-input>
+
+                <lightning-input type="text" label="Cheque or DD" value={chequeNumber}
+                    onchange={handleChequeNumberChange} placeholder="Enter cheque or DD number" required
+                    class="slds-m-bottom_small">
+                </lightning-input>
+
+                <lightning-input type="date" label="Transaction Date" value={transactionDate}
+                    onchange={handleTransactionDateChange} max={todayDate} required class="slds-m-bottom_small">
+                </lightning-input>
+
+                <lightning-input type="number" label="Amount" value={payAmount} disabled class="slds-m-bottom_small">
+                </lightning-input>
+
+            </template>
+
+            <!-- Bank Loan Specific Fields -->
+            <template if:true={isBankLoan}>
+                <div class="slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small"
+                        style="border-left: 3px solid #0176d3; padding-left: 8px;">
+                        Bank Loan Information
+                    </h3>
+
+                    <lightning-input type="text" label="Bank Name" value={bankName} onchange={handleBankNameChange}
+                        placeholder="Enter bank name" required class="slds-m-bottom_small">
+                    </lightning-input>
+
+
+                    <lightning-input type="text" label="Loan Account Number" value={loanAccountNumber}
+                        onchange={handleLoanAccountNumberChange} placeholder="Enter loan account number" required
+                        class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="text" label="RTGS / NEFT Number" value={rtgsNeftNumber}
+                        onchange={handleRtgsNeftNumberChange} placeholder="Enter RTGS / NEFT number" required
+                        class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="date" label="Transaction Date" value={transactionDate}
+                        onchange={handleTransactionDateChange} max={todayDate} required class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="number" label="Loan Amount" value={loanAmount}
+                        onchange={handleLoanAmountChange} class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="number" label="Amount" value={payAmount} disabled
+                        class="slds-m-bottom_small">
+                    </lightning-input>
+                </div>
+            </template>
+
+            <!-- Corporate Sponsor Specific Fields -->
+            <template if:true={isCorporateSponsor}>
+                <div class="slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small"
+                        style="border-left: 3px solid #0176d3; padding-left: 8px;">
+                        Corporate Sponsor
+                    </h3>
+                    <div class="slds-grid slds-wrap slds-m-bottom_small">
+                        <!-- First Row -->
+                        <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                            <lightning-input type="text" label="Company Name" value={sponsorCompanyName} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-left_small">
+                            <lightning-input type="text" label="GST Number" value={sponsorGstNumber} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+
+                        <!-- Second Row -->
+                        <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                            <lightning-input type="text" label="PAN" value={sponsorPanNo} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-left_small">
+                            <lightning-input type="text" label="TAN" value={sponsorTanNo} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+
+                        <!-- Third Row -->
+                        <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                            <lightning-input type="text" label="City" value={sponsorCity} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-left_small">
+                            <lightning-input type="text" label="Branch" value={sponsorCompanyBranch} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+
+                        <!-- Fourth Row -->
+                        <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                            <lightning-input type="text" label="Address" value={sponsorCompanyAddress} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-left_small">
+                            <lightning-input type="text" label="State" value={sponsorState} 
+                                read-only class="slds-m-bottom_small"></lightning-input>
+                        </div>
+
+                        <!-- Fifth Row -->
+                        <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                            <lightning-input type="text" label="RTGS / NEFT Number" value={rtgsNeftNumber}
+                                onchange={handleRtgsNeftNumberChange} placeholder="Enter RTGS / NEFT number"
+                                class="slds-m-bottom_small">
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-left_small">
+                            <lightning-input type="text" label="Cheque No" value={chequeNo} onchange={handleChequeNoChange}
+                                placeholder="Enter cheque number" class="slds-m-bottom_small">
+                            </lightning-input>
+                        </div>
+
+                        <!-- Sixth Row -->
+                        <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                            <lightning-input type="date" label="Transaction Date" value={transactionDate}
+                                onchange={handleTransactionDateChange} max={todayDate} required class="slds-m-bottom_small">
+                            </lightning-input>
+                        </div>
+                    </div>
+
+                    <lightning-input type="number" label="Amount" value={payAmount} disabled
+                        class="slds-m-bottom_small">
+                    </lightning-input>
+                </div>
+            </template>
+
+            <!-- Wire Transfer Specific Fields -->
+            <template if:true={isWireTransfer}>
+                <div class="slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small"
+                        style="border-left: 3px solid #0176d3; padding-left: 8px;">
+                        Wire Transfer Information
+                    </h3>
+
+                    <lightning-input type="text" label="Bank Name" value={bankName} onchange={handleBankNameChange}
+                        placeholder="Enter bank name" required class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="text" label="RTGS / NEFT Number" value={rtgsNeftNumber}
+                        onchange={handleRtgsNeftNumberChange} placeholder="Enter RTGS / NEFT number" required
+                        class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="date" label="Transaction Date" value={transactionDate}
+                        onchange={handleTransactionDateChange} max={todayDate} required class="slds-m-bottom_small">
+                    </lightning-input>
+
+                    <lightning-input type="number" label="Amount" value={payAmount} disabled
+                        class="slds-m-bottom_small">
+                    </lightning-input>
+                </div>
+            </template>
+
+            <!-- Cash Transaction Specific Fields -->
+            <template if:true={isCashTransaction}>
+                <lightning-input type="text" label="Receipt Number" value={receiptNumber}
+                    onchange={handleReceiptNumberChange} placeholder="Enter receipt number" required
+                    class="slds-m-bottom_small">
+                </lightning-input>
+
+                <lightning-input type="text" label="Received By" value={receivedBy} onchange={handleReceivedByChange}
+                    placeholder="Enter name of person who received payment" class="slds-m-bottom_small">
+                </lightning-input>
+            </template>
+        </div>
+    </template>
+
+    <!-- ✅ PREVIOUS PAYMENT HISTORY -->
+    <!-- ================= PREVIOUS PAYMENTS ================= -->
+    <template if:true={allPayments.length}>
+        <div class="slds-m-top_large">
+
+            <p class="slds-text-heading_small slds-m-bottom_small">
+                <b>Previous Payments</b>
+            </p>
+
+            <!-- STATUS TABS -->
+            <div class="slds-button-group slds-m-bottom_medium" role="group">
+                <lightning-button label="Success" variant={successTabVariant} data-tab="Success"
+                    onclick={handleHistoryTabClick}>
+                </lightning-button>
+
+                <lightning-button label="In Progress" variant={inProgressTabVariant} data-tab="In Progress"
+                    onclick={handleHistoryTabClick}>
+                </lightning-button>
+
+                <lightning-button label="Failed" variant={failedTabVariant} data-tab="Failed"
+                    onclick={handleHistoryTabClick}>
+                </lightning-button>
+            </div>
+
+            <!-- TABLE -->
+            <template if:true={filteredPayments.length}>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Mode</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={filteredPayments} for:item="pay">
+                            <tr key={pay.Id}>
+                                <td>{pay.Transaction_Date__c}</td>
+                                <td>₹{pay.Amount__c}</td>
+                                <td>{pay.Payment_Mode__c}</td>
+                                <td>
+                                    <span class="slds-badge">
+                                    {pay.Initiated__c}
+                                </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+
+            <!-- EMPTY STATE -->
+            <template if:false={filteredPayments.length}>
+                <p class="slds-text-body_small slds-text-color_weak">
+                    No payments found for this status.
+                </p>
+            </template>
+
+        </div>
+    </template>
+
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="slds-modal__footer slds-text-align_center">
+        <!-- Show "Proceed to Pay" for Online Payment -->
+        <template if:true={isOnlinePayment}>
+            <lightning-button variant="brand" label="Proceed to Pay" onclick={handleOnlinePayment}>
+            </lightning-button>
+        </template>
+
+        <!-- Show "Save Payment" for Offline Modes -->
+        <template if:true={showOfflineFields}>
+            <lightning-button variant="brand" label="Save Payment" onclick={handleSaveOfflinePayment}>
+            </lightning-button>
+        </template>
+
+        <lightning-button variant="neutral" label="Cancel" onclick={closeModal}>
+        </lightning-button>
+    </footer>
+    </div>
+    </section>
+
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+</template>

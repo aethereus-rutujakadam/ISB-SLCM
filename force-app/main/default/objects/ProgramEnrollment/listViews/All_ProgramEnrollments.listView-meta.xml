@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_ProgramEnrollments</fullName>
+    <columns>Name</columns>
+    <columns>Program</columns>
+    <columns>Academic_Term__c</columns>
+    <columns>PGID__c</columns>
+    <columns>Contact</columns>
+    <columns>CreatedDate</columns>
+    <columns>IsActive</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>IsActive</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>All Program Enrollments</label>
+    <sharedTo>
+        <group>admin_Group</group>
+    </sharedTo>
+</ListView>

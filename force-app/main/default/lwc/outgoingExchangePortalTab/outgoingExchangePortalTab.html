@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title="My Exchange Program" icon-name="standard:education">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={exchangeCase}>
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Exchange School:</strong> {exchangeSchoolName}</p>
+                            <p><strong>From Term:</strong> {exchangeCase.From_Term__c}</p>
+                            <p><strong>To Term:</strong> {exchangeCase.To_Term__c}</p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Status:</strong> {exchangeCase.Status}</p>
+                            <template if:true={isTranscriptDispatched}>
+                                <p class="slds-text-color_success">
+                                    Transcript dispatched on {formattedDispatchDate}
+                                </p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-m-around_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Exchange Courses</h3>
+                    <template if:true={hasCourses}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={courses}
+                            columns={columns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </template>
+                    <template if:false={hasCourses}>
+                        <p class="slds-text-color_weak">No exchange courses confirmed yet.</p>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={exchangeCase}>
+                <div class="slds-m-around_medium">
+                    <p class="slds-text-color_weak">No active outgoing exchange record found.</p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

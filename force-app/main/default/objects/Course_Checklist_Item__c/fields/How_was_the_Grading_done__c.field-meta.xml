@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>How_was_the_Grading_done__c</fullName>
+    <label>Grading Medium</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Softcopy</fullName>
+                <default>false</default>
+                <label>Softcopy</label>
+            </value>
+            <value>
+                <fullName>Hardcopy</fullName>
+                <default>false</default>
+                <label>Hardcopy</label>
+            </value>
+            <value>
+                <fullName>Autograded</fullName>
+                <default>false</default>
+                <label>Autograded</label>
+            </value>
+            <value>
+                <fullName>LMS</fullName>
+                <default>false</default>
+                <label>LMS</label>
+            </value>
+            <value>
+                <fullName>Excel</fullName>
+                <default>false</default>
+                <label>Excel</label>
+            </value>
+            <value>
+                <fullName>Faculty Graded</fullName>
+                <default>false</default>
+                <label>Faculty Graded</label>
+            </value>
+            <value>
+                <fullName>External Grading</fullName>
+                <default>false</default>
+                <label>External Grading</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,66 @@
+<template>
+    <div class="slds-p-around_medium">
+        <!-- Minimal Header -->
+        <div class="slds-m-bottom_medium">
+            <h1 class="slds-text-heading_small">Upload Award Catalog</h1>
+        </div>
+
+        <!-- Simple File Input -->
+        <lightning-input
+            type="file"
+            accept=".xls,.xlsx"
+            label="Select Excel File"
+            onchange={handleFileChange}
+            disabled={isLoading}>
+        </lightning-input>
+
+        <!-- Record Count -->
+        <template if:true={fileName}>
+            <div class="slds-m-vertical_small">
+                <p><b>{recordsCount} records loaded:</b> {fileName}</p>
+            </div>
+        </template>
+
+        <!-- Data Preview -->
+        <template if:true={columns.length}>
+            <div class="slds-m-top_medium table-container">
+                <lightning-datatable
+                    key-field="id"
+                    data={fileData}
+                    columns={columns}
+                    hide-checkbox-column>
+                </lightning-datatable>
+            </div>
+        </template>
+
+        <!-- Action Buttons -->
+        <div class="slds-m-top_medium slds-grid slds-grid_spacing-small">
+            <lightning-button 
+                label="Submit Catalog"
+                variant="brand"
+                onclick={handleSubmit}
+                disabled={isSubmitDisabled}>
+            </lightning-button>
+            <lightning-button 
+                label="Reset"
+                variant="neutral"
+                onclick={resetForm}
+                class="slds-m-left_small">
+            </lightning-button>
+            
+            <template if:true={errorData.length}>
+                <lightning-button 
+                    label="Download Error Report" 
+                    variant="destructive" 
+                    onclick={downloadErrorReport}
+                    class="slds-m-left_auto">
+                </lightning-button>
+            </template>
+        </div>
+
+        <!-- Minimal Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Processing..." size="medium"></lightning-spinner>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_OUT_04_Partner_Transcript_Gate</fullName>
+    <active>true</active>
+    <description>V-OUT-04: Blocks Student Credit Check stage if Partner Transcript has not been received. Partner Transcript Received must be checked before the case can reach Student Credit Check.</description>
+    <errorConditionFormula>AND(
+    RecordType.DeveloperName = &apos;Outgoing_Exchange&apos;,
+    ISPICKVAL(Status, &apos;Student Credit Check&apos;),
+    NOT(Partner_Transcript_Received__c)
+)</errorConditionFormula>
+    <errorDisplayField>Partner_Transcript_Received__c</errorDisplayField>
+    <errorMessage>Partner Transcript must be received before advancing to Student Credit Check.</errorMessage>
+</ValidationRule>

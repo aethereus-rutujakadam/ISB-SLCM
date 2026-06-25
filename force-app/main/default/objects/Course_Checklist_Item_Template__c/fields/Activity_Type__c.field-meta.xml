@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Activity_Type__c</fullName>
+    <label>Activity Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Quiz</fullName>
+                <default>false</default>
+                <label>Quiz</label>
+            </value>
+            <value>
+                <fullName>Individual Assignment</fullName>
+                <default>false</default>
+                <label>Individual Assignment</label>
+            </value>
+            <value>
+                <fullName>Homework</fullName>
+                <default>false</default>
+                <label>Homework</label>
+            </value>
+            <value>
+                <fullName>Case Study</fullName>
+                <default>false</default>
+                <label>Case Study</label>
+            </value>
+            <value>
+                <fullName>Simulation</fullName>
+                <default>false</default>
+                <label>Simulation</label>
+            </value>
+            <value>
+                <fullName>Survey</fullName>
+                <default>false</default>
+                <label>Survey</label>
+            </value>
+            <value>
+                <fullName>Blog</fullName>
+                <default>false</default>
+                <label>Blog</label>
+            </value>
+            <value>
+                <fullName>Poll</fullName>
+                <default>false</default>
+                <label>Poll</label>
+            </value>
+            <value>
+                <fullName>Reflection</fullName>
+                <default>false</default>
+                <label>Reflection</label>
+            </value>
+            <value>
+                <fullName>Group Assignment</fullName>
+                <default>false</default>
+                <label>Group Assignment</label>
+            </value>
+            <value>
+                <fullName>Peer Assessment/Feedback</fullName>
+                <default>false</default>
+                <label>Peer Assessment/Feedback</label>
+            </value>
+            <value>
+                <fullName>MidTerm</fullName>
+                <default>false</default>
+                <label>MidTerm</label>
+            </value>
+            <value>
+                <fullName>Final</fullName>
+                <default>false</default>
+                <label>Final</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Return and Replace</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Approved - Pending Finance</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Approved By Finance HOD</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Decision Pending to Finance HOD</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Finance Review</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Finance Statement Accepted</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Finance Statement Rejected</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>In Review</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Payment Successful</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>RFI Requested</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Rejected</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Submitted</fullName>
+        <default>true</default>
+    </values>
+</BusinessProcess>

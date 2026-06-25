@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LOA</fullName>
+    <active>true</active>
+    <businessProcess>LOA</businessProcess>
+    <compactLayoutAssignment>RO_Compact_Layout</compactLayoutAssignment>
+    <label>Leave of Absence</label>
+    <picklistValues>
+        <picklist>Action_Taken__c</picklist>
+        <values>
+            <fullName>Block Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Warned</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Attendance_Exception_Reason__c</picklist>
+        <values>
+            <fullName>Approved Case Competitions</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hardship%2FTrauma</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Loss%2FBereavement</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medical Emergency in Immediate Family</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medical Exigency</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>National%2FInternational Sports Tournaments</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Professional Certification Exams</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Campus__c</picklist>
+        <values>
+            <fullName>Hyderabad</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mohali</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Category__c</picklist>
+        <values>
+            <fullName>Academic</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Awards Management - Approval</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Bidding %28Registro%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Events %26 Budgets</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Incoming %26 Outgoing Student Exchange %28Registro%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Posts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Special Interest Group Request</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Charge_Drivers__c</picklist>
+        <values>
+            <fullName>Accommodation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Electricity</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Miscellaneous</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Registration</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Decision__c</picklist>
+        <values>
+            <fullName>Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pending</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejected</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Delivery_Mode__c</picklist>
+        <values>
+            <fullName>Digitary</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Print</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Dispatch_Mode__c</picklist>
+        <values>
+            <fullName>Courier</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Portal</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Document_Type__c</picklist>
+        <values>
+            <fullName>Certificate</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Dean%E2%80%99s</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Merit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Transcript</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Exception_Type__c</picklist>
+        <values>
+            <fullName>Exit Date Change</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Visa Delay</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Withdrawal</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Finance_Cleared__c</picklist>
+        <values>
+            <fullName>Cleared</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Open</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Partially Cleared</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Graduation_Exchange__c</picklist>
+        <values>
+            <fullName>Deferred</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In-Year</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Host_Body__c</picklist>
+        <values>
+            <fullName>Club</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Council</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SIG</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>In_Absentia__c</picklist>
+        <values>
+            <fullName>In Absentia</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Person</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>LOA_Type__c</picklist>
+        <values>
+            <fullName>Full Year</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>None</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TermWise</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Mode_of_Interaction__c</picklist>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Person</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Messaging</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Phone Call</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Video Call</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Origin</picklist>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Phone</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Web</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Payment_Status__c</picklist>
+        <values>
+            <fullName>Paid</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partial</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pending</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Priority</picklist>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Low</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medium</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Reason</picklist>
+        <values>
+            <fullName>Complex functionality</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Existing problem</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Instructions not clear</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New problem</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>User didn%27t attend training</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Refund_Status__c</picklist>
+        <values>
+            <fullName>No Refund</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refund Applicable</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Refund_Type__c</picklist>
+        <values>
+            <fullName>Accommodation Only</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Full</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partial</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Run_Closure_Status__c</picklist>
+        <values>
+            <fullName>Blocked</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Draft</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>GSC Meeting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ready</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Schorlarship__c</picklist>
+        <values>
+            <fullName>Withdrawn</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Severity__c</picklist>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Low</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medium</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Sub_Category__c</picklist>
+        <values>
+            <fullName>Attendance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Classroom Seating</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Course Information</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Course Related- Core</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Course Related- Elective</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Course Related- Flexi Core</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Exchange SchoolsMOU</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Exchange Schoolsfactsheets</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Exchange school Surveys</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>ExchangeSchoolsconfirmations</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Feedback</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inter-cohort Exchange</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inter-cohort Transfer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Others</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pre-term</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Programme Requirements</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Arrival - Accommodation%2C Buddy%2C Welcome email etc%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Bidding</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Course Confirmation forms</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Exit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student ID Card</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Nominations</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Registrations</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Transcripts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Undertakings</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Visa - Recommendation letter%2C Visa copy%2C passport copy etc%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Withdrawal</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Study Group</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Sub_Types__c</picklist>
+        <values>
+            <fullName>Academic Records %28Certificates %2F Transcripts%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Graduation Walk %E2%80%94 Exception Petition</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Name Change %2F Display</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Visa NOC</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Feature Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Problem</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Question</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type__c</picklist>
+        <values>
+            <fullName>Accessibility %2F Accommodation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Family %2F Personal Emergency</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Financial Hardship</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Harassment %2F Misconduct %2F Bullying</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mental Health</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Physical Health %2F Medical</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Safety %2F Security Concern</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Visa_Purpose__c</picklist>
+        <values>
+            <fullName>Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Employment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Family Visit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Study</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tourism</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Transit</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Visa_Status__c</picklist>
+        <values>
+            <fullName>Applied</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejected</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Visa_Type__c</picklist>
+        <values>
+            <fullName>Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tourist</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Transit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Work</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>WithdrawTimeframe__c</picklist>
+        <values>
+            <fullName>Before registration</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Dismissal%2Fexpulsion</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>During Terms 1%E2%80%934</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>During orientation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Term 5 or later</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Withdrawal_Status__c</picklist>
+        <values>
+            <fullName>Academic Difficulty</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Assesment failure</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Financial Reasons</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Legal Issues</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medical Reasons</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non compliance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Policy Voilation</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>hed__Category__c</picklist>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>School Code of Conduct</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>School Violation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>State Offense</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>hed__Location__c</picklist>
+        <values>
+            <fullName>Off Campus</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>On Campus</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

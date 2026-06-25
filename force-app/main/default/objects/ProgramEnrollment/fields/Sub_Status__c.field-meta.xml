@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Status__c</fullName>
+    <label>Sub Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Status</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Student</fullName>
+                <default>false</default>
+                <label>Current Student</label>
+            </value>
+            <value>
+                <fullName>Pre-Term Under Evaluation</fullName>
+                <default>false</default>
+                <label>Pre-Term Under Evaluation</label>
+            </value>
+            <value>
+                <fullName>LOA</fullName>
+                <default>false</default>
+                <label>LOA</label>
+            </value>
+            <value>
+                <fullName>Fee payment</fullName>
+                <default>false</default>
+                <label>Fee payment</label>
+            </value>
+            <value>
+                <fullName>Active</fullName>
+                <default>false</default>
+                <label>Active</label>
+            </value>
+            <value>
+                <fullName>Inactive</fullName>
+                <default>false</default>
+                <label>Inactive</label>
+            </value>
+            <value>
+                <fullName>Return and Replace</fullName>
+                <default>false</default>
+                <label>Return and Replace</label>
+            </value>
+            <value>
+                <fullName>Incoming Exchange</fullName>
+                <default>false</default>
+                <label>Incoming Exchange</label>
+            </value>
+            <value>
+                <fullName>Outgoing Exchange</fullName>
+                <default>false</default>
+                <label>Outgoing Exchange</label>
+            </value>
+            <value>
+                <fullName>Assesment failure</fullName>
+                <default>false</default>
+                <label>Assesment failure</label>
+            </value>
+            <value>
+                <fullName>Non compliance</fullName>
+                <default>false</default>
+                <label>Non compliance</label>
+            </value>
+            <value>
+                <fullName>Academic Difficulty</fullName>
+                <default>false</default>
+                <label>Academic Difficulty</label>
+            </value>
+            <value>
+                <fullName>Medical Reasons</fullName>
+                <default>false</default>
+                <label>Medical Reasons</label>
+            </value>
+            <value>
+                <fullName>Financial Reasons</fullName>
+                <default>false</default>
+                <label>Financial Reasons</label>
+            </value>
+            <value>
+                <fullName>Policy Voilation/ Legal Issues</fullName>
+                <default>false</default>
+                <label>Policy Voilation/ Legal Issues</label>
+            </value>
+            <value>
+                <fullName>Certificate Issued</fullName>
+                <default>false</default>
+                <label>Certificate Issued</label>
+            </value>
+            <value>
+                <fullName>Certificate Pending</fullName>
+                <default>false</default>
+                <label>Certificate Pending</label>
+            </value>
+            <value>
+                <fullName>Certificate Re-Issued</fullName>
+                <default>false</default>
+                <label>Certificate Re-Issued</label>
+            </value>
+            <value>
+                <fullName>Offer Accepted</fullName>
+                <default>false</default>
+                <label>Offer Accepted</label>
+            </value>
+            <value>
+                <fullName>Enrolled</fullName>
+                <default>false</default>
+                <label>Enrolled</label>
+            </value>
+            <value>
+                <fullName>Not Graduating</fullName>
+                <default>false</default>
+                <label>Not Graduating</label>
+            </value>
+            <value>
+                <fullName>Legal Issues</fullName>
+                <default>false</default>
+                <label>Legal Issues</label>
+            </value>
+            <value>
+                <fullName>Policy Voilation</fullName>
+                <default>false</default>
+                <label>Policy Voilation</label>
+            </value>
+            <value>
+                <fullName>Graduated</fullName>
+                <default>false</default>
+                <label>Graduated</label>
+            </value>
+            <value>
+                <fullName>Deceased</fullName>
+                <default>false</default>
+                <label>Deceased</label>
+            </value>
+            <value>
+                <fullName>Not Graduated</fullName>
+                <default>false</default>
+                <label>Not Graduated</label>
+            </value>
+            <value>
+                <fullName>Active Alumni</fullName>
+                <default>false</default>
+                <label>Active Alumni</label>
+            </value>
+            <value>
+                <fullName>Inactive Alumni</fullName>
+                <default>false</default>
+                <label>Inactive Alumni</label>
+            </value>
+            <value>
+                <fullName>Deferral Accepted</fullName>
+                <default>false</default>
+                <label>Deferral Accepted</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Alumni</controllingFieldValue>
+            <valueName>Active</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Alumni</controllingFieldValue>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Inactive</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Suspended</controllingFieldValue>
+            <controllingFieldValue>Registered</controllingFieldValue>
+            <controllingFieldValue>On Hold</controllingFieldValue>
+            <valueName>Student</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Rejoined</controllingFieldValue>
+            <valueName>Return and Replace</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Exchange Student</controllingFieldValue>
+            <valueName>Incoming Exchange</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Exchange Student</controllingFieldValue>
+            <valueName>Outgoing Exchange</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Assesment failure</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Non compliance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Academic Difficulty</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Medical Reasons</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Financial Reasons</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Withdrawn</controllingFieldValue>
+            <valueName>Policy Voilation/ Legal Issues</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Registered</controllingFieldValue>
+            <valueName>Pre-Term Under Evaluation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>On Hold</controllingFieldValue>
+            <valueName>LOA</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>On Hold</controllingFieldValue>
+            <valueName>Fee payment</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

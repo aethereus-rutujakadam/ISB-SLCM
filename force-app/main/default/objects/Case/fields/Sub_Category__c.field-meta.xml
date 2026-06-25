@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Category__c</fullName>
+    <label>Sub Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Category__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Course Related- Core</fullName>
+                <default>false</default>
+                <label>Course Related- Core</label>
+            </value>
+            <value>
+                <fullName>Course Related- Elective</fullName>
+                <default>false</default>
+                <label>Course Related- Elective</label>
+            </value>
+            <value>
+                <fullName>Course Related- Flexi Core</fullName>
+                <default>false</default>
+                <label>Course Related- Flexi Core</label>
+            </value>
+            <value>
+                <fullName>Programme Requirements</fullName>
+                <default>false</default>
+                <label>Programme Requirements</label>
+            </value>
+            <value>
+                <fullName>Study Group</fullName>
+                <default>false</default>
+                <label>Study Group</label>
+            </value>
+            <value>
+                <fullName>Attendance</fullName>
+                <default>false</default>
+                <label>Attendance</label>
+            </value>
+            <value>
+                <fullName>Student ID Card</fullName>
+                <default>false</default>
+                <label>Student ID Card</label>
+            </value>
+            <value>
+                <fullName>Classroom Seating</fullName>
+                <default>false</default>
+                <label>Classroom Seating</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+            <value>
+                <fullName>Feedback</fullName>
+                <default>false</default>
+                <label>Feedback</label>
+            </value>
+            <value>
+                <fullName>Inter-cohort Exchange</fullName>
+                <default>false</default>
+                <label>Inter-cohort Exchange</label>
+            </value>
+            <value>
+                <fullName>Inter-cohort Transfer</fullName>
+                <default>false</default>
+                <label>Inter-cohort Transfer</label>
+            </value>
+            <value>
+                <fullName>Pre-term</fullName>
+                <default>false</default>
+                <label>Pre-term</label>
+            </value>
+            <value>
+                <fullName>ExchangeSchoolsconfirmations</fullName>
+                <default>false</default>
+                <label>ExchangeSchoolsconfirmations</label>
+            </value>
+            <value>
+                <fullName>Exchange Schoolsfactsheets</fullName>
+                <default>false</default>
+                <label>Exchange Schoolsfactsheets</label>
+            </value>
+            <value>
+                <fullName>Exchange SchoolsMOU</fullName>
+                <default>false</default>
+                <label>Exchange SchoolsMOU</label>
+            </value>
+            <value>
+                <fullName>Exchange school Surveys</fullName>
+                <default>false</default>
+                <label>Exchange school Surveys</label>
+            </value>
+            <value>
+                <fullName>Student Bidding</fullName>
+                <default>false</default>
+                <label>Student Bidding</label>
+            </value>
+            <value>
+                <fullName>Student Nominations</fullName>
+                <default>false</default>
+                <label>Student Nominations</label>
+            </value>
+            <value>
+                <fullName>Student Undertakings</fullName>
+                <default>false</default>
+                <label>Student Undertakings</label>
+            </value>
+            <value>
+                <fullName>Student Withdrawal</fullName>
+                <default>false</default>
+                <label>Student Withdrawal</label>
+            </value>
+            <value>
+                <fullName>Student Visa - Recommendation letter, Visa copy, passport copy etc.</fullName>
+                <default>false</default>
+                <label>Student Visa - Recommendation letter, Visa copy, passport copy etc.</label>
+            </value>
+            <value>
+                <fullName>Student Course Confirmation forms</fullName>
+                <default>false</default>
+                <label>Student Course Confirmation forms</label>
+            </value>
+            <value>
+                <fullName>Student Exit</fullName>
+                <default>false</default>
+                <label>Student Exit</label>
+            </value>
+            <value>
+                <fullName>Student Transcripts</fullName>
+                <default>false</default>
+                <label>Student Transcripts</label>
+            </value>
+            <value>
+                <fullName>Student Registrations</fullName>
+                <default>false</default>
+                <label>Student Registrations</label>
+            </value>
+            <value>
+                <fullName>Course Information</fullName>
+                <default>false</default>
+                <label>Course Information</label>
+            </value>
+            <value>
+                <fullName>Student Arrival - Accommodation, Buddy, Welcome email etc.</fullName>
+                <default>false</default>
+                <label>Student Arrival - Accommodation, Buddy, Welcome email etc.</label>
+            </value>
+            <value>
+                <fullName>Fee Related Queries</fullName>
+                <default>false</default>
+                <label>Fee Related Queries</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Course Related- Core</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Course Related- Elective</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Course Related- Flexi Core</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Programme Requirements</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Study Group</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Attendance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Student ID Card</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Classroom Seating</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Others</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Feedback</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Inter-cohort Exchange</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Inter-cohort Transfer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Bidding (Registro)</controllingFieldValue>
+            <valueName>Pre-term</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>ExchangeSchoolsconfirmations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Exchange Schoolsfactsheets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Exchange SchoolsMOU</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Exchange school Surveys</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Bidding</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Nominations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Undertakings</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Withdrawal</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Visa - Recommendation letter, Visa copy, passport copy etc.</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Course Confirmation forms</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Exit</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Transcripts</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Registrations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Course Information</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Incoming &amp; Outgoing Student Exchange (Registro)</controllingFieldValue>
+            <valueName>Student Arrival - Accommodation, Buddy, Welcome email etc.</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Academic</controllingFieldValue>
+            <valueName>Fee Related Queries</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Transcript_Notification</name>
+        <label>Send Transcript Dispatch Notification T-04</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Contact.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Your ISB Transcript Has Been Dispatched</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <stringValue>Dear Student, your ISB transcript has been dispatched. Dispatch Mode: {!$Record.Dispatch_Mode__c}. Tracking details will be emailed separately if applicable. Please contact the Registrar Office for queries.</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+    </actionCalls>
+    <apiVersion>59.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>ISB-6096 / ISB-6147 — Record-triggered flow on Exit Clearance Case. When Transcript_Dispatched__c is checked, auto-stamps Dispatch_Date__c and Dispatched_By__c, then sends notification T-04 to student.</description>
+    <label>Transcript Dispatch Stamp Flow</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Stamp_Dispatch_Details</name>
+        <label>Stamp Dispatch Date and By</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <connector>
+            <targetReference>Send_Transcript_Notification</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Dispatch_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Dispatched_By__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
+    <start>
+        <locationX>176</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Stamp_Dispatch_Details</targetReference>
+        </connector>
+        <filterFormula>{!$Record.RecordType.DeveloperName} = &apos;Exit_Clearance&apos; &amp;&amp; {!$Record.Transcript_Dispatched__c} = TRUE &amp;&amp; ISCHANGED({!$Record.Transcript_Dispatched__c})</filterFormula>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

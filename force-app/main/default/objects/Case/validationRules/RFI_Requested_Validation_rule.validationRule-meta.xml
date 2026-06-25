@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RFI_Requested_Validation_rule</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+ $UserRole.DeveloperName = &quot;RO_Level_1&quot;,
+        ISPICKVAL(Status,
+            &quot;Approved by HOD&quot;
+        ) 
+        ||
+        
+      
+        ISPICKVAL(Status,
+            &quot;Approved-Pending T&amp;C&quot;
+        ) 
+        ||
+        ISPICKVAL(Status,
+            &quot;T&amp;C Accepted&quot;
+        )
+    )</errorConditionFormula>
+    <errorMessage>you cannot mark this Status.Please contact your administrator</errorMessage>
+</ValidationRule>

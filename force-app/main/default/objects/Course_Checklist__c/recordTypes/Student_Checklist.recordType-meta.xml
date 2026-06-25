@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Student_Checklist</fullName>
+    <active>true</active>
+    <description>Checklist for Students</description>
+    <label>Student Checklist</label>
+    <picklistValues>
+        <picklist>Checklist_Type__c</picklist>
+        <values>
+            <fullName>Advising Discussions</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Appointment Outcomes</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Baseline</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Course</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Development Plans</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Risk Interventions</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Course_Type__c</picklist>
+        <values>
+            <fullName>Core</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Elective</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FlexiCore</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Role__c</picklist>
+        <values>
+            <fullName>Associate</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manager</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Active</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Completed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Draft</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>In Progress</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

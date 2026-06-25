@@ -1,0 +1,41 @@
+<template>
+    <div class="slds-m-around_medium">
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-p-vertical_small">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Roles Badges and Professional Count -->
+        <template if:false={isLoading}>
+            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-wrap">
+                <!-- Left: Badges or No-Roles message -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
+                    <template if:true={hasRoles}>
+                        <div class="slds-wrap badges-container">
+                            <template for:each={roles} for:item="role">
+                                <div key={role.label} class="slds-m-right_small slds-m-bottom_small">
+                                    <lightning-badge label={role.label} title={role.title} class={role.badgeClass}></lightning-badge>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    <template if:false={hasRoles}>
+                        <div class="slds-text-body_small slds-text-color_weak">
+                            <p>No roles found for this contact.</p>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Right: Professional Club Membership Count -->
+                <div class="slds-col slds-no-flex slds-text-align_right slds-m-top_small slds-medium-size_1-of-3">
+                    <div class="slds-text-body_small slds-align_absolute-center">
+                        <span class="slds-text-body_regular">Professional-Club Membership count</span>
+                        <lightning-badge label={professionalCount} variant="inverse" class="slds-m-left_small"></lightning-badge>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

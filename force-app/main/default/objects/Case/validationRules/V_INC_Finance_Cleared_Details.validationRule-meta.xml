@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_INC_Finance_Cleared_Details</fullName>
+    <active>true</active>
+    <description>Incoming Exchange Finance Cleared can be set to Cleared only when all finance section input fields are populated.</description>
+    <errorConditionFormula>RecordType.DeveloperName = &apos;Incoming_Exchange_Exit_Clearance&apos; &amp;&amp; ISCHANGED(Finance_Cleared__c) &amp;&amp; ISPICKVAL(Finance_Cleared__c, &apos;Cleared&apos;) &amp;&amp; (
+ISBLANK(Payment_Date__c) ||
+ISBLANK(Payment_Reference_Number__c) ||
+ISBLANK(Invoice_Date__c) ||
+ISBLANK(Invoice_Number__c) ||
+ISBLANK(Total_Amount__c) ||
+ISPICKVAL(Payment_Status__c, &apos;&apos;) ||
+ISBLANK(Finance_Notes__c)
+)</errorConditionFormula>
+    <errorDisplayField>Finance_Cleared__c</errorDisplayField>
+    <errorMessage>Before setting Finance Cleared to Cleared, complete all Finance section fields: Payment Date, Payment Reference Number, Invoice Date, Invoice Number, Total Amount, Payment Status, and Finance Notes.</errorMessage>
+</ValidationRule>

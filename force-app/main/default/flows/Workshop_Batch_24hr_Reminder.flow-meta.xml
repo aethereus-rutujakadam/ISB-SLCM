@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Reminder_Email</name>
+        <label>Send Reminder Email</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>Loop_Through_Attendances</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>CurrentAttendance_Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>Email_Subject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>Email_Body_Text</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <stringValue>workshops@yopmail.com</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+    </actionCalls>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_If_Registered</name>
+        <label>Check If Registered</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Loop_Through_Attendances</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Registered</defaultConnectorLabel>
+        <rules>
+            <name>Is_Registered</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Registration_Status.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Registered</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Reminder_Email</targetReference>
+            </connector>
+            <label>Is Registered</label>
+        </rules>
+    </decisions>
+    <description>Sends 24-hour reminder email to registered students before each workshop batch session starts.</description>
+    <formulas>
+        <name>CurrentAttendance_Email</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    ISBLANK({!Loop_Through_Attendances.Student__r.New_Admit_Email__c}),
+    {!Loop_Through_Attendances.Student__r.Email},
+    {!Loop_Through_Attendances.Student__r.New_Admit_Email__c}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Email_Subject</name>
+        <dataType>String</dataType>
+        <expression>&quot;Reminder: Workshop Session Tomorrow - &quot; &amp; {!Loop_Through_Attendances.Workshop__r.Name}</expression>
+    </formulas>
+    <label>Workshop Batch 24hr Reminder</label>
+    <loops>
+        <name>Loop_Through_Attendances</name>
+        <label>Loop Through Attendances</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Registered_Attendances</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Get_Registration_Status</targetReference>
+        </nextValueConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Registered_Attendances</name>
+        <label>Get Registered Attendances</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Through_Attendances</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Workshop_Batch__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Attendance_Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Workshop_Attendance__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Student__c</queriedFields>
+        <queriedFields>Workshop__c</queriedFields>
+        <queriedFields>Workshop_Session__c</queriedFields>
+        <queriedFields>Workshop_Batch__c</queriedFields>
+        <queriedFields>Workshop_Registration__c</queriedFields>
+        <queriedFields>Attendance_Status__c</queriedFields>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Registration_Status</name>
+        <label>Get Registration Status</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_If_Registered</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Loop_Through_Attendances.Workshop_Registration__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Workshop_Registration__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Status__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterFormula>AND(
+    NOT(ISPICKVAL({!$Record.Status__c}, &quot;Cancelled&quot;)),
+    {!$Record.Start_DateTime__c} &gt; NOW()
+)</filterFormula>
+        <object>Workshop_Batch__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <scheduledPaths>
+            <name>Send_24hr_Reminder</name>
+            <connector>
+                <targetReference>Get_Registered_Attendances</targetReference>
+            </connector>
+            <label>Send 24hr Reminder</label>
+            <offsetNumber>-24</offsetNumber>
+            <offsetUnit>Hours</offsetUnit>
+            <recordField>Start_DateTime__c</recordField>
+            <timeSource>RecordField</timeSource>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>Email_Body_Text</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Dear {!Loop_Through_Attendances.Student__r.FirstName},
+
+This is a reminder that you have a workshop session coming up in 24 hours!
+
+SESSION DETAILS
+---------------
+Workshop: {!Loop_Through_Attendances.Workshop__r.Name}
+Session: Session {!Loop_Through_Attendances.Workshop_Session__r.Session_Number__c}
+Batch: {!Loop_Through_Attendances.Workshop_Batch__r.Batch_Label__c}
+Date &amp; Time: {!Loop_Through_Attendances.Workshop_Batch__r.Start_DateTime__c}
+Mode: {!Loop_Through_Attendances.Workshop_Batch__r.Mode__c}
+Location: {!Loop_Through_Attendances.Workshop_Batch__r.Location__c}
+Zoom Link: {!Loop_Through_Attendances.Workshop_Batch__r.Meeting_Link__c}
+
+ATTENDANCE POLICY
+-----------------
+Your attendance is important. If you cannot attend, please notify your advisor as soon as possible.
+
+You can view all your workshop session details in the Advising Portal.
+
+We look forward to seeing you!
+
+Regards,
+Student Success Team</text>
+    </textTemplates>
+</Flow>

@@ -1,0 +1,40 @@
+<template>
+    <div class="slds-p-around_small">
+        <lightning-combobox
+            name="emailTemplate"
+            label="Email Template"
+            value={selectedTemplateId}
+            options={templateOptions}
+            placeholder="Select an email template"
+            onchange={handleTemplateChange}
+            disabled={disableTemplateSelect}
+            required
+        ></lightning-combobox>
+
+        <template if:true={errorMessage}>
+            <div class="slds-text-color_error slds-m-top_x-small">{errorMessage}</div>
+        </template>
+
+        <lightning-input
+            class="slds-m-top_medium"
+            type="text"
+            name="emailSubject"
+            label="Subject"
+            value={composedSubject}
+            onchange={handleSubjectChange}
+            disabled={disableEditor}
+            required
+        ></lightning-input>
+
+        <lightning-textarea
+            class="slds-m-top_medium"
+            name="emailBody"
+            label="Email Body"
+            value={composedBody}
+            onchange={handleBodyChange}
+            disabled={disableEditor}
+            required
+            rows="14"
+        ></lightning-textarea>
+    </div>
+</template>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Edit_When_Completed_Non_Admin</fullName>
+    <active>true</active>
+    <description>Prevents editing Course Checklist Item when Status is Completed, except for System Administrator profile.</description>
+    <errorConditionFormula>AND(
+            NOT(ISNEW()),
+            ISPICKVAL(PRIORVALUE(Status__c), &quot;Completed&quot;),
+            ISPICKVAL(Checklist_Item_Type__c, &quot;Zoho Tasks&quot;),
+            $Profile.Name &lt;&gt; &quot;System Administrator&quot;
+        )</errorConditionFormula>
+    <errorDisplayField>Status__c</errorDisplayField>
+    <errorMessage>Completed records cannot be edited except by System Administrator.</errorMessage>
+</ValidationRule>

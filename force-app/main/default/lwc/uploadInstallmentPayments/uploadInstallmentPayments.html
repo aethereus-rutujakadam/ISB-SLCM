@@ -1,0 +1,216 @@
+<template>
+    <lightning-card title="Bulk Upload Installment Payments" icon-name="standard:file">
+        <div class="slds-m-around_medium">
+            <!-- Step 1: File Upload -->
+            <template if:false={isProcessing}>
+                <div class="slds-box slds-m-bottom_large">
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium">Step 1: Upload Payment File</h3>
+                    
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <label class="slds-form-element__label">
+                            <abbr class="slds-required" title="required">*</abbr>
+                            Select Excel or CSV File
+                        </label>
+                        <div class="slds-form-element__control">
+                            <input 
+                                type="file" 
+                                accept=".xlsx,.xls,.csv"
+                                onchange={handleFileUpload}
+                                class="slds-input"
+                            />
+                        </div>
+                        <div class="slds-m-top_small slds-text-body_small">
+                            <strong style="color: #0070d2;">Supported formats:</strong> Excel (.xlsx, .xls), CSV (.csv), Max size: 10 MB<br/>
+                            <strong>Important:</strong> Ensure "Student ID" column matches PGID__c in Program Enrollment
+                        </div>
+                    </div>
+
+                    <!-- File Preview -->
+                    <template if:true={fileData}>
+                        <div class="slds-box slds-m-bottom_medium">
+                            <h4 class="slds-text-heading_small slds-m-bottom_small">Preview Data</h4>
+                            <div class="table-container">
+                                <table class="slds-table slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th class="slds-cell-wrap">S.No</th>
+                                            <th class="slds-cell-wrap">Student ID</th>
+                                            <th class="slds-cell-wrap">BPID</th>
+                                            <th class="slds-cell-wrap">Cohort</th>
+                                            <th class="slds-cell-wrap">Name</th>
+                                            <th class="slds-cell-wrap">Tuition Fee</th>
+                                            <th class="slds-cell-wrap">Quad Accommodation</th>
+                                            <th class="slds-cell-wrap">GST</th>
+                                            <th class="slds-cell-wrap">Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={fileData} for:item="row">
+                                            <tr key={row.rowNumber} class="slds-line-height_reset">
+                                                <td>{row.rowNumber}</td>
+                                                <td>{row.studentId}</td>
+                                                <td>{row.bpid}</td>
+                                                <td>{row.cohort}</td>
+                                                <td>{row.fullName}</td>
+                                                <td class="slds-text-align_right">{row.tuitionFee}</td>
+                                                <td class="slds-text-align_right">{row.quadAccommodation}</td>
+                                                <td class="slds-text-align_right">{row.gst}</td>
+                                                <td class="slds-text-align_right"><strong>{row.totalAmount}</strong></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-m-top_small slds-text-body_small">
+                                Total rows: {totalRowsInFile}
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="slds-box slds-m-bottom_large">
+                    <button
+                        class="slds-button slds-button_brand"
+                        onclick={handleProcessPayments}
+                        disabled={isProcessDisabled}
+                    >
+                        Process Payments
+                    </button>
+                    <button
+                        class="slds-button slds-button_neutral"
+                        onclick={handleReset}
+                        disabled={isProcessing}
+                    >
+                        Reset
+                    </button>
+                </div>
+            </template>
+
+            <!-- Step 2: Processing -->
+            <template if:true={isProcessing}>
+                <div class="slds-box slds-m-bottom_large">
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium">Processing Payment Upload</h3>
+                    <lightning-spinner alternative-text="Processing..."></lightning-spinner>
+                    <div class="slds-m-top_medium slds-text-body_small">
+                        Processing batch {currentBatch} of {totalBatches}
+                    </div>
+                </div>
+            </template>
+
+            <!-- Step 3: Results -->
+            <template if:true={processResult}>
+                <div class="slds-box">
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium">Processing Results</h3>
+
+                    <!-- Success Summary -->
+                    <template if:true={processResult.isSuccess}>
+                        <lightning-alert variant="success" class="slds-m-bottom_medium">
+                            <strong>Success!</strong> All payments processed successfully.
+                        </lightning-alert>
+                    </template>
+
+                    <!-- Error Summary -->
+                    <template if:false={processResult.isSuccess}>
+                        <lightning-alert variant="error" class="slds-m-bottom_medium">
+                            <strong>Processing completed with errors.</strong> Please review the details below.
+                        </lightning-alert>
+                    </template>
+
+                    <!-- Summary Statistics -->
+                    <div class="slds-grid slds-wrap slds-m-bottom_large">
+                        <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                            <div class="slds-box slds-text-align_center">
+                                <div class="slds-text-heading_medium">{processResult.totalProcessed}</div>
+                                <div class="slds-text-body_small">Total Records</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                            <div class="slds-box slds-text-align_center" style="background-color: #d4edda;">
+                                <div class="slds-text-heading_medium" style="color: #155724;">{processResult.successCount}</div>
+                                <div class="slds-text-body_small" style="color: #155724;">Successful</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                            <div class="slds-box slds-text-align_center" style="background-color: #f8d7da;">
+                                <div class="slds-text-heading_medium" style="color: #721c24;">{processResult.errorCount}</div>
+                                <div class="slds-text-body_small" style="color: #721c24;">Errors</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Errors -->
+                    <template if:true={hasErrors}>
+                        <div class="slds-m-bottom_large">
+                            <h4 class="slds-text-heading_small slds-m-bottom_small">Error Details</h4>
+                            <template if:true={errorList}>
+                                <ul class="slds-list_dotted">
+                                    <template for:each={errorList} for:item="error">
+                                        <li key={error} class="slds-m-bottom_small" style="color: #c41c3b;">
+                                            {error}
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template if:false={errorList}>
+                                <p style="color: #c41c3b;">Error retrieving error list</p>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Warnings -->
+                    <template if:true={hasWarnings}>
+                        <div class="slds-m-bottom_large">
+                            <h4 class="slds-text-heading_small slds-m-bottom_small">Warnings</h4>
+                            <template if:true={warningList}>
+                                <ul class="slds-list_dotted">
+                                    <template for:each={warningList} for:item="warning">
+                                        <li key={warning} class="slds-m-bottom_small" style="color: #ff9800;">
+                                            {warning}
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template if:false={warningList}>
+                                <p style="color: #ff9800;">Error retrieving warning list</p>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Action Buttons -->
+                   <!--  <div class="slds-box slds-m-top_large">
+                        <div class="slds-m-bottom_medium">
+                            <h4 class="slds-text-heading_small">Download Results</h4>
+                        </div>
+                        <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                            <template if:true={hasSuccessRecords}>
+                                <button
+                                    class="slds-button slds-button_success slds-m-right_small"
+                                    onclick={handleDownloadSuccessFile}
+                                >
+                                    📥 Download Success File ({processResult.successCount})
+                                </button>
+                            </template>
+                            <template if:true={hasFailedRecords}>
+                                <button
+                                    class="slds-button slds-button_destructive slds-m-right_small"
+                                    onclick={handleDownloadFailedFile}
+                                >
+                                    📥 Download Failed File ({processResult.errorCount})
+                                </button>
+                            </template>
+                        </div> -->
+                        <div class="slds-m-top_large">
+                            <button
+                                class="slds-button slds-button_brand"
+                                onclick={handleFinish}
+                            >
+                                Finish
+                            </button>
+                        </div>
+                    <!-- </div> -->
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

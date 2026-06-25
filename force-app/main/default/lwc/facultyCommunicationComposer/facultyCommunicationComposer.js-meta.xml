@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Faculty Communication Composer</masterLabel>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="courseOfferingId" type="String" label="Course Offering Id" role="inputOnly"/>
+            <property name="selectedContactId" type="String" label="Selected Contact Id" role="inputOnly"/>
+            <property name="threadName" type="String" label="Thread Name" role="inputOnly"/>
+            <property name="folderName" type="String" label="Folder Name" role="inputOnly"/>
+            <property name="selectedTemplateId" type="String" label="Selected Template Id"/>
+            <property name="selectedTemplateName" type="String" label="Selected Template Name"/>
+            <property name="composedSubject" type="String" label="Composed Subject"/>
+            <property name="composedBody" type="String" label="Composed Body"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

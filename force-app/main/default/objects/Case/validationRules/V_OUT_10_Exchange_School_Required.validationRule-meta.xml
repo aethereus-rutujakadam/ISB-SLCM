@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_OUT_10_Exchange_School_Required</fullName>
+    <active>true</active>
+    <description>V-OUT-10: Requires Exchange School (Partner University) to be populated on all Outgoing Exchange Cases. This field is mandatory at all stages.</description>
+    <errorConditionFormula>AND(
+    RecordType.DeveloperName = &apos;Outgoing_Exchange&apos;,
+    ISBLANK(Program_Enrollment__r.Exchange_School__c)
+)</errorConditionFormula>
+    <errorDisplayField>Program_Enrollment__c</errorDisplayField>
+    <errorMessage>Exchange School (Partner University) is required on Outgoing Exchange Cases.</errorMessage>
+</ValidationRule>

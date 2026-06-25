@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WithdrawTimeframe__c</fullName>
+    <label>Withdraw Timeframe</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Before registration</fullName>
+                <default>false</default>
+                <label>Before registration</label>
+            </value>
+            <value>
+                <fullName>During orientation</fullName>
+                <default>false</default>
+                <label>During orientation</label>
+            </value>
+            <value>
+                <fullName>Term 5 or later</fullName>
+                <default>false</default>
+                <label>Term 5 or later</label>
+            </value>
+            <value>
+                <fullName>During Terms 1–4</fullName>
+                <default>false</default>
+                <label>During Terms 1–4</label>
+            </value>
+            <value>
+                <fullName>Dismissal/expulsion</fullName>
+                <default>false</default>
+                <label>Dismissal/expulsion</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

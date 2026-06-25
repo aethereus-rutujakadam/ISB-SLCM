@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assignment_2</name>
+        <label>Assignment 2</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>notesappend</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!Get_Records_1.Description}  {!linebreak} [{!fTimestamp}] {!Enter_your_notes_here}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_TAsk</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assignment_3</name>
+        <label>Assignment 3</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>notesappend</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>• [{!fTimestamp}] {!Enter_your_notes_here}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_TAsk</targetReference>
+        </connector>
+    </assignments>
+    <customProperties>
+        <name>ScreenProgressIndicator</name>
+        <value>
+            <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
+        </value>
+    </customProperties>
+    <decisions>
+        <name>if_notes_blank</name>
+        <label>if notes blank</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Assignment_2</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>IS_Blank</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Records_1.Description</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assignment_3</targetReference>
+            </connector>
+            <label>IS Blank</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>fTimestamp</name>
+        <dataType>String</dataType>
+        <expression>TEXT(DAY(DATEVALUE({!$Flow.CurrentDateTime} + (5.5/24)))) &amp; &quot;-&quot; &amp; 
+TEXT(MONTH(DATEVALUE({!$Flow.CurrentDateTime} + (5.5/24)))) &amp; &quot;-&quot; &amp; 
+TEXT(YEAR(DATEVALUE({!$Flow.CurrentDateTime} + (5.5/24)))) &amp; &quot; &quot; &amp; 
+IF(
+    OR(
+        VALUE(MID(TEXT({!$Flow.CurrentDateTime} + (5.5/24)), 12, 2)) = 0, 
+        VALUE(MID(TEXT({!$Flow.CurrentDateTime} + (5.5/24)), 12, 2)) = 12
+    ),
+    &quot;12&quot;,
+    TEXT(VALUE(MID(TEXT({!$Flow.CurrentDateTime} + (5.5/24)), 12, 2)) - 
+    IF(VALUE(MID(TEXT({!$Flow.CurrentDateTime} + (5.5/24)), 12, 2)) &gt; 12, 12, 0))
+) &amp; &quot;:&quot; &amp; 
+MID(TEXT({!$Flow.CurrentDateTime} + (5.5/24)), 15, 2) &amp; &quot; &quot; &amp; 
+IF(VALUE(MID(TEXT({!$Flow.CurrentDateTime} + (5.5/24)), 12, 2)) &gt;= 12, &quot;PM&quot;, &quot;AM&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>fUpdatedNote</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    ISBLANK({!Get_Records_1.Notes__c}),
+    &quot;[&quot; &amp; {!fTimestamp} &amp; &quot;] &quot; &amp; {!Enter_your_notes_here},
+    {!Get_Records_1.Notes__c} &amp; BR() &amp; 
+    &quot;[&quot; &amp; {!fTimestamp} &amp; &quot;] &quot; &amp; {!Enter_your_notes_here}
+)</expression>
+    </formulas>
+    <interviewLabel>Add Notes On Task {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Add Notes On Task</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Records_1</name>
+        <label>Get Records 1</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Add_Notes</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_TAsk</name>
+        <label>Update TAsk</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Records_1.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>notesappend</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordUpdates>
+    <screens>
+        <name>Add_Notes</name>
+        <label>Add Notes</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>if_notes_blank</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_your_notes_here</name>
+            <dataType>String</dataType>
+            <fieldText>Enter your Comment here</fieldText>
+            <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>helptext</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;font-size: 10px;&quot;&gt;(maximum 255 characters allowed)&lt;/em&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Save</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Records_1</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>linebreak</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>•
+
+•</text>
+    </textTemplates>
+    <variables>
+        <name>notesappend</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

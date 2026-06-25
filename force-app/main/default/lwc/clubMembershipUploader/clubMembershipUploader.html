@@ -1,0 +1,102 @@
+<template>
+    <lightning-card title="Student Club Upload" icon-name="custom:custom19">
+        <div class="card-container">
+            <!-- Upload Section -->
+            <div class="upload-section slds-p-around_medium">
+                <lightning-input
+                    type="file"
+                    label="Upload Excel File"
+                    accept=".xls,.xlsx"
+                    onchange={handleFileChange}
+                    disabled={isLoading}>
+                </lightning-input>
+
+                <!-- File Info -->
+                <template if:true={fileName}>
+                    <div class="file-info slds-m-top_small">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name"><strong>Uploaded File:</strong> {fileName}</span>
+                        <template if:true={fileData}>
+                            <span class="record-count slds-badge">({fileData.length} records)</span>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Loading Spinner -->
+                <template if:true={isLoading}>
+                    <div class="loading-spinner slds-m-top_medium">
+                        <lightning-spinner alternative-text="Processing" size="small"></lightning-spinner>
+                        <span class="slds-m-left_small">Processing file...</span>
+                    </div>
+                </template>
+
+                <!-- No Data Message -->
+                <template if:true={fileName}>
+                    <template if:true={hasNoData}>
+                        <div class="slds-m-top_small slds-text-color_error">
+                            No valid data found in the file. Please check the Excel format.
+                        </div>
+                    </template>
+                </template>
+            </div>
+
+            <!-- Data Preview -->
+            <template if:true={hasPreviewData}>
+                <div class="preview-section">
+                    <div class="preview-header slds-p-around_medium">
+                        <h3 class="slds-text-heading_small">Data Preview</h3>
+                        <p class="slds-text-body_small slds-m-top_x-small">
+                            Review the data below before submitting. Only valid records will be created.
+                        </p>
+                    </div>
+                    <div class="data-table-container">
+                        <lightning-datatable
+                            key-field="id"
+                            data={previewData}
+                            columns={dynamicColumns}
+                            hide-checkbox-column="true"
+                            show-row-number-column="true"
+                            resize-column-disabled="true"
+                            max-row-selection="1">
+                        </lightning-datatable>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Action Buttons -->
+            <div class="action-section slds-p-around_medium">
+                <lightning-button
+                    label="Upload Student Club"
+                    onclick={handleSubmit}
+                    variant="brand"
+                    disabled={isSubmitDisabled}
+                    class="submit-button">
+                </lightning-button>
+
+                <lightning-button
+                    label="Clear"
+                    onclick={resetForm}
+                    variant="neutral"
+                    disabled={isLoading}
+                    class="clear-button">
+                </lightning-button>
+
+                <template if:true={uploadResult}>
+                    <lightning-button
+                        label="Download Results"
+                        onclick={downloadResults}
+                        variant="brand"
+                        class="download-button slds-m-left_small">
+                    </lightning-button>
+                    <div class="slds-m-left_small slds-text-body_small slds-align-middle" style="display:inline-block">
+                        <strong>Created:</strong> {uploadResult.createdCount} &nbsp;
+                        <strong>Updated:</strong> {uploadResult.updatedCount} &nbsp;
+                        <strong>Failed:</strong> {uploadResult.failedCount}
+                    </div>
+                </template>
+
+                <!-- Results info area removed (debug) -->
+            </div>
+        </div>
+    </lightning-card>
+</template>

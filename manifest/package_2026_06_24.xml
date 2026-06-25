@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>IncomingExchangeCaseHandler</members>
+        <members>IncomingExchangeStudentService</members>
+        <members>InternationalExchangeController</members>
+        <members>OutgoingExchangeCaseHandler</members>
+        <members>PGIDGeneratorService</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CaseTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>internationalExchangeUploader</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>Incoming_Case_AutoCreate_Flow</members>
+        <members>Outgoing_Case_AutoCreate_Flow</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Case.Accomodation_Type__c</members>
+        <members>Case.Dispatched_By_User__c</members>
+        <members>ProgramEnrollment.Accomodation_Type__c</members>
+        <members>ProgramEnrollment.Dispatched_By_User__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Case.V_OUT_Finance_Cleared_Details</members>
+        <members>Case.V_OUT_Transcript_Details</members>
+        <name>ValidationRule</name>
+    </types>
+    <version>62.0</version>
+</Package>

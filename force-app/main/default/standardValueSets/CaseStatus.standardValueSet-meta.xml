@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Submitted</fullName>
+        <default>true</default>
+        <label>Submitted</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>In Review</fullName>
+        <default>false</default>
+        <label>In Review</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>RFI Requested</fullName>
+        <default>false</default>
+        <label>RFI Requested</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Decision Pending HOD</fullName>
+        <default>false</default>
+        <label>Decision Pending HOD</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved by HOD</fullName>
+        <default>false</default>
+        <label>Approved by HOD</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved11</fullName>
+        <default>false</default>
+        <label>Approved-Pending T&amp;C</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>T&amp;C Accepted</fullName>
+        <default>false</default>
+        <label>T&amp;C Accepted</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>T &amp; C Rejected</fullName>
+        <default>false</default>
+        <label>T &amp; C Rejected</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Closed</fullName>
+        <default>false</default>
+        <label>Closed</label>
+        <closed>true</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>On Hold</fullName>
+        <default>false</default>
+        <label>On Hold</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Escalated</fullName>
+        <default>false</default>
+        <label>Escalated</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>New</fullName>
+        <default>false</default>
+        <label>New</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Queued</fullName>
+        <default>false</default>
+        <label>Queued</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Ready</fullName>
+        <default>false</default>
+        <label>Ready</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Abandoned</fullName>
+        <default>false</default>
+        <label>Abandoned</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Referred</fullName>
+        <default>false</default>
+        <label>Referred</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Fulfilled</fullName>
+        <default>false</default>
+        <label>Fulfilled</label>
+        <closed>true</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Working</fullName>
+        <default>false</default>
+        <label>Working</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Active Enrolled</fullName>
+        <default>false</default>
+        <label>Active Enrolled</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Active Unenrolled</fullName>
+        <default>false</default>
+        <label>Active Unenrolled</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>On Leave</fullName>
+        <default>false</default>
+        <label>On Leave</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>On Vacation</fullName>
+        <default>false</default>
+        <label>On Vacation</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>On Co-op</fullName>
+        <default>false</default>
+        <label>On Co-op</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Inactive</fullName>
+        <default>false</default>
+        <label>Inactive</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Withdrawn</fullName>
+        <default>false</default>
+        <label>Withdrawn</label>
+        <closed>true</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Graduated</fullName>
+        <default>false</default>
+        <label>Graduated</label>
+        <closed>true</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Rejected</fullName>
+        <default>false</default>
+        <label>Rejected</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Draft</fullName>
+        <default>false</default>
+        <label>Draft</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Exit Case Initiated</fullName>
+        <default>false</default>
+        <label>Exit Case Initiated</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Finance Processing</fullName>
+        <default>false</default>
+        <label>Finance Processing</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>ASA Processing</fullName>
+        <default>false</default>
+        <label>ASA Processing</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Finance Review Incoming</fullName>
+        <default>false</default>
+        <label>Finance Review Incoming</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Resubmitted</fullName>
+        <default>false</default>
+        <label>Resubmitted</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Decision Pending to Finance HOD</fullName>
+        <default>false</default>
+        <label>Decision Pending to Finance HOD</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Finance Statement Rejected</fullName>
+        <default>false</default>
+        <label>Finance Statement Rejected</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Finance Statement Accepted</fullName>
+        <default>false</default>
+        <label>Finance Statement Accepted</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved</fullName>
+        <default>false</default>
+        <label>Approved</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved – Ready to Rejoin</fullName>
+        <default>false</default>
+        <label>Approved – Ready to Rejoin</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved - Pending Finance</fullName>
+        <default>false</default>
+        <label>Approved - Pending Finance</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved By Finance HOD</fullName>
+        <default>false</default>
+        <label>Approved By Finance HOD</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Payment Successful</fullName>
+        <default>false</default>
+        <label>Payment Successful</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Payment Approved</fullName>
+        <default>false</default>
+        <label>Payment Approved</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Payment Rejected</fullName>
+        <default>false</default>
+        <label>Payment Rejected</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Pending With Finance</fullName>
+        <default>false</default>
+        <label>Pending With Finance</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Dept Clearance</fullName>
+        <default>false</default>
+        <label>Dept Clearance</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Grades Awaited</fullName>
+        <default>false</default>
+        <label>Grades Awaited</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Transcript Processing</fullName>
+        <default>false</default>
+        <label>Transcript Processing</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>ASA In Progress</fullName>
+        <default>false</default>
+        <label>ASA In Progress</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>RO Review</fullName>
+        <default>false</default>
+        <label>RO Review</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Transcript Check</fullName>
+        <default>false</default>
+        <label>Transcript Check</label>
+        <closed>false</closed>
+    </standardValue>
+    <standardValue>
+        <fullName>Student Credit Check</fullName>
+        <default>false</default>
+        <label>Student Credit Check</label>
+        <closed>false</closed>
+    </standardValue>
+</StandardValueSet>

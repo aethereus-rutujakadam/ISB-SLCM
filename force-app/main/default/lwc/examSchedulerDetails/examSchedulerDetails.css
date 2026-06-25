@@ -1,0 +1,139 @@
+.wrap {
+  background-color: #ffffff;
+  padding: 1rem 1.2rem;
+  border-radius: 0.5rem;
+}
+
+/* Header */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.ttl {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #032d60;
+}
+
+.hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Datatable container */
+lightning-datatable {
+  margin-top: 0.75rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 0.5rem;
+}
+
+/* ================= FILTER PANEL ================= */
+.filter-panel {
+  background: #f7f9fc;
+  padding: 1.2rem;
+  border: 1px solid #dce2eb;
+  border-radius: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+/* Filter Grid - same UI as sample image 2 */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Actions below filters */
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: .5rem;
+}
+
+.filter-actions lightning-button {
+  --slds-c-button-text-color: #0176d3;
+  font-weight: 600;
+}
+
+.filter-record-count {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #032d60;
+}
+
+/* Modal Styling */
+.slds-modal__container {
+  max-width: 45rem !important;
+  border-radius: 0.7rem;
+}
+
+.slds-modal__header {
+  background: #edf2f7;
+  border-bottom: 1px solid #d8dde6;
+  padding: 1rem;
+  text-align: center;
+}
+
+.slds-modal__header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #032d60;
+}
+
+.slds-modal__footer {
+  background: #f1f4f9;
+  border-top: 1px solid #d8dde6;
+  padding: 1rem;
+}
+
+/* Dual Listbox */
+lightning-dual-listbox {
+  width: 100%;
+}
+
+/* Buttons */
+lightning-button {
+  --slds-c-button-radius-border: 0.35rem;
+}
+lightning-button[variant="brand"] {
+  --slds-c-button-brand-color-background: #0176d3;
+  --slds-c-button-brand-color-border: #0176d3;
+  --slds-c-button-brand-color-background-hover: #015ba0;
+}
+
+/* Responsive Layout */
+@media (max-width: 900px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+  .hdr {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .filter-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem; /* space between buttons */
+}
+}

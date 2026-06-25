@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RO_Compact_Layout</fullName>
+    <fields>CaseNumber</fields>
+    <fields>RecordTypeId</fields>
+    <fields>Program__c</fields>
+    <fields>Status</fields>
+    <fields>OwnerId</fields>
+    <label>RO Compact Layout</label>
+</CompactLayout>

@@ -1,0 +1,58 @@
+<template>
+    <lightning-card title="Employment History" icon-name="standard:employee_job">
+        <div class="slds-p-around_medium">
+
+            <!-- Records with SLDS Font Hierarchy -->
+            <template if:true={hasRecords}>
+                <template for:each={records} for:item="emp">
+                    <div key={emp.Id} class="slds-box slds-m-bottom_large slds-theme_default">
+                        
+                        <!-- Primary Title: Organization (Highest Hierarchy) -->
+                        <div class="slds-text-heading_medium slds-m-bottom_xx-small slds-text-title_bold">
+                            {emp.title}
+                        </div>
+
+                        <!-- Secondary Title: Designation -->
+                        <div class="slds-text-heading_small slds-m-bottom_small slds-text-color_weak">
+                            {emp.subtitle}
+                        </div>
+
+                        <!-- Detailed Information Grid -->
+                        <div class="slds-grid slds-wrap slds-p-top_small slds-border_top">
+                            <template for:each={emp.details} for:item="field">
+                                <div key={field.id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-vertical_xx-small">
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_1-of-3 slds-text-title_bold slds-text-color_weak">
+                                            {field.label}
+                                        </div>
+                                        <div class="slds-col slds-size_2-of-3 slds-text-body_small">
+                                            {field.value}
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </template>
+            </template>
+
+            <!-- Error State -->
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                    <h2>{error}</h2>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:false={hasRecords}>
+                <template if:false={error}>
+                    <div class="slds-text-align_center slds-p-vertical_medium">
+                        <p class="slds-text-color_weak">No employment history found.</p>
+                    </div>
+                </template>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

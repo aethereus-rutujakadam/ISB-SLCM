@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RO_HOD_cannot_close_case</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    $User.Username = &quot;hodro@myridius.com&quot;,
+    ISPICKVAL(Status, &quot;Closed&quot;),
+    NOT(ISPICKVAL(PRIORVALUE(Status), &quot;Closed&quot;))
+)</errorConditionFormula>
+    <errorMessage>You cannot close the case. Please reach out to admin!</errorMessage>
+</ValidationRule>

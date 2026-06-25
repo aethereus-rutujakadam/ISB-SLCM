@@ -1,0 +1,78 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.dc-form-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-body {
+    width: 100%;
+}
+
+.dc-section {
+    margin-bottom: 1.5rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background: #ffffff;
+}
+
+.dc-section-header {
+    background: #f3f3f3;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #d8dde6;
+}
+
+.dc-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #080707;
+    margin: 0;
+}
+
+.dc-section-content {
+    padding: 1rem;
+}
+
+.testimony-grid {
+    margin-top: 0.5rem;
+}
+
+.testimony-grid-item {
+    margin-bottom: 1rem;
+}
+
+.testimony-row {
+    border: 1px solid #e5e5e5;
+    border-radius: 0.25rem;
+    background: #fafafa;
+}
+
+.testimony-row-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-actions {
+    padding: 1rem;
+    text-align: right;
+    border-top: 1px solid #d8dde6;
+    margin-top: 1rem;
+}

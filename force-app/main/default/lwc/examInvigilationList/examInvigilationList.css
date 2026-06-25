@@ -1,0 +1,10 @@
+/* Ensure proper spacing for datatables */
+lightning-datatable {
+    margin-bottom: 1rem;
+}
+
+/* Make the Assigned AAs column wrap text properly */
+lightning-datatable [data-label="Assigned Academic Associates"] {
+    white-space: normal;
+    word-wrap: break-word;
+}

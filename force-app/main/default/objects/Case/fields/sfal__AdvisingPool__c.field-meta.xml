@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>sfal__AdvisingPool__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The associated Support Pool record for Cases that originated from a Support Pool. If the Case originated from a Queue owned by a User, this field is blank.</description>
+    <inlineHelpText>The associated Support Pool record for Cases that originated from a Support Pool. If the Case originated from a Queue owned by a User, this field is blank.</inlineHelpText>
+    <label>Support Pool</label>
+    <referenceTo>sfal__AdvisingPool__c</referenceTo>
+    <relationshipLabel>Cases</relationshipLabel>
+    <relationshipName>Cases</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

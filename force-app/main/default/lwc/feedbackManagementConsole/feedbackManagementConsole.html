@@ -1,0 +1,62 @@
+<template>
+    <lightning-card title="Feedback Management Console" icon-name="standard:feedback">
+        <!-- Tab Navigation -->
+        <div class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <li class={triggerTabClass} role="presentation" data-tab="trigger" onclick={handleTabClick}>
+                    <a class="slds-tabs_default__link" role="tab" tabindex="0">
+                        <lightning-icon icon-name="utility:send" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        Trigger Feedback
+                    </a>
+                </li>
+                <li class={templateTabClass} role="presentation" data-tab="templates" onclick={handleTabClick}>
+                    <a class="slds-tabs_default__link" role="tab" tabindex="0">
+                        <lightning-icon icon-name="utility:template" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        Template Management
+                    </a>
+                </li>
+                <li class={trackingTabClass} role="presentation" data-tab="tracking" onclick={handleTabClick}>
+                    <a class="slds-tabs_default__link" role="tab" tabindex="0">
+                        <lightning-icon icon-name="utility:chart" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        Tracking Dashboard
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="slds-tabs_default__content slds-show" role="tabpanel">
+                <!-- Trigger Feedback Tab -->
+                <template if:true={isTriggerTab}>
+                    <c-feedback-trigger-section
+                        programs={programs}
+                        locations={locations}
+                        scenarios={scenarios}
+                        onrefresh={handleRefresh}>
+                    </c-feedback-trigger-section>
+                </template>
+
+                <!-- Template Management Tab -->
+                <template if:true={isTemplateTab}>
+                    <c-feedback-template-manager
+                        scenarios={scenarios}
+                        onrefresh={handleRefresh}>
+                    </c-feedback-template-manager>
+                </template>
+
+                <!-- Tracking Dashboard Tab -->
+                <template if:true={isTrackingTab}>
+                    <c-feedback-tracking-dashboard
+                        programs={programs}
+                        scenarios={scenarios}
+                        onrefresh={handleRefresh}>
+                    </c-feedback-tracking-dashboard>
+                </template>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+    </lightning-card>
+</template>

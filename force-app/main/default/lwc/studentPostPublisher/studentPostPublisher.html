@@ -1,0 +1,371 @@
+<template>
+    <lightning-card title="Student Posts" icon-name="standard:note">
+        <!--<div slot="actions">
+            <lightning-button
+                label="View Post Status"
+                variant="neutral"
+                onclick={handleOpenMyPosts}
+                title="View your post statuses"
+                class="slds-m-right_x-small">
+            </lightning-button>
+            <lightning-button
+                label="Publish Student Post"
+                variant="brand"
+                onclick={handleOpenFlow}
+                title="Launch Student Post publishing flow">
+            </lightning-button>
+        </div>-->
+
+        <!-- Published Posts Feed -->
+        <div class="slds-p-around_small">
+            <template if:true={isLoadingPosts}>
+                <div class="slds-align_absolute-center slds-p-vertical_small">
+                    <lightning-spinner alternative-text="Loading posts" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:false={isLoadingPosts}>
+                <template if:true={posts.length}>
+                    <div class="slds-feed">
+                        <ul class="slds-feed__list">
+                            <template for:each={posts} for:item="post">
+                                <li key={post.Id} class="slds-feed__item">
+                                    <article class="slds-post">
+                                        <header class="slds-post__header slds-media">
+                                            <div class="slds-media__figure">
+                                                <lightning-avatar
+                                                    variant="circle"
+                                                    initials={post.Initials}
+                                                    fallback-icon-name="standard:user"
+                                                    title={post.CreatedByName}>
+                                                </lightning-avatar>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <p class="slds-text-heading_small post-title-link">{post.Title}</p>
+                                                <p class="slds-text-body_small slds-text-color_weak">
+                                                    <span>{post.CreatedByName}</span>
+                                                    <span class="slds-m-horizontal_xx-small">&middot;</span>
+                                                    <span>{post.PublishedOn}</span>
+                                                </p>
+                                            </div>
+                                        </header>
+                                        <div class="slds-post__content slds-text-longform">
+                                            <lightning-formatted-rich-text value={post.Body}></lightning-formatted-rich-text>
+                                        </div>
+                                        <template if:true={post.Files.length}>
+                                            <div class="post-files-grid">
+                                                <template for:each={post.Files} for:item="file">
+                                                    <div key={file.ContentDocumentId} class={file.gridClass}>
+                                                        <div class="post-media-box"
+                                                             data-id={file.ContentDocumentId}
+                                                             onclick={handleFilePreview}>
+                                                            <template if:true={file.ThumbUrl}>
+                                                                <img src={file.ThumbUrl} alt={file.Title}
+                                                                     class="post-image-preview"
+                                                                     onerror={handleThumbError} />
+                                                            </template>
+                                                            <template if:false={file.ThumbUrl}>
+                                                                <div class="post-file-placeholder">
+                                                                    <lightning-icon icon-name={file.DoctypeIcon} size="large"></lightning-icon>
+                                                                    <span class="post-file-name">{file.Title}</span>
+                                                                </div>
+                                                            </template>
+                                                            <div class="image-hover-overlay">
+                                                                <lightning-icon icon-name="utility:expand"
+                                                                    size="x-small" variant="inverse"></lightning-icon>
+                                                                <span>View</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </article>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+                <template if:false={posts.length}>
+                    <p class="slds-text-body_small slds-text-color_weak slds-p-around_small">
+                        No published posts found.
+                    </p>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- ══════════════════════════════════════════
+         Flow Modal
+    ══════════════════════════════════════════ -->
+    <template if:true={showFlow}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeFlow}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Publish Student Post</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-flow onstatuschange={handleFlowStatusChange}></lightning-flow>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- ══════════════════════════════════════════
+         File Preview Modal
+         z-index: 10000 — sits above My Posts modal (9000)
+         Approach from reference (salesforcebolt.com):
+           <img src={previewSrc} /> — direct binding, no renderedCallback needed
+    ══════════════════════════════════════════ -->
+    <template if:true={showFilePreview}>
+        <section role="dialog" tabindex="-1" aria-modal="true"
+                 class="slds-modal slds-fade-in-open fp-modal">
+            <div class="slds-modal__container fp-container">
+
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeFilePreview}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-truncate">{previewFileName}</h2>
+                </header>
+
+                <!-- Modal body — image OR PDF iframe -->
+                <div class="slds-modal__content fp-body" id="fp-content">
+                    <template if:true={previewSrc}>
+                        <template if:true={previewIsPdf}>
+                            <iframe src={previewSrc} class="fp-preview-iframe" title={previewFileName}></iframe>
+                        </template>
+                        <template if:false={previewIsPdf}>
+                            <img src={previewSrc} alt={previewFileName} class="fp-preview-img" />
+                        </template>
+                    </template>
+                    <template if:false={previewSrc}>
+                        <div class="fp-generic">
+                            <lightning-icon icon-name={previewDoctypeIcon} size="large"
+                                           class="slds-m-bottom_small"></lightning-icon>
+                            <p class="slds-text-heading_small slds-m-bottom_x-small">{previewFileName}</p>
+                            <p class="slds-text-body_small slds-text-color_weak">
+                                Preview not available. Use Download to open this file.
+                            </p>
+                        </div>
+                    </template>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <!-- Extra button for PDFs: open the actual PDF in a new browser tab -->
+                    <template if:true={previewIsPdf}>
+                        <lightning-button label="Open PDF"
+                                          variant="neutral"
+                                          onclick={handleOpenPdf}
+                                          class="slds-m-right_x-small">
+                        </lightning-button>
+                    </template>
+                    <lightning-button label="Download"
+                                      variant="neutral"
+                                      onclick={handleDownload}
+                                      class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button label="Close"
+                                      variant="brand"
+                                      onclick={closeFilePreview}>
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open fp-backdrop"></div>
+    </template>
+
+    <!-- ══════════════════════════════════════════
+         My Posts Modal
+    ══════════════════════════════════════════ -->
+    <template if:true={showMyPostsModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container mp-modal-container">
+
+                <!-- Header: list view -->
+                <template if:true={isListView}>
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={closeMyPostsModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">My Post Statuses</h2>
+                    </header>
+                </template>
+
+                <!-- Header: detail view with back breadcrumb -->
+                <template if:false={isListView}>
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={closeMyPostsModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <div class="mp-detail-header-row">
+                            <button class="mp-back-btn" onclick={handleBackToList}>
+                                <lightning-icon icon-name="utility:back" size="x-small"
+                                               alternative-text="Back"></lightning-icon>
+                                <span>My Posts</span>
+                            </button>
+                            <span class="mp-breadcrumb-sep">&rsaquo;</span>
+                            <h2 class="slds-text-heading_medium mp-detail-breadcrumb-title">
+                                {selectedPost.Title}
+                            </h2>
+                        </div>
+                    </header>
+                </template>
+
+                <!-- Body -->
+                <div class="slds-modal__content mp-modal-body">
+                    <template if:true={isLoadingMyPosts}>
+                        <div class="slds-align_absolute-center slds-p-vertical_large">
+                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:false={isLoadingMyPosts}>
+
+                        <!-- ─── LIST VIEW ─── -->
+                        <template if:true={isListView}>
+                            <template if:true={myPosts.length}>
+                                <div class="mp-list-wrapper">
+                                    <lightning-datatable
+                                        key-field="Id"
+                                        data={myPosts}
+                                        columns={columns}
+                                        hide-checkbox-column
+                                        onrowaction={handleRowAction}>
+                                    </lightning-datatable>
+                                </div>
+                            </template>
+                            <template if:false={myPosts.length}>
+                                <div class="mp-empty-state">
+                                    <lightning-icon icon-name="standard:note" size="large"
+                                                   class="slds-m-bottom_small"></lightning-icon>
+                                    <p class="slds-text-body_regular">
+                                        You have not submitted any posts yet.
+                                    </p>
+                                </div>
+                            </template>
+                        </template>
+
+                        <!-- ─── DETAIL VIEW ─── -->
+                        <template if:false={isListView}>
+                            <div class="mp-detail-view">
+
+                                <!-- Status / Author / Date summary -->
+                                <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_small">
+                                    <dl class="slds-dl_horizontal">
+                                        <dt class="slds-dl_horizontal__label">Status</dt>
+                                        <dd class="slds-dl_horizontal__detail">
+                                            <lightning-badge label={selectedPost.Status}></lightning-badge>
+                                        </dd>
+                                        <dt class="slds-dl_horizontal__label">Submitted by</dt>
+                                        <dd class="slds-dl_horizontal__detail">{selectedPost.CreatedByName}</dd>
+                                        <dt class="slds-dl_horizontal__label">Submitted on</dt>
+                                        <dd class="slds-dl_horizontal__detail">{selectedPost.CreatedDateFormatted}</dd>
+                                    </dl>
+                                </div>
+
+                                <!-- Post content -->
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <label class="slds-form-element__label slds-text-color_weak">
+                                        Post Content
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-box slds-box_x-small">
+                                            <div class="rich-text-content">
+                                                <lightning-formatted-rich-text value={selectedPost.Body}></lightning-formatted-rich-text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reviewer Comments (only if present) -->
+                                <template if:true={selectedPost.ReviewerComments}>
+                                    <div class="slds-form-element slds-m-bottom_small">
+                                        <label class="slds-form-element__label slds-text-color_weak">
+                                            Reviewer Comments
+                                        </label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-box slds-box_x-small">
+                                                <p class="slds-text-body_regular"
+                                                   style="white-space: pre-wrap; word-break: break-word;">
+                                                    {selectedPost.ReviewerComments}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Attachments -->
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label slds-text-color_weak">
+                                        Attachments
+                                        <template if:true={selectedPost.Files.length}>
+                                            ({selectedPost.Files.length})
+                                        </template>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <template if:true={selectedPost.Files.length}>
+                                            <div class="mp-attachments-list">
+                                                <template for:each={selectedPost.Files} for:item="file">
+                                                    <div key={file.ContentDocumentId}
+                                                         class="mp-attach-chip"
+                                                         data-id={file.ContentDocumentId}
+                                                         onclick={handleAttachmentClick}
+                                                         title="Click to preview">
+                                                        <div class="mp-attach-chip-left">
+                                                            <lightning-icon icon-name={file.DoctypeIcon}
+                                                                           size="small"></lightning-icon>
+                                                            <span class="mp-attach-chip-name">{file.Title}</span>
+                                                        </div>
+                                                        <div class="mp-attach-chip-right">
+                                                            <lightning-icon icon-name="utility:preview"
+                                                                           size="x-small"></lightning-icon>
+                                                            <span>Preview</span>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template if:false={selectedPost.Files.length}>
+                                            <p class="slds-text-body_small slds-text-color_weak">
+                                                No attachments for this post.
+                                            </p>
+                                        </template>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </template>
+
+                    </template>
+                </div>
+
+                <!-- Footer -->
+                <footer class="slds-modal__footer">
+                    <template if:false={isListView}>
+                        <lightning-button label="Back to List" onclick={handleBackToList}
+                                          class="slds-m-right_x-small">
+                        </lightning-button>
+                    </template>
+                    <lightning-button label="Close" variant="brand" onclick={closeMyPostsModal}>
+                    </lightning-button>
+                </footer>
+
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

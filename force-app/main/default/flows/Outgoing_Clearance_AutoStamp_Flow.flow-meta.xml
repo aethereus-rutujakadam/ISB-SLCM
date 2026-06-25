@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Decision_Which_Flag</name>
+        <label>Which Clearance Flag Changed?</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <defaultConnectorLabel>None</defaultConnectorLabel>
+        <rules>
+            <name>ASA_SA_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.ASA_SA_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.ASA_SA_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_ASA_SA</targetReference>
+            </connector>
+            <label>ASA SA Cleared Changed</label>
+        </rules>
+        <rules>
+            <name>Operations_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Operations_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Operations_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_Operations</targetReference>
+            </connector>
+            <label>Operations Cleared Changed</label>
+        </rules>
+        <rules>
+            <name>IT_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.IT_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.IT_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_IT</targetReference>
+            </connector>
+            <label>IT Cleared Changed</label>
+        </rules>
+        <rules>
+            <name>LRC_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.LRC_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.LRC_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_LRC</targetReference>
+            </connector>
+            <label>LRC Cleared Changed</label>
+        </rules>
+        <rules>
+            <name>Finance_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Finance_Cleared__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Cleared</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Finance_Cleared__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Cleared</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_Finance</targetReference>
+            </connector>
+            <label>Finance Cleared Changed</label>
+        </rules>
+    </decisions>
+    <description>ISB-6099 — Auto-stamps clearance date/by fields on Outgoing Exchange Case when each clearance flag is set. Mirrors ASA_SA_Clearance_AutoStamp_Flow and Operations_IT_LRC_Clearance_AutoStamp_Flow patterns for the Outgoing_Exchange record type.</description>
+    <label>Outgoing Clearance AutoStamp Flow</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Stamp_ASA_SA</name>
+        <label>Stamp ASA SA Cleared</label>
+        <locationX>44</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>ASA_SA_Cleared_By__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ASA_SA_Cleared_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_Finance</name>
+        <label>Stamp Finance Cleared Date</label>
+        <locationX>572</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>Finance_Cleared_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_IT</name>
+        <label>Stamp IT Cleared</label>
+        <locationX>308</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>IT_Cleared_By__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>IT_Cleared_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_LRC</name>
+        <label>Stamp LRC Cleared</label>
+        <locationX>440</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>LRC_Cleared_By__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>LRC_Cleared_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_Operations</name>
+        <label>Stamp Operations Cleared</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <inputAssignments>
+            <field>Operations_Cleared_By__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Operations_Cleared_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
+    <start>
+        <locationX>176</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Decision_Which_Flag</targetReference>
+        </connector>
+        <filterFormula>{!$Record.RecordType.DeveloperName} = &apos;Outgoing_Exchange&apos; &amp;&amp; (
+  (ISCHANGED({!$Record.ASA_SA_Cleared__c}) &amp;&amp; {!$Record.ASA_SA_Cleared__c}) ||
+  (ISCHANGED({!$Record.Operations_Cleared__c}) &amp;&amp; {!$Record.Operations_Cleared__c}) ||
+  (ISCHANGED({!$Record.IT_Cleared__c}) &amp;&amp; {!$Record.IT_Cleared__c}) ||
+  (ISCHANGED({!$Record.LRC_Cleared__c}) &amp;&amp; {!$Record.LRC_Cleared__c}) ||
+  (ISCHANGED({!$Record.Finance_Cleared__c}) &amp;&amp; ISPICKVAL({!$Record.Finance_Cleared__c}, &apos;Cleared&apos;))
+)</filterFormula>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Type__c</fullName>
+    <label>Sub Type</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Type__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Alumni &amp; Events</fullName>
+                <default>false</default>
+                <label>Alumni &amp; Events</label>
+            </value>
+            <value>
+                <fullName>ASA Event</fullName>
+                <default>false</default>
+                <label>ASA Event</label>
+            </value>
+            <value>
+                <fullName>Bidding</fullName>
+                <default>false</default>
+                <label>Bidding</label>
+            </value>
+            <value>
+                <fullName>CAS L&amp;D</fullName>
+                <default>false</default>
+                <label>CAS L&amp;D</label>
+            </value>
+            <value>
+                <fullName>End Term</fullName>
+                <default>false</default>
+                <label>End Term</label>
+            </value>
+            <value>
+                <fullName>Grad</fullName>
+                <default>false</default>
+                <label>Grad</label>
+            </value>
+            <value>
+                <fullName>ILS</fullName>
+                <default>false</default>
+                <label>ILS</label>
+            </value>
+            <value>
+                <fullName>In Plane</fullName>
+                <default>false</default>
+                <label>In Plane</label>
+            </value>
+            <value>
+                <fullName>International immersion</fullName>
+                <default>false</default>
+                <label>International immersion</label>
+            </value>
+            <value>
+                <fullName>Mid Term</fullName>
+                <default>false</default>
+                <label>Mid Term</label>
+            </value>
+            <value>
+                <fullName>Online</fullName>
+                <default>false</default>
+                <label>Online</label>
+            </value>
+            <value>
+                <fullName>Page View</fullName>
+                <default>false</default>
+                <label>Page View</label>
+            </value>
+            <value>
+                <fullName>Placement</fullName>
+                <default>false</default>
+                <label>Placement</label>
+            </value>
+            <value>
+                <fullName>Registration</fullName>
+                <default>false</default>
+                <label>Registration</label>
+            </value>
+            <value>
+                <fullName>Seal Activity</fullName>
+                <default>false</default>
+                <label>Seal Activity</label>
+            </value>
+            <value>
+                <fullName>Work Shop</fullName>
+                <default>false</default>
+                <label>Work Shop</label>
+            </value>
+            <value>
+                <fullName>In Class</fullName>
+                <default>false</default>
+                <label>In Class</label>
+            </value>
+            <value>
+                <fullName>Online Exam</fullName>
+                <default>false</default>
+                <label>Online Exam</label>
+            </value>
+            <value>
+                <fullName>ELP / PaEV Week</fullName>
+                <default>false</default>
+                <label>ELP / PaEV Week</label>
+            </value>
+            <value>
+                <fullName>On-campus Interviews</fullName>
+                <default>false</default>
+                <label>On-campus Interviews</label>
+            </value>
+            <value>
+                <fullName>Holiday</fullName>
+                <default>false</default>
+                <label>Holiday</label>
+            </value>
+            <value>
+                <fullName>Math Boot Camp</fullName>
+                <default>false</default>
+                <label>Math Boot Camp</label>
+            </value>
+            <value>
+                <fullName>Orientation</fullName>
+                <default>false</default>
+                <label>Orientation</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Sessions</controllingFieldValue>
+            <valueName>Online</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sessions</controllingFieldValue>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>In Class</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Examination</controllingFieldValue>
+            <valueName>End Term</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Examination</controllingFieldValue>
+            <valueName>Mid Term</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Examination</controllingFieldValue>
+            <valueName>Online Exam</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Alumni &amp; Events</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>ASA Event</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Bidding</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>CAS L&amp;D</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Grad</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>ILS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>International immersion</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Page View</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Placement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Registration</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Seal Activity</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Work Shop</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>ELP / PaEV Week</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>On-campus Interviews</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Holiday</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Math Boot Camp</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Activity</controllingFieldValue>
+            <valueName>Orientation</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

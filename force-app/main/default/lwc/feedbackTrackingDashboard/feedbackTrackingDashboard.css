@@ -1,0 +1,36 @@
+.stat-card {
+    text-align: center;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.stat-success {
+    border-left: 4px solid #2e844a;
+}
+
+.stat-warning {
+    border-left: 4px solid #fe9339;
+}
+
+.stat-error {
+    border-left: 4px solid #c23934;
+}
+
+.slds-text-color_success {
+    color: #2e844a;
+    font-weight: 600;
+}
+
+.slds-text-color_error {
+    color: #c23934;
+    font-weight: 600;
+}

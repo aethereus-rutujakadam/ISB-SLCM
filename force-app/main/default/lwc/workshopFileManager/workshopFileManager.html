@@ -1,0 +1,408 @@
+<template>
+    <lightning-card title="Workshop Files" icon-name="standard:file">
+        <div slot="actions">
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                alternative-text="Refresh"
+                title="Refresh Files"
+                variant="border-filled"
+                class="slds-m-right_x-small"
+                onclick={handleRefresh}>
+            </lightning-button-icon>
+            <lightning-button
+                label="Upload File"
+                icon-name="utility:upload"
+                variant="brand"
+                onclick={handleOpenUploadModal}>
+            </lightning-button>
+        </div>
+
+        <template if:true={isLoading}>
+            <div class="slds-is-relative slds-m-around_medium loading-state">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <div class="slds-m-around_medium">
+                <template if:true={hasFiles}>
+                    <div class="files-table-container">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col" class="icon-col">
+                                        <div class="slds-truncate">Icon</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">File Name</div>
+                                    </th>
+                                    <th scope="col" class="format-col">
+                                        <div class="slds-truncate">Format</div>
+                                    </th>
+                                    <th scope="col" class="size-col">
+                                        <div class="slds-truncate">Size</div>
+                                    </th>
+                                    <th scope="col" class="uploaded-by-col">
+                                        <div class="slds-truncate">Uploaded By</div>
+                                    </th>
+                                    <th scope="col" class="uploaded-date-col">
+                                        <div class="slds-truncate">Upload Date</div>
+                                    </th>
+                                    <th scope="col" class="version-col">
+                                        <div class="slds-truncate">Version</div>
+                                    </th>
+                                    <th scope="col" class="access-col">
+                                        <div class="slds-truncate">Access Scope</div>
+                                    </th>
+                                    <th scope="col" class="download-col">
+                                        <div class="slds-truncate">Downloads</div>
+                                    </th>
+                                    <th scope="col" class="actions-col">
+                                        <div class="slds-truncate">Actions</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={files} for:item="file">
+                                    <tr key={file.id} class="slds-hint-parent">
+                                        <td>
+                                            <lightning-icon icon-name={file.iconName} size="small"></lightning-icon>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate" title={file.title}>{file.title}</div>
+                                        </td>
+                                        <td>
+                                            <span class="file-type-badge">{file.fileExtension}</span>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{file.formattedSize}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{file.uploadedBy}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{file.formattedDate}</div>
+                                        </td>
+                                        <td>
+                                            <div class="version-info">
+                                                <span class="version-badge">v{file.versionNumber}</span>
+                                                <template if:true={file.hasMultipleVersions}>
+                                                    <span class="version-count">({file.versionCount} total)</span>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="access-badge">{file.accessLabel}</span>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{file.downloadCount}</div>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <lightning-button-icon
+                                                    icon-name="utility:preview"
+                                                    alternative-text="Preview"
+                                                    title="Preview"
+                                                    variant="border-filled"
+                                                    data-id={file.id}
+                                                    onclick={handlePreviewFile}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:download"
+                                                    alternative-text="Download"
+                                                    title="Download"
+                                                    variant="border-filled"
+                                                    data-versionid={file.contentVersionId}
+                                                    data-extension={file.fileExtension}
+                                                    data-title={file.title}
+                                                    onclick={handleDownloadFile}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:date_time"
+                                                    alternative-text="Version History"
+                                                    title="Version History"
+                                                    variant="border-filled"
+                                                    data-id={file.id}
+                                                    onclick={handleViewVersions}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:add"
+                                                    alternative-text="Upload New Version"
+                                                    title="Upload New Version"
+                                                    variant="border-filled"
+                                                    data-id={file.id}
+                                                    data-title={file.title}
+                                                    data-access={file.accessScope}
+                                                    onclick={handleUploadNewVersion}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:lock"
+                                                    alternative-text="Edit Access"
+                                                    title="Edit Access"
+                                                    variant="border-filled"
+                                                    data-id={file.id}
+                                                    data-title={file.title}
+                                                    data-access={file.accessScope}
+                                                    onclick={handleOpenAccessModal}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:delete"
+                                                    alternative-text="Delete"
+                                                    title="Delete"
+                                                    variant="border-filled"
+                                                    data-id={file.id}
+                                                    onclick={handleDeleteFile}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+
+                <template if:false={hasFiles}>
+                    <div class="no-files-container">
+                        <lightning-icon icon-name="utility:file" size="large" class="no-files-icon"></lightning-icon>
+                        <p class="slds-text-heading_medium slds-m-top_small">No Files Yet</p>
+                        <p class="slds-text-color_weak slds-m-top_x-small">{noFilesMessage}</p>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+
+    <template if:true={showUploadModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseUploadModal}>
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="close"></lightning-icon>
+                    </button>
+                    <h2 class="slds-modal__title slds-hyphenate">{uploadModalTitle}</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={isNewVersion}>
+                        <div class="slds-m-bottom_medium version-info-box">
+                            <lightning-icon icon-name="utility:info" size="x-small"></lightning-icon>
+                            <span class="slds-m-left_x-small">
+                                Uploading new version for: <strong>{selectedFileName}</strong>
+                            </span>
+                        </div>
+                    </template>
+
+                    <lightning-combobox
+                        name="accessScope"
+                        label="Access Scope"
+                        value={selectedAccessScope}
+                        options={accessOptions}
+                        onchange={handleAccessScopeChange}
+                        class="slds-m-bottom_medium">
+                    </lightning-combobox>
+
+                    <template if:false={hasSelectedFile}>
+                        <div class="upload-zone-wrapper">
+                            <label class="upload-zone" ondrop={handleFileDrop} ondragover={handleDragOver}>
+                                <input type="file" accept={acceptedFormats} onchange={handleFileSelection} class="file-input-hidden" />
+                                <div class="upload-zone-content">
+                                    <lightning-icon icon-name="utility:upload" size="large" class="upload-icon"></lightning-icon>
+                                    <p class="slds-text-heading_small slds-m-top_small">Choose a file or drag it here</p>
+                                    <p class="slds-text-color_weak slds-m-top_x-small upload-info">
+                                        Maximum file size: 5 MB<br />
+                                        Supported formats: PDF, JPG, PNG, DOC, DOCX
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </template>
+
+                    <template if:true={hasSelectedFile}>
+                        <div class="selected-file-preview slds-m-bottom_medium">
+                            <div class="file-preview-card">
+                                <lightning-icon icon-name={selectedFileIcon} size="medium" class="file-preview-icon"></lightning-icon>
+                                <div class="file-preview-details">
+                                    <p class="file-preview-name">{selectedFileData.name}</p>
+                                    <p class="file-preview-size">{selectedFileData.formattedSize}</p>
+                                </div>
+                                <lightning-button-icon
+                                    icon-name="utility:delete"
+                                    alternative-text="Remove"
+                                    title="Remove File"
+                                    variant="bare"
+                                    onclick={handleRemoveSelectedFile}
+                                    class="remove-file-btn">
+                                </lightning-button-icon>
+                            </div>
+
+                            <div class="slds-m-top_small slds-text-align_center slds-m-bottom_medium">
+                                <lightning-button
+                                    label="Select Different File"
+                                    icon-name="utility:refresh"
+                                    onclick={handleRemoveSelectedFile}>
+                                </lightning-button>
+                            </div>
+
+                            <lightning-input
+                                type="text"
+                                label="File Name / Label"
+                                value={customFileName}
+                                onchange={handleFileNameChange}
+                                placeholder="Enter a descriptive label for this file"
+                                required>
+                            </lightning-input>
+                        </div>
+                    </template>
+
+                    <template if:true={uploadDisabled}>
+                        <p class="slds-m-top_small upload-validation-hint">
+                            <lightning-icon icon-name="utility:info" size="xx-small"></lightning-icon>
+                            <span class="slds-m-left_xx-small">Please select a file and provide a label to enable upload.</span>
+                        </p>
+                    </template>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleCloseUploadModal}></lightning-button>
+                    <lightning-button variant="brand" label="Upload" class="slds-m-left_small" onclick={handleUploadConfirm} disabled={uploadDisabled}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showPreviewModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleClosePreview}>
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="close"></lightning-icon>
+                    </button>
+                    <h2 class="slds-modal__title slds-hyphenate">{previewFile.title}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={previewFile.canPreview}>
+                        <div class="preview-container">
+                            <template if:true={previewFile.isPdf}>
+                                <iframe src={previewFile.base64Url} class="preview-iframe" title={previewFile.title}></iframe>
+                            </template>
+                            <template if:true={previewFile.isImage}>
+                                <img src={previewFile.base64Url} alt={previewFile.title} class="preview-image" />
+                            </template>
+                        </div>
+                    </template>
+                    <template if:false={previewFile.canPreview}>
+                        <div class="preview-unavailable">
+                            <lightning-icon icon-name="utility:hide" size="large"></lightning-icon>
+                            <p class="slds-text-heading_small slds-m-top_small">Preview not available</p>
+                            <p class="slds-text-color_weak slds-m-top_x-small">Download the file to view this format.</p>
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={handleClosePreview}></lightning-button>
+                    <lightning-button variant="brand" label="Download" class="slds-m-left_small" onclick={handleDownloadPreviewFile}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showVersionModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseVersionModal}>
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="close"></lightning-icon>
+                    </button>
+                    <h2 class="slds-modal__title slds-hyphenate">Version History</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={hasVersions}>
+                        <div class="version-list">
+                            <template for:each={fileVersions} for:item="version">
+                                <article key={version.id} class="version-item">
+                                    <div class="version-header">
+                                        <div class="version-info-left">
+                                            <span class="version-badge-large">v{version.versionNumber}</span>
+                                            <template if:true={version.isLatest}>
+                                                <span class="latest-badge">Latest</span>
+                                            </template>
+                                        </div>
+                                        <div class="version-actions">
+                                            <lightning-button-icon
+                                                icon-name="utility:preview"
+                                                alternative-text="Preview"
+                                                title="Preview"
+                                                variant="border-filled"
+                                                data-versionid={version.id}
+                                                onclick={handlePreviewVersion}>
+                                            </lightning-button-icon>
+                                            <lightning-button-icon
+                                                icon-name="utility:download"
+                                                alternative-text="Download"
+                                                title="Download"
+                                                variant="border-filled"
+                                                data-versionid={version.id}
+                                                data-title={version.title}
+                                                data-extension={version.fileExtension}
+                                                onclick={handleDownloadVersion}>
+                                            </lightning-button-icon>
+                                        </div>
+                                    </div>
+                                    <div class="version-details">
+                                        <div class="version-detail-item">
+                                            <lightning-icon icon-name="utility:user" size="xx-small"></lightning-icon>
+                                            <span>{version.uploadedBy}</span>
+                                        </div>
+                                        <div class="version-detail-item">
+                                            <lightning-icon icon-name="utility:date_input" size="xx-small"></lightning-icon>
+                                            <span>{version.formattedDate}</span>
+                                        </div>
+                                        <div class="version-detail-item">
+                                            <lightning-icon icon-name="utility:file" size="xx-small"></lightning-icon>
+                                            <span>{version.formattedSize}</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={handleCloseVersionModal}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showAccessModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseAccessModal}>
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="close"></lightning-icon>
+                    </button>
+                    <h2 class="slds-modal__title slds-hyphenate">Edit File Access</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p class="slds-m-bottom_small">{selectedAccessFileName}</p>
+                    <lightning-combobox
+                        name="editAccessScope"
+                        label="Access Scope"
+                        value={selectedAccessScope}
+                        options={accessOptions}
+                        onchange={handleAccessScopeChange}>
+                    </lightning-combobox>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleCloseAccessModal}></lightning-button>
+                    <lightning-button variant="brand" label="Save" class="slds-m-left_small" onclick={handleSaveAccessScope}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

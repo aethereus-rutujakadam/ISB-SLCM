@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>sfal__StudentID__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The student ID for the student checking in to a waiting room either for themselves or through a proxy.</description>
+    <inlineHelpText>The student ID for the student checking in to a waiting room either for themselves or through a proxy.</inlineHelpText>
+    <label>Student ID</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

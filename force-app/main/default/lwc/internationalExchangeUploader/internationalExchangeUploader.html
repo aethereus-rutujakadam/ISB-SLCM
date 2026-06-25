@@ -1,0 +1,121 @@
+<template>
+    <div class="wrapper">
+
+        <!-- Page Header -->
+        <div class="page-title">
+            <lightning-icon icon-name="custom:custom19" size="medium" class="page-icon"></lightning-icon>
+            <span class="title-text">Upload Excel Data</span>
+        </div>
+
+        <lightning-card class="main-card" title="International Exchange Upload" icon-name="utility:upload">
+
+
+            <template if:true={isIncomingMode}>
+                <!-- Cascading Filters for Incoming Mode -->
+                <div class="slds-grid slds-wrap slds-p-horizontal_medium slds-m-bottom_medium">
+                    <div class="slds-col slds-size_1-of-2 slds-p-right_small">
+                        <lightning-combobox
+                            name="program"
+                            label="Program"
+                            value={selectedProgram}
+                            options={programOptions}
+                            onchange={handleProgramChange}
+                            required>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            name="cohort"
+                            label="Academic Term"
+                            value={selectedCohort}
+                            options={cohortOptions}
+                            onchange={handleCohortChange}
+                            disabled={isCohortDisabled}
+                            required>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-m-top_medium">
+                        <lightning-dual-listbox
+                            name="term"
+                            label="Academic Session"
+                            source-label="Available"
+                            selected-label="Selected"
+                            value={selectedTerm}
+                            options={termOptions}
+                            onchange={handleTermChange}
+                            disabled={isTermDisabled}
+                            required>
+                        </lightning-dual-listbox>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Upload Section -->
+            <div class="section-title">Upload Excel File</div>
+
+            <div class="upload-box">
+                <lightning-input
+                    type="file"
+                    accept=".xls,.xlsx,.csv"
+                    label="Upload Files"
+                    onchange={handleFileChange}
+                    disabled={isFileUploadDisabled}>
+                </lightning-input>
+                <p class="drop-hint">Or drop files</p>
+            </div>
+
+            <!-- Row Count -->
+            <template if:true={fileData.length}>
+                <p class="record-pill">{fileData.length} Rows Loaded</p>
+            </template>
+
+            <!-- Preview Table -->
+            <template if:true={fileData.length}>
+                <div class="datatable-container">
+                    <lightning-datatable
+                        key-field="id"
+                        data={fileData}
+                        columns={currentColumns}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <!-- Submit + Reset Buttons -->
+            <div class="button-row">
+                <lightning-button 
+                    label="Submit Exchange Data"
+                    variant="brand"
+                    onclick={handleSubmit}
+                    disabled={isSubmitDisabled}>
+                </lightning-button>
+
+                <lightning-button 
+                    label="Reset"
+                    variant="neutral"
+                    onclick={resetForm}>
+                </lightning-button>
+            </div>
+
+            <!-- ERROR DOWNLOAD BUTTON -->
+            <template if:true={hasErrors}>
+                <div class="button-row">
+                    <lightning-button 
+                        label="Download Error Log"
+                        variant="destructive"
+                        onclick={handleDownloadErrors}>
+                    </lightning-button>
+                </div>
+            </template>
+
+        </lightning-card>
+
+        <!-- Spinner -->
+        <template if:true={isLoading}>
+            <div class="overlay">
+                <lightning-spinner alternative-text="Processing..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+    </div>
+</template>

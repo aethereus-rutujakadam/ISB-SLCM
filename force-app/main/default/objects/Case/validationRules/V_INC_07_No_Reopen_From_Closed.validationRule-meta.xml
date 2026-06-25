@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>V_INC_07_No_Reopen_From_Closed</fullName>
+    <active>true</active>
+    <description>V-INC-07: Once an Incoming Exchange Exit Clearance case is Closed, the Stage cannot be changed. Prevents any reopening of finalized cases.</description>
+    <errorConditionFormula>TEXT(PRIORVALUE(Status)) == &apos;Closed&apos; &amp;&amp; ISCHANGED(Status) &amp;&amp; $Profile.Name &lt;&gt; &apos;System Administrator&apos;</errorConditionFormula>
+    <errorMessage>Closed cases cannot be reopened. No stage changes are permitted once a case has been closed.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Program_Type__c</fullName>
+    <label>Program Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Modular</fullName>
+                <default>false</default>
+                <label>Modular</label>
+            </value>
+            <value>
+                <fullName>Non Modular</fullName>
+                <default>false</default>
+                <label>Non Modular</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

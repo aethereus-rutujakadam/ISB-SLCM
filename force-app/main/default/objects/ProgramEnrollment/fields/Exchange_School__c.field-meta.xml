@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Exchange_School__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Exchange School</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Program Enrollments (Exchange School)</relationshipLabel>
+    <relationshipName>Program_Enrollments_Exchange</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

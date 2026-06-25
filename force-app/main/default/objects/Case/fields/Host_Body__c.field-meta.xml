@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Host_Body__c</fullName>
+    <label>Host Body</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Council</fullName>
+                <default>false</default>
+                <label>Council</label>
+            </value>
+            <value>
+                <fullName>Club</fullName>
+                <default>false</default>
+                <label>Club</label>
+            </value>
+            <value>
+                <fullName>SIG</fullName>
+                <default>false</default>
+                <label>SIG</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
